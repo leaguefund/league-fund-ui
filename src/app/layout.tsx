@@ -1,3 +1,5 @@
+"use client";
+
 import { Outfit, Montserrat } from "next/font/google";
 import "./globals.css";
 import "swiper/css";
@@ -7,7 +9,8 @@ import "swiper/css/autoplay";
 import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
 import { ThemeProvider } from "@/context/ThemeContext";
-import Landing from "@/components/Landing";
+import { initializeSession } from "@/utils/session";
+import { useEffect } from "react";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -24,6 +27,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    initializeSession();
+  }, []);
+
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${outfit.variable} ${montserrat.variable} dark:bg-gray-900`}>
