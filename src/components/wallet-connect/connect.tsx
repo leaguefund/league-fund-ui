@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 
 const ConnectCoinbaseButton = () => {
 
-  const [walletAddress, setWalletAddress] = useState();
+  const [walletAddress, setWalletAddress] = useState<string>("");
 
   const connectWallet = async () => {
     try {
       const accounts = await coinbaseProvider.request({
         method: 'eth_requestAccounts',
-      });
+      }) as string[];
       if (accounts.length > 0) {
         setWalletAddress(accounts[0]);
       }

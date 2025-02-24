@@ -1,6 +1,8 @@
 import { createCoinbaseWalletSDK } from '@coinbase/wallet-sdk';
+import { ProviderInterface } from "@coinbase/wallet-sdk";
 
-let sdk, coinbaseProvider;
+let sdk;
+let coinbaseProvider: ProviderInterface;
 
 if (typeof window !== "undefined") {
     sdk = createCoinbaseWalletSDK({
@@ -14,8 +16,6 @@ if (typeof window !== "undefined") {
             },
         },
     });
-
-    // Create provider
     coinbaseProvider = sdk.getProvider();
 }
 
