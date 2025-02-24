@@ -1,6 +1,5 @@
 import { coinbaseProvider } from "@/services/coinbase";
 import React, { useState } from 'react';
-// import { useAccount, usePublicClient, useSignMessage } from 'wagmi';
 
 const ConnectCoinbaseButton = () => {
 
@@ -19,7 +18,6 @@ const ConnectCoinbaseButton = () => {
     }
   };
   
-
   return (
     <button
       onClick={connectWallet}
