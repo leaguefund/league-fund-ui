@@ -1,7 +1,12 @@
+"use client";
+
 import React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const Landing: React.FC = () => {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
@@ -18,7 +23,10 @@ const Landing: React.FC = () => {
         {/* Main Actions */}
         <div className="space-y-4">
           {/* Import League Button */}
-          <button className="w-full flex items-center justify-center space-x-3 bg-button hover:bg-button-hover text-white py-6 rounded-lg transition-colors">
+          <button 
+            onClick={() => router.push('/sleeper-username')}
+            className="w-full flex items-center justify-center space-x-3 bg-button hover:bg-button-hover text-white py-6 rounded-lg transition-colors"
+          >
             <Image 
               src="/images/sleeper.png" 
               alt="Sleeper Logo" 
