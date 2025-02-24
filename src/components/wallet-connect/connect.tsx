@@ -3,20 +3,22 @@ import { ethers } from "ethers";
 import { coinbaseProvider } from "@/services/coinbase";
 
 const ConnectCoinbaseButton = () => {
-  const [walletAddress, setWalletAddress] = useState(null);
+
+  const [walletAddress, setWalletAddress] = useState();
 
   const connectWallet = async () => {
     try {
-
-      const accounts = await coinbaseProvider.send("eth_requestAccounts", []);
-      
+      const accounts = await coinbaseProvider.request({
+        method: 'eth_requestAccounts',
+      });
       if (accounts.length > 0) {
         setWalletAddress(accounts[0]);
       }
     } catch (error) {
-      console.error("Coinbase Wallet connection failed:", error);
+      console.error('Coinbase Wallet connection failed:', error);
     }
   };
+  
 
   return (
     <button
