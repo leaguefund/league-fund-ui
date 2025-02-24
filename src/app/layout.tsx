@@ -1,5 +1,4 @@
 "use client";
-
 import { Outfit, Montserrat } from "next/font/google";
 import "./globals.css";
 import "swiper/css";
@@ -15,6 +14,11 @@ import { useEffect } from "react";
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 const montserrat = Montserrat({
