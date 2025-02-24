@@ -6,7 +6,12 @@
 
 @layer base {
   body {
-    @apply relative text-base font-normal z-1 bg-gray-50 font-outfit;
+    @apply relative text-base font-normal z-[1] bg-gray-50;
+    font-family: var(--font-montserrat);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-outfit);
   }
 }
 
