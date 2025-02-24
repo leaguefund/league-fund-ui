@@ -9,7 +9,7 @@ import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
-import { WagmiProvider } from 'wagmi'
+import { WagmiProvider } from 'wagmi';
 import { config } from "@/config/wagmi";
 
 const outfit = Outfit({
