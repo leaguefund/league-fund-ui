@@ -25,7 +25,7 @@ const Landing: React.FC = () => {
           {/* Import League Button */}
           <button 
             onClick={() => router.push('/sleeper-username')}
-            className="w-full flex items-center justify-center space-x-3 bg-button hover:bg-button-hover text-white py-6 rounded-lg transition-colors"
+            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
           >
             <Image 
               src="/images/sleeper.png" 
