@@ -10,8 +10,8 @@ import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 const outfit = Outfit({
-  variable: "--font-outfit-sans",
   subsets: ["latin"],
+  variable: "--font-outfit",
 });
 
 const montserrat = Montserrat({
