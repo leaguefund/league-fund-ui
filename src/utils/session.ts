@@ -2,6 +2,20 @@ const SESSION_KEY = 'sessionID';
 const EXPIRY_KEY = 'sessionExpiry';
 const EXPIRY_DAYS = 7;
 
+// Define the type for our debug commands
+interface SessionDebug {
+  shortenExpiry: () => void;
+  clearSession: () => void;
+  viewSession: () => void;
+}
+
+// Extend the Window interface
+declare global {
+  interface Window {
+    sessionDebug?: SessionDebug;
+  }
+}
+
 export const initializeSession = () => {
   // Only run on client side
   if (typeof window === 'undefined') return;
@@ -60,5 +74,5 @@ const debugCommands = {
 
 // Make debug commands available globally in development
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  (window as any).sessionDebug = debugCommands;
+  window.sessionDebug = debugCommands;
 } 

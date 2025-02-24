@@ -8,7 +8,7 @@ const Landing: React.FC = () => {
         {/* Title Section */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
-            The Commissioner's Secret Weapon
+            The Commissioner&apos;s Secret Weapon
           </h1>
           <p className="text-xl md:text-2xl text-gray-300">
             Effortless League Accounting, Trophies, & Historical Data in One Place
