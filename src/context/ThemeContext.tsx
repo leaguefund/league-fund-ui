@@ -1,13 +1,13 @@
 "use client";
 
 import type React from "react";
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useContext } from "react";
 
-type Theme = "light" | "dark";
+type Theme = "dark";  // Remove 'light' since we only want dark mode
 
 type ThemeContextType = {
   theme: Theme;
-  toggleTheme: () => void;
+  // Remove toggleTheme since we won't need it
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -43,7 +43,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme }}>
       {children}
     </ThemeContext.Provider>
   );
