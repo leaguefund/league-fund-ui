@@ -8,7 +8,7 @@ import Logo from "@/components/logo/logo";
 import ConnectCoinbaseButton from "@/components/wallet-connect/connect";
 
 const AppHeader: React.FC = () => {
-  const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  // const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const handleToggle = () => {
@@ -19,9 +19,9 @@ const AppHeader: React.FC = () => {
     }
   };
 
-  const toggleApplicationMenu = () => {
-    setApplicationMenuOpen(!isApplicationMenuOpen);
-  };
+  // const toggleApplicationMenu = () => {
+  //   setApplicationMenuOpen(!isApplicationMenuOpen);
+  // };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
