@@ -8,6 +8,7 @@ import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import ClientInitializer from "@/components/ClientInitializer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -28,7 +29,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.variable} ${montserrat.variable} dark:bg-gray-900`}>
         <ThemeProvider>
-          <SidebarProvider>{children}</SidebarProvider>
+          <SidebarProvider>
+            <ClientInitializer />
+            {children}
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
