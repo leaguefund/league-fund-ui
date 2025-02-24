@@ -1,6 +1,6 @@
 import { coinbaseProvider } from "@/services/coinbase";
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAccount, usePublicClient, useSignMessage } from 'wagmi';
+import React, { useState } from 'react';
+// import { useAccount, usePublicClient, useSignMessage } from 'wagmi';
 
 const ConnectCoinbaseButton = () => {
 
