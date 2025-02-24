@@ -31,6 +31,7 @@ static async fetchData(apiEndpoint, method = "GET", body = null) {
     }
 
     static getSleeperUser(username) {
+        console.log(username)
         return this.fetchData("backendApiSleeperUser");
     }
 
