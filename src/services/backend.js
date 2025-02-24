@@ -9,17 +9,17 @@ static async fetchData(apiEndpoint, method = "GET", body = null) {
     
     const options = {
         method,
-        headers: {
-            "Content-Type": "application/json",
-        },
+            headers: {
+                "Content-Type": "application/json",
+            },
         };
 
         if (body) {
-        options.body = JSON.stringify(body);
+            options.body = JSON.stringify(body);
         }
 
         try {
-        const response = await fetch(url, options);
+            const response = await fetch(url, options);
             if (!response.ok) {
                 throw new Error(`API request failed: ${response.statusText}`);
             }
