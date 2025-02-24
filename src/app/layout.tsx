@@ -1,3 +1,4 @@
+"use client";
 import { Outfit, Montserrat } from "next/font/google";
 import "./globals.css";
 import "swiper/css";
@@ -8,6 +9,8 @@ import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { WagmiProvider } from 'wagmi';
+import { config } from "@/config/wagmi";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -27,9 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${outfit.variable} ${montserrat.variable} dark:bg-gray-900`}>
-        <ThemeProvider>
-          <SidebarProvider>{children}</SidebarProvider>
-        </ThemeProvider>
+        <WagmiProvider config={config}>
+          <ThemeProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </ThemeProvider>
+        </WagmiProvider>
       </body>
     </html>
   );
