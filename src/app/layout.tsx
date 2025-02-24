@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
+import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 const outfit = Outfit({
@@ -27,7 +28,9 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${outfit.variable} ${montserrat.variable} dark:bg-gray-900`}>
         <ThemeProvider>
-          {children}
+          <SidebarProvider>
+            {children}
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
