@@ -18,7 +18,7 @@ const Landing: React.FC = () => {
         {/* Main Actions */}
         <div className="space-y-4">
           {/* Import League Button */}
-          <button className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors">
+          <button className="w-full flex items-center justify-center space-x-3 bg-button hover:bg-button-hover text-white py-6 rounded-lg transition-colors">
             <Image 
               src="/sleeper.png" 
               alt="Sleeper Logo" 
