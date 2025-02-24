@@ -1,4 +1,6 @@
-import { Outfit } from "next/font/google";
+"use client";
+
+import { Outfit, Montserrat } from "next/font/google";
 import "./globals.css";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -6,12 +8,18 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
-import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { initializeSession } from "@/utils/session";
+import { useEffect } from "react";
 
 const outfit = Outfit({
-  variable: "--font-outfit-sans",
   subsets: ["latin"],
+  variable: "--font-outfit",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 export default function RootLayout({
@@ -19,11 +27,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    initializeSession();
+  }, []);
+
   return (
-    <html lang="en" className="dark">
-      <body className={`${outfit.variable} dark:bg-gray-900`}>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className={`${outfit.variable} ${montserrat.variable} dark:bg-gray-900`}>
         <ThemeProvider>
-          <SidebarProvider>{children}</SidebarProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>
