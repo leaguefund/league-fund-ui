@@ -34,7 +34,7 @@ export default function LeagueSetup() {
         </div>
         
         <button 
-          className="w-full mt-6 text-white py-2 rounded-lg hover:bg-gray-700 transition"
+          className="w-full mt-6 text-white py-2 rounded-lg bg-gray-700 transition"
         >
           Create League Treasury
         </button>
