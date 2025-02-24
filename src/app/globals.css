@@ -6,7 +6,10 @@
 
 @layer base {
   body {
-    @apply relative text-base font-normal z-[1] bg-gray-50;
+    @apply relative text-base font-normal z-[1] bg-gray-50 font-body;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
   }
 }
 

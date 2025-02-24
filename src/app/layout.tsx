@@ -1,4 +1,4 @@
-import { Outfit } from "next/font/google";
+import { Outfit, Montserrat } from "next/font/google";
 import "./globals.css";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -10,8 +10,13 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import Landing from "@/components/Landing";
 
 const outfit = Outfit({
-  variable: "--font-outfit-sans",
   subsets: ["latin"],
+  variable: "--font-outfit",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 export default function RootLayout({
@@ -21,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${outfit.variable} dark:bg-gray-900`}>
+      <body className={`${outfit.variable} ${montserrat.variable} dark:bg-gray-900`}>
         <ThemeProvider>
           {children}
         </ThemeProvider>

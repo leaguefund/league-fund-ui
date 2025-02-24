@@ -7,8 +7,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        button: '#1a1a1a',
-        'button-hover': '#333333',
+        button: '#333333',
+        'button-hover': '#4d4d4d',
+      },
+      fontFamily: {
+        heading: ['var(--font-montserrat)'],
+        body: ['var(--font-outfit)'],
       },
     },
   },
