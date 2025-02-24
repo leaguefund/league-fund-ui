@@ -1,5 +1,8 @@
 export const env = process.env.NEXT_PUBLIC_NODE_ENV === "production" ? "mainnet" : "testnet";
 
+console.log("NEXT_PUBLIC_NODE_ENV", env)
+
+
 const config = {
     testnet: {
       backendHost: "https://run.mocky.io",
