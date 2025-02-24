@@ -1,3 +1,5 @@
+import { Montserrat, Outfit } from "next/font/google";
+
 const defaultTheme = require("tailwindcss/defaultTheme");
 module.exports = {
   content: [
@@ -7,8 +9,8 @@ module.exports = {
   darkMode: "class",
   theme: {
     fontFamily: {
-      heading: ['var(--font-montserrat)'],
-      body: ['var(--font-outfit)'],
+      heading: Montserrat,
+      body: Outfit
     },
     screens: {
       "2xsm": "375px",
