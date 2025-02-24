@@ -19,11 +19,6 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
 });
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{
