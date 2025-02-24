@@ -25,7 +25,7 @@ const ConnectCoinbaseButton = () => {
       onClick={connectWallet}
       className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
     >
-      {walletAddress ? `Connected: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : "Connect"}
+      {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : "Connect"}
     </button>
   );
 };
