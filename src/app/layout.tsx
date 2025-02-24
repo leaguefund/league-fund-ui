@@ -6,8 +6,8 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
-import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import Landing from "@/components/Landing";
 
 const outfit = Outfit({
   variable: "--font-outfit-sans",
@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${outfit.variable} dark:bg-gray-900`}>
         <ThemeProvider>
-          <SidebarProvider>{children}</SidebarProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>
