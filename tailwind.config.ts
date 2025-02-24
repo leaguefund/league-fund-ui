@@ -7,7 +7,8 @@ module.exports = {
   darkMode: "class",
   theme: {
     fontFamily: {
-      outfit: ["Outfit", "sans-serif"],
+      heading: ['var(--font-montserrat)'],
+      body: ['var(--font-outfit)'],
     },
     screens: {
       "2xsm": "375px",
