@@ -1,10 +1,25 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import ApiService from '@/services/backend';
 
 const SleeperUsername: React.FC = () => {
+  const [username, setUsername] = useState('');
+  const router = useRouter();
+
+  const handleFindLeague = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    try {
+      await ApiService.getSleeperUser(username);
+      router.push('/confirm-league');
+    } catch (error) {
+      console.error('Error finding league:', error);
+    }
+  };
+
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
@@ -20,6 +35,8 @@ const SleeperUsername: React.FC = () => {
             <label className="text-xl text-gray-300">Sleeper Username</label>
             <input 
               type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
               placeholder="Enter your username"
             />
@@ -34,6 +51,7 @@ const SleeperUsername: React.FC = () => {
           {/* Find League Button */}
           <Link 
             href="/confirm-league"
+            onClick={handleFindLeague}
             className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
           >
             <Image 
