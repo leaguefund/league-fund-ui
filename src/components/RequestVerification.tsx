@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/dist/client/link';
+import Link from 'next/link';
 
 const RequestVerification: React.FC = () => {
   return (
@@ -48,10 +48,11 @@ const RequestVerification: React.FC = () => {
           </button>
 
           {/* Choose Different League Link */}
-          <Link href="/create-league" className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center">
-            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
-              Choose Different League
-            </button>
+          <Link 
+            href="/confirm-league" 
+            className="w-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white py-4 text-lg transition-colors text-center block"
+          >
+            Choose Different League
           </Link>
         </div>
       </div>

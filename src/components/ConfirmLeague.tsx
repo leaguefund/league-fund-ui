@@ -53,10 +53,11 @@ const ConfirmLeague: React.FC = () => {
           </div>
 
           {/* Try Different Username */}
-          <Link href="/create-league" className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center">
-            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
-              Try Different Username
-            </button>
+          <Link 
+            href="/sleeper-username" 
+            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
+          >
+            Try Different Username
           </Link>
         </div>
       </div>

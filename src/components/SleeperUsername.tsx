@@ -23,9 +23,12 @@ const SleeperUsername: React.FC = () => {
               className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
               placeholder="Enter your username"
             />
-            <button className="text-gray-400 hover:text-white">
+            <Link 
+              href="/find-username" 
+              className="text-gray-400 hover:text-white block"
+            >
               Where can I find my username?
-            </button>
+            </Link>
           </div>
 
           {/* Find League Button */}
@@ -43,10 +46,12 @@ const SleeperUsername: React.FC = () => {
             <span className="text-xl">Find League</span>
           </Link>
 
-          <Link href="/create-league" className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center">
-            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
-              Create League Manually
-            </button>
+          {/* Create League Link */}
+          <Link 
+            href="/create-league" 
+            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
+          >
+            Create League Manually
           </Link>
         </div>
       </div>

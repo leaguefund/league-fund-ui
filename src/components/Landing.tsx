@@ -35,19 +35,20 @@ const Landing: React.FC = () => {
             <span className="text-xl">Import League</span>
           </Link>
 
-          {/* Create League Manually */}
+          {/* Create League Link */}
           <Link 
-            href="/sleeper-username"
+            href="/create-league"
+            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
           >
-            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
-              Create League Manually
-            </button>
+            Create League Manually
           </Link>
 
-          <Link href="/connect-wallet" className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center">
-            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
-              Go to Connect Wallet
-            </button>
+          {/* Connect Wallet Link */}
+          <Link 
+            href="/connect-wallet" 
+            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
+          >
+            Go to Connect Wallet
           </Link>
         </div>
       </div>
