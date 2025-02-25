@@ -32,6 +32,7 @@ const ConfirmLeague: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await ApiService.readLeague();
+      console.log('League read response:', response);
       if (selectedLeague) {
         dispatch({ type: 'SET_LEAGUE_SELECTED', payload: selectedLeague });
       }
