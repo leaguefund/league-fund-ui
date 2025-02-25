@@ -41,25 +41,19 @@ const ComponentTemplate: React.FC = () => {
             />
           </div>
 
-          {/* Send Code Button */}
           <Link 
-            href="/confirm-league"
-            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
+            href="/link-here"
           >
-            <Image 
-              src="/images/sleeper.png" 
-              alt="Sleeper Logo" 
-              width={40} 
-              height={40}
-              className="rounded-full"
-            />
-            <span className="text-xl">Find League</span>
+            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
+              Primary Button
+            </button>
           </Link>
 
-          {/* Choose Different League Link */}
-          <button className="w-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white py-4 text-lg transition-colors">
-            Text Button
-          </button>
+          <Link href="/link-here" className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center">
+            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
+              Secondary Button
+            </button>
+          </Link>
         </div>
       </div>
     </div>
