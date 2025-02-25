@@ -36,12 +36,18 @@ const Landing: React.FC = () => {
           </Link>
 
           {/* Create League Manually */}
-          <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
-            Create League Manually
-          </button>
+          <Link 
+            href="/sleeper-username"
+          >
+            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
+              Create League Manually
+            </button>
+          </Link>
 
           <Link href="/connect-wallet" className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center">
-            Go to Connect Wallet
+            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
+              Go to Connect Wallet
+            </button>
           </Link>
         </div>
       </div>
