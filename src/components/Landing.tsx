@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const Landing: React.FC = () => {
@@ -41,6 +42,12 @@ const Landing: React.FC = () => {
           <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
             Create League Manually
           </button>
+          <div className='flex justify-center'>
+            <Link href="/connect-wallet" className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center">
+                Go to Connect Wallet
+            </Link>
+          </div>
+          
         </div>
       </div>
     </main>
