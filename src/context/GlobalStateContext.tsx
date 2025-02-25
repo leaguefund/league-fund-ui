@@ -110,6 +110,9 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         }
       }
     } else {
+    console.group('♻ Hydrated App State:');
+    console.log('State:', state);
+    console.groupEnd();
       // After hydration - save state changes to storage
       sessionStorage.setItem('globalState', JSON.stringify(state));
     }
