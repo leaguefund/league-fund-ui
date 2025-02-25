@@ -1,4 +1,5 @@
-import { Outfit } from "next/font/google";
+"use client";
+import { Outfit, Montserrat } from "next/font/google";
 import "./globals.css";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -8,10 +9,18 @@ import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import ClientInitializer from "@/components/ClientInitializer";
+import { WagmiProvider } from 'wagmi';
+import { config } from "@/config/wagmi";
 
 const outfit = Outfit({
-  variable: "--font-outfit-sans",
   subsets: ["latin"],
+  variable: "--font-outfit",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 export default function RootLayout({
@@ -21,10 +30,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} dark:bg-gray-900`}>
-        <ThemeProvider>
-          <SidebarProvider>{children}</SidebarProvider>
-        </ThemeProvider>
+      <body className={`${outfit.variable} ${montserrat.variable} dark:bg-gray-900`}>
+        <WagmiProvider config={config}>
+          <ThemeProvider>
+            <SidebarProvider>
+              <ClientInitializer />
+              {children}
+            </SidebarProvider>
+          </ThemeProvider>
+        </WagmiProvider>
       </body>
     </html>
   );
