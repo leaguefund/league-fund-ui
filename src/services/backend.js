@@ -1,5 +1,6 @@
 import envConfig from "./config";
 
+console.log("test")
   
 class ApiService {
 
