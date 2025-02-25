@@ -18,7 +18,8 @@ const navigationMap: { [key: string]: string } = {
 
 // Make SkipAPI available globally
 if (typeof window !== 'undefined') {
-  (window as any).SkipAPI = function() {
+  const win = window as Window;
+  win.SkipAPI = function() {
     const currentPath = window.location.pathname;
     const nextPath = navigationMap[currentPath] || navigationMap['default'];
     console.log(`🐛 Skipping API and navigating to: ${nextPath}`);
