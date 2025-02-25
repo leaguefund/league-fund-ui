@@ -146,6 +146,15 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
     }
   }, [state]); // This effect runs on every state change
 
+  // Don't render anything until state is hydrated
+  if (!state.hydrated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-white/30 border-t-white" />
+      </div>
+    );
+  }
+
   return (
     <GlobalStateContext.Provider value={{ state, dispatch }}>
       {children}
