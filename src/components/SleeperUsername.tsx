@@ -43,10 +43,11 @@ const SleeperUsername: React.FC = () => {
             <span className="text-xl">Find League</span>
           </Link>
 
-          {/* Create League Link */}
-          <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
-            Create League Manually
-          </button>
+          <Link href="/create-league" className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center">
+            <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
+              Create League Manually
+            </button>
+          </Link>
         </div>
       </div>
     </main>
