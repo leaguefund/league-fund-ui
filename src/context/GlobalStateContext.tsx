@@ -100,23 +100,51 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       console.log('State:', state);
       console.groupEnd();
       
-      const savedState = sessionStorage.getItem('globalState');
-      if (savedState) {
-        try {
-          const parsedState = JSON.parse(savedState);
-          dispatch({ type: 'HYDRATE_FROM_STORAGE', payload: parsedState });
-        } catch (error) {
-          console.error('Error parsing stored state:', error);
-        }
+      // Hydrate from individual storage items
+      const username = sessionStorage.getItem('username');
+      const leagues = sessionStorage.getItem('leagues');
+      const email = sessionStorage.getItem('email');
+      const phone = sessionStorage.getItem('phone');
+      const verified = sessionStorage.getItem('verified');
+      const leagueSelected = sessionStorage.getItem('leagueSelected');
+      const sessionId = sessionStorage.getItem('sessionId');
+
+      const hydratedState = {
+        ...initialState,
+        hydrated: true,
+        username: username || null,
+        email: email || null,
+        phone: phone || null,
+        verified: verified === 'true',
+        sessionId: sessionId || null,
+        leagues: [],
+        leagueSelected: null
+      };
+
+      try {
+        if (leagues) hydratedState.leagues = JSON.parse(leagues);
+        if (leagueSelected) hydratedState.leagueSelected = JSON.parse(leagueSelected);
+      } catch (error) {
+        console.error('Error parsing stored JSON:', error);
       }
+
+      dispatch({ type: 'HYDRATE_FROM_STORAGE', payload: hydratedState });
     } else {
-    console.group('♻ Hydrated App State:');
-    console.log('State:', state);
-    console.groupEnd();
-      // After hydration - save state changes to storage
-      sessionStorage.setItem('globalState', JSON.stringify(state));
+      // After any state change - log and save to storage
+      console.group('♻️ Updated App State:');
+      console.log('State:', state);
+      console.groupEnd();
+      
+      // Save individual items to storage
+      if (state.username) sessionStorage.setItem('username', state.username);
+      if (state.leagues) sessionStorage.setItem('leagues', JSON.stringify(state.leagues));
+      if (state.email) sessionStorage.setItem('email', state.email);
+      if (state.phone) sessionStorage.setItem('phone', state.phone);
+      if (state.verified !== undefined) sessionStorage.setItem('verified', String(state.verified));
+      if (state.leagueSelected) sessionStorage.setItem('leagueSelected', JSON.stringify(state.leagueSelected));
+      if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
     }
-  }, [state]);
+  }, [state]); // This effect runs on every state change
 
   return (
     <GlobalStateContext.Provider value={{ state, dispatch }}>

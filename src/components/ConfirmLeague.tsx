@@ -14,10 +14,10 @@ const ConfirmLeague: React.FC = () => {
   const router = useRouter();
   const { state, dispatch } = useGlobalState();
 
-  // If no leagues in state, go back to landing
+  // If no leagues in state, go back to sleeper username page
   useEffect(() => {
     if (!state.leagues || state.leagues.length === 0) {
-      router.push('/');
+      router.push('/sleeper-username');
       return;
     }
 
