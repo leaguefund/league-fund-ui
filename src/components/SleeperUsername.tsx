@@ -2,11 +2,9 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const SleeperUsername: React.FC = () => {
-  const router = useRouter();
-
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
@@ -31,8 +29,8 @@ const SleeperUsername: React.FC = () => {
           </div>
 
           {/* Find League Button */}
-          <button 
-            onClick={() => router.push('/confirm-league')}
+          <Link 
+            href="/confirm-league"
             className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
           >
             <Image 
@@ -43,7 +41,7 @@ const SleeperUsername: React.FC = () => {
               className="rounded-full"
             />
             <span className="text-xl">Find League</span>
-          </button>
+          </Link>
 
           {/* Create League Link */}
           <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">

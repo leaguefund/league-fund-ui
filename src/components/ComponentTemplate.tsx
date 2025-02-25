@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const ComponentTemplate: React.FC = () => {
   return (
@@ -41,9 +42,19 @@ const ComponentTemplate: React.FC = () => {
           </div>
 
           {/* Send Code Button */}
-          <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-4 rounded-lg transition-colors text-lg">
-            Button
-          </button>
+          <Link 
+            href="/confirm-league"
+            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
+          >
+            <Image 
+              src="/images/sleeper.png" 
+              alt="Sleeper Logo" 
+              width={40} 
+              height={40}
+              className="rounded-full"
+            />
+            <span className="text-xl">Find League</span>
+          </Link>
 
           {/* Choose Different League Link */}
           <button className="w-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white py-4 text-lg transition-colors">

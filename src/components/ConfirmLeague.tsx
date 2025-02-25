@@ -2,11 +2,9 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const ConfirmLeague: React.FC = () => {
-  const router = useRouter();
-
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
@@ -38,12 +36,12 @@ const ConfirmLeague: React.FC = () => {
           </div>
 
           {/* Confirm Button */}
-          <button 
-            onClick={() => router.push('/request-verification')}
+          <Link 
+            href="/request-verification"
             className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
           >
             <span className="text-xl">Confirm League</span>
-          </button>
+          </Link>
 
           {/* Other Leagues Section */}
           <div className="space-y-4">
