@@ -6,7 +6,7 @@ console.log("NEXT_PUBLIC_NODE_ENV", env)
 const config = {
     testnet: {
       backendHost: "https://run.mocky.io",
-      backendApiSleeperUser: "/v3/d74af1e5-fd87-41aa-abb9-c4a494a11dce",
+      backendApiSleeperUser: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiEmail: "/v3/6c2cae0d-81ee-4712-986e-050a98bfa905",
       backendApiValidateEmail: "/v3/52d1b333-c548-44fa-9cc8-724c5de2759b",
       backendApiLeagueInvite: "/v3/9a695be5-5ebf-4c60-9e24-451356df7c17",

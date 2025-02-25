@@ -1,10 +1,28 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import ApiService from '@/services/backend';
 
 const Verification: React.FC = () => {
+  const [code, setCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleValidate = async () => {
+    setIsLoading(true);
+    try {
+      await ApiService.validateEmail(code);
+      router.push('/dashboard'); // or wherever you want to redirect after validation
+    } catch (error) {
+      console.error('Error validating code:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col items-center">
@@ -39,14 +57,23 @@ const Verification: React.FC = () => {
             </label>
             <input 
               type="text"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               className="w-full px-4 py-3 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg text-gray-800 dark:text-white/90 focus:border-gray-400 dark:focus:border-white focus:outline-none"
               placeholder="Enter validation code"
             />
           </div>
 
           {/* Validate Button */}
-          <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-4 rounded-lg transition-colors text-lg">
-            Validate
+          <button 
+            onClick={handleValidate}
+            className="w-full bg-gray-800 hover:bg-gray-700 text-white py-4 rounded-lg transition-colors text-lg"
+          >
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-6 w-6 border-4 border-white/30 border-t-white" />
+            ) : (
+              "Validate"
+            )}
           </button>
 
           {/* Choose Different Validation Link */}
