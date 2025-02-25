@@ -1,34 +1,57 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 
 const ComponentTemplate: React.FC = () => {
   return (
-    <main>
-      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+    <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+      <div className="flex flex-col items-center">
+        <div className="max-w-md w-full space-y-8">
+          {/* Title */}
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white/90">
               Heading
-            </h4>
-
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
-              <div>
-                <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                  Subheading
-                </p>
-              </div>
-
-            </div>
+            </h1>
           </div>
-          <div>
-            <button className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
-              Button
-            </button>
+
+          {/* League Image */}
+          <div className="flex justify-center">
+            <Image 
+              src="/images/placeholder.png" 
+              alt="League Avatar" 
+              width={100} 
+              height={100}
+              className="rounded-lg"
+            />
           </div>
+
+          {/* League Name */}
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white/90">Subheading</h2>
+          </div>
+
+          {/* Email Input */}
+          <div className="space-y-2">
+            <label className="block text-lg text-gray-500 dark:text-gray-400">Input Form</label>
+            <input
+              className="w-full px-4 py-3 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg text-gray-800 dark:text-white/90 focus:border-gray-400 dark:focus:border-white focus:outline-none"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          {/* Send Code Button */}
+          <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-4 rounded-lg transition-colors text-lg">
+            Button
+          </button>
+
+          {/* Choose Different League Link */}
+          <button className="w-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white py-4 text-lg transition-colors">
+            Text Button
+          </button>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
