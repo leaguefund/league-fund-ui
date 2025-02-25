@@ -1,4 +1,7 @@
 "use client";
+// Load debug utilities first
+import '../services/debug';
+
 import { Outfit, Montserrat } from "next/font/google";
 import "./globals.css";
 import "swiper/css";
