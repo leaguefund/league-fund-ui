@@ -7,7 +7,7 @@ export default function ConnectWallet() {
       <div className="flex flex-col items-center justify-center min-h-screen p-6">
         <h1 className="text-2xl font-bold text-white">Connect Wallet</h1>
         <p className="text-gray-200 text-center mt-2 ">
-          Let's get your wallet connected to handle dues.
+          Lets get your wallet connected to handle dues.
         </p>
         <div className="mt-6">
           <img
