@@ -8,15 +8,19 @@ import ApiService from '@/services/backend';
 
 const SleeperUsername: React.FC = () => {
   const [username, setUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleFindLeague = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await ApiService.getSleeperUser(username);
       router.push('/confirm-league');
     } catch (error) {
       console.error('Error finding league:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,16 +56,22 @@ const SleeperUsername: React.FC = () => {
           <Link 
             href="/confirm-league"
             onClick={handleFindLeague}
-            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
+            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Image 
-              src="/images/sleeper.png" 
-              alt="Sleeper Logo" 
-              width={40} 
-              height={40}
-              className="rounded-full"
-            />
-            <span className="text-xl">Find League</span>
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-6 w-6 border-4 border-white/30 border-t-white" />
+            ) : (
+              <>
+                <Image 
+                  src="/images/sleeper.png" 
+                  alt="Sleeper Logo" 
+                  width={40} 
+                  height={40}
+                  className="rounded-full"
+                />
+                <span className="text-xl">Find League</span>
+              </>
+            )}
           </Link>
 
           {/* Create League Link */}
