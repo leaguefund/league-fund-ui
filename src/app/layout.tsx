@@ -12,6 +12,7 @@ import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { GlobalStateProvider } from "@/context/GlobalStateContext";
 import ClientInitializer from "@/components/ClientInitializer";
 import { WagmiProvider } from 'wagmi';
 import { config } from "@/config/wagmi";
@@ -37,8 +38,10 @@ export default function RootLayout({
         <WagmiProvider config={config}>
           <ThemeProvider>
             <SidebarProvider>
-              <ClientInitializer />
-              {children}
+              <GlobalStateProvider>
+                <ClientInitializer />
+                {children}
+              </GlobalStateProvider>
             </SidebarProvider>
           </ThemeProvider>
         </WagmiProvider>

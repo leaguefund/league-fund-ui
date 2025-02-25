@@ -1,21 +1,40 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ApiService from '@/services/backend';
+import { useGlobalState } from '@/context/GlobalStateContext';
 
 const SleeperUsername: React.FC = () => {
+  // Local state for form input
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  
+  // Get both state and dispatch from global state
+  const { state, dispatch } = useGlobalState();
+
+  // If we already have a username in global state, use it
+  useEffect(() => {
+    if (state.username) {
+      setUsername(state.username);
+    }
+  }, [state.username]);
 
   const handleFindLeague = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await ApiService.getSleeperUser(username);
+      const response = await ApiService.getSleeperUser(username);
+      // Update global state with username
+      dispatch({ type: 'SET_USERNAME', payload: username });
+      
+      // Update leagues if they come back in the response
+      if (response.leagues) {
+        dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
+      }
       router.push('/confirm-league');
     } catch (error) {
       console.error('Error finding league:', error);
@@ -31,6 +50,12 @@ const SleeperUsername: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             What is your Sleeper Username?
           </h1>
+          {/* Show leagues count if we have them */}
+          {state.leagues && (
+            <p className="text-gray-300">
+              Found {state.leagues.length} leagues for this account
+            </p>
+          )}
         </div>
 
         <div className="space-y-8">
