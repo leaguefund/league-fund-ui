@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const ConfirmLeague: React.FC = () => {
   return (
@@ -35,9 +36,12 @@ const ConfirmLeague: React.FC = () => {
           </div>
 
           {/* Confirm Button */}
-          <button className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors">
+          <Link 
+            href="/request-verification"
+            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
+          >
             <span className="text-xl">Confirm League</span>
-          </button>
+          </Link>
 
           {/* Other Leagues Section */}
           <div className="space-y-4">
@@ -49,9 +53,12 @@ const ConfirmLeague: React.FC = () => {
           </div>
 
           {/* Try Different Username */}
-          <button className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors">
+          <Link 
+            href="/sleeper-username" 
+            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
+          >
             Try Different Username
-          </button>
+          </Link>
         </div>
       </div>
     </main>
