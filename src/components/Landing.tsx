@@ -39,7 +39,7 @@ const Landing: React.FC = () => {
           <p className="text-xl md:text-2xl text-gray-300">
             Effortless League Accounting, Trophies, & Historical Data in One Place
           </p>
-          {state.leagues && (
+          {state.leagues && state.leagueSelected && (
             <p className="text-lg text-gray-400">
               {state.leagues.length} Leagues Available
             </p>
