@@ -43,6 +43,7 @@ export type Action =
   | { type: 'SET_VERIFIED'; payload: boolean }
   | { type: 'SET_LEAGUE_SELECTED' | 'SET_SELECTED_LEAGUE'; payload: League }
   | { type: 'CONNECT_WALLET'; payload: boolean }
+  | { type: 'CREATE_LEAGUE'; payload: boolean }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {

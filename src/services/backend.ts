@@ -87,6 +87,11 @@ class ApiService {
         console.log('Connecting wallet...');
         return this.fetchData<SessionData>("backendApiConnectWallet", {});
     }
+
+    static createLeague(username: string, dues: number) {
+        console.log('Creating league...');
+        return this.fetchData<SessionData>("backendApiCreateLeague", { username, dues });
+    }
 }
 
 export default ApiService; 
