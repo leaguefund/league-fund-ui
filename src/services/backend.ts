@@ -77,6 +77,11 @@ class ApiService {
     static readWallet() {
         return this.fetchData<SessionData>("backendApiWalletRead", {});
     }
+
+    static connectWallet() {
+        console.log('Connecting wallet...');
+        return this.fetchData<SessionData>("backendApiConnectWallet", {});
+    }
 }
 
 export default ApiService; 

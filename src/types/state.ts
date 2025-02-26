@@ -34,12 +34,16 @@ export type ActionMap = {
 
 export type ActionType = keyof ActionMap;
 
-export type Action = {
-    [K in ActionType]: {
-        type: K;
-        payload: ActionMap[K];
-    }
-}[ActionType];
+export type Action = 
+  | { type: 'SET_SESSION_ID'; payload: string }
+  | { type: 'SET_USERNAME'; payload: string }
+  | { type: 'SET_LEAGUES'; payload: League[] }
+  | { type: 'SET_EMAIL'; payload: string }
+  | { type: 'SET_PHONE'; payload: string }
+  | { type: 'SET_VERIFIED'; payload: boolean }
+  | { type: 'SET_LEAGUE_SELECTED' | 'SET_SELECTED_LEAGUE'; payload: League }
+  | { type: 'CONNECT_WALLET'; payload: boolean }
+  | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {
     sessionId: null,

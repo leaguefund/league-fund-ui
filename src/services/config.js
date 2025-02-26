@@ -7,20 +7,22 @@ const config = {
     testnet: {
       backendHost: "https://run.mocky.io",
       backendApiSleeperUser: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
-      backendApiEmail: "/v3/6c2cae0d-81ee-4712-986e-050a98bfa905",
-      backendApiValidateEmail: "/v3/52d1b333-c548-44fa-9cc8-724c5de2759b",
-      backendApiLeagueInvite: "/v3/9a695be5-5ebf-4c60-9e24-451356df7c17",
-      backendApiWalletRead: "/tbd",
-      backendApiLeagueRead: "/tbd",
+      backendApiEmail: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
+      backendApiValidateEmail: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
+      backendApiLeagueInvite: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
+      backendApiWalletRead: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
+      backendApiLeagueRead: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
+      backendApiConnectWallet: "/v3/f9064b97-804c-481a-90a1-de58d912f561"
     },
     mainnet: {
-      backendHost: "https://leaguefund.xyz",
+      backendHost: "https://api.leaguefund.io",
       backendApiSleeperUser: "/v1/api/sleeper/username",
-      backendApiEmail: "/v1/api/user/email",
-      backendApiValidateEmail: "/v1/api/user/validate-email",
+      backendApiEmail: "/v1/api/email",
+      backendApiValidateEmail: "/v1/api/email/validate",
       backendApiLeagueInvite: "/v1/api/league/invite",
       backendApiWalletRead: "/v1/api/wallet/read",
       backendApiLeagueRead: "/v1/api/league/read",
+      backendApiConnectWallet: "/v1/api/wallet/connect"
     },
   };
 
