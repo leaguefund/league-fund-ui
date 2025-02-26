@@ -23,7 +23,6 @@ import {
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 import DropdownLeagues from "@/components/example/DropdownExample/DropdownLeagues";
-
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -445,7 +444,6 @@ const AppSidebar: React.FC = () => {
           )}
         </Link>
       </div>
-
       <div className="flex flex-col overflow-y-auto  duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
