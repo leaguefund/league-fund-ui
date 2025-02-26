@@ -4,13 +4,15 @@ import React, { useState, KeyboardEvent } from 'react';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import Badge from '@/components/ui/badge/Badge';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const InviteTeams: React.FC = () => {
   const { state, dispatch } = useGlobalState();
   const [emailInput, setEmailInput] = useState('');
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,9 +47,19 @@ const InviteTeams: React.FC = () => {
     console.log('Updated invite emails after removal:', newEmails);
   };
 
-  const handleSendInvites = () => {
-    // TODO: Implement send invites functionality
-    console.log('Sending invites to:', state.inviteEmails);
+  const handleSendInvites = async () => {
+    setIsLoading(true);
+    try {
+      // TODO: Implement send invites functionality
+      console.log('Sending invites to:', state.inviteEmails);
+      // For now, just simulate an API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      router.push('/invites-sent');
+    } catch (error) {
+      console.error('Error sending invites:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const copyToClipboard = async () => {
@@ -115,9 +127,14 @@ const InviteTeams: React.FC = () => {
         <div className="space-y-8">
           <button
             onClick={handleSendInvites}
-            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
+            disabled={isLoading}
+            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="text-xl">Send Invites</span>
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-6 w-6 border-4 border-white/30 border-t-white" />
+            ) : (
+              <span className="text-xl">Send Invites</span>
+            )}
           </button>
 
           <div className="space-y-4">
