@@ -7,9 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const InviteTeams: React.FC = () => {
-  const { state } = useGlobalState();
+  const { state, dispatch } = useGlobalState();
   const [emailInput, setEmailInput] = useState('');
-  const [emails, setEmails] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -30,28 +29,32 @@ const InviteTeams: React.FC = () => {
         return;
       }
 
-      if (!emails.includes(email)) {
-        setEmails([...emails, email]);
+      if (!state.inviteEmails.includes(email)) {
+        const newEmails = [...state.inviteEmails, email];
+        dispatch({ type: 'SET_INVITE_EMAILS', payload: newEmails });
         setEmailInput('');
         setError('');
+        console.log('Updated invite emails:', newEmails);
       }
     }
   };
 
   const removeEmail = (emailToRemove: string) => {
-    setEmails(emails.filter(email => email !== emailToRemove));
+    const newEmails = state.inviteEmails.filter(email => email !== emailToRemove);
+    dispatch({ type: 'SET_INVITE_EMAILS', payload: newEmails });
+    console.log('Updated invite emails after removal:', newEmails);
   };
 
   const handleSendInvites = () => {
     // TODO: Implement send invites functionality
-    console.log('Sending invites to:', emails);
+    console.log('Sending invites to:', state.inviteEmails);
   };
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText("https://leaguecontract.xyz/join/0xa2c");
       setCopied(true);
-      setTimeout(() => setCopied(false), 5000); // Changed to 5 seconds
+      setTimeout(() => setCopied(false), 5000);
     } catch (err) {
       console.error('Failed to copy:', err);
     }
@@ -84,7 +87,7 @@ const InviteTeams: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {emails.map((email) => (
+            {state.inviteEmails.map((email) => (
               <Badge
                 key={email}
                 variant="light"

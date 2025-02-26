@@ -18,6 +18,7 @@ export interface GlobalState {
     phone: string | null;
     verified: boolean;
     hydrated: boolean;
+    inviteEmails: string[];
 }
 
 export type ActionMap = {
@@ -29,6 +30,7 @@ export type ActionMap = {
     'SET_VERIFIED': boolean;
     'SET_LEAGUE_SELECTED': League;
     'SET_SELECTED_LEAGUE': League;
+    'SET_INVITE_EMAILS': string[];
     'HYDRATE_FROM_STORAGE': GlobalState;
 }
 
@@ -44,6 +46,7 @@ export type Action =
   | { type: 'SET_LEAGUE_SELECTED' | 'SET_SELECTED_LEAGUE'; payload: League }
   | { type: 'CONNECT_WALLET'; payload: boolean }
   | { type: 'CREATE_LEAGUE'; payload: boolean }
+  | { type: 'SET_INVITE_EMAILS'; payload: string[] }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {
@@ -54,5 +57,6 @@ export const initialState: GlobalState = {
     email: null,
     phone: null,
     verified: false,
-    hydrated: false
+    hydrated: false,
+    inviteEmails: []
 }; 
