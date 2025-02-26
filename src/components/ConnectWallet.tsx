@@ -17,6 +17,7 @@ const ConnectWallet: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await ApiService.connectWallet();
+      console.log('response', response);
       dispatch({ type: 'CONNECT_WALLET', payload: true });
       router.push('/create-league');
     } catch (error) {

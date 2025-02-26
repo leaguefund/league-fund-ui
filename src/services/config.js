@@ -1,12 +1,13 @@
 export const env = process.env.NEXT_PUBLIC_NODE_ENV === "production" ? "mainnet" : "testnet";
 
 console.log("NEXT_PUBLIC_NODE_ENV", env)
-
+// https://league-fund-76860069ad93.herokuapp.com/v1/api/sleeper/username?username=alexmcritchie
 
 const config = {
     testnet: {
-      backendHost: "https://run.mocky.io",
-      backendApiSleeperUser: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
+      // backendHost: "https://run.mocky.io",
+      backendHost: "https://league-fund-76860069ad93.herokuapp.com",
+      backendApiSleeperUser: "/v1/api/sleeper/username",
       backendApiEmail: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiValidateEmail: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiLeagueInvite: "/v3/f9064b97-804c-481a-90a1-de58d912f561",

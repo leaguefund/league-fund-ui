@@ -24,7 +24,12 @@ interface LeagueInviteData extends SessionData {
 
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
-        const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
+        let url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
+        
+        // Add query parameters for username if present
+        if ('username' in body && typeof body.username === 'string') {
+            url += `?username=${encodeURIComponent(body.username)}`;
+        }
         
         console.log('=== ApiService.fetchData ===');
         console.log('URL:', url);
