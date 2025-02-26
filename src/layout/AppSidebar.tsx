@@ -23,8 +23,6 @@ import {
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 
-import OnChainReadUtilsTest from '../utils/OnChainReadUtilsTest';
-
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -445,10 +443,6 @@ const AppSidebar: React.FC = () => {
             />
           )}
         </Link>
-      </div>
-      <div>
-      <h1>Welcome to League Fund</h1>
-        <OnChainReadUtilsTest />
       </div>
       <div className="flex flex-col overflow-y-auto  duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
