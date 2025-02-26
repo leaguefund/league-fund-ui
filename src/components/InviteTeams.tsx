@@ -3,7 +3,7 @@
 import React, { useState, KeyboardEvent } from 'react';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import Badge from '@/components/ui/badge/Badge';
-import { CloseIcon } from '@/icons';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const InviteTeams: React.FC = () => {
@@ -11,6 +11,7 @@ const InviteTeams: React.FC = () => {
   const [emailInput, setEmailInput] = useState('');
   const [emails, setEmails] = useState<string[]>([]);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,6 +45,16 @@ const InviteTeams: React.FC = () => {
   const handleSendInvites = () => {
     // TODO: Implement send invites functionality
     console.log('Sending invites to:', emails);
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText("https://leaguecontract.xyz/join/0xa2c");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 5000); // Changed to 5 seconds
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
   };
 
   return (
@@ -81,9 +92,14 @@ const InviteTeams: React.FC = () => {
                 endIcon={
                   <button
                     onClick={() => removeEmail(email)}
-                    className="ml-1 hover:text-gray-700 dark:hover:text-gray-300"
+                    className="ml-1 flex items-center justify-center"
                   >
-                    <CloseIcon />
+                    <Image
+                      src="/images/icons/x.png"
+                      alt="Remove"
+                      width={12}
+                      height={12}
+                    />
                   </button>
                 }
               >
@@ -110,20 +126,29 @@ const InviteTeams: React.FC = () => {
                 readOnly
                 className="flex-1 bg-transparent text-gray-300 outline-none"
               />
-              <button className="text-gray-400 hover:text-white">
+              <button 
+                onClick={copyToClipboard}
+                className="text-gray-400 hover:text-white transition-colors p-1.5 rounded hover:bg-gray-700/50"
+                title={copied ? "Copied!" : "Copy to clipboard"}
+              >
                 <svg
-                  width="24"
-                  height="24"
+                  xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="fill-current"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-5 h-5"
                 >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M6 4C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6ZM18 6H6V18H18V6Z"
-                  />
+                  {copied ? (
+                    <path d="M20 6L9 17l-5-5" />
+                  ) : (
+                    <>
+                      <rect x="8" y="8" width="12" height="12" rx="2" />
+                      <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+                    </>
+                  )}
                 </svg>
               </button>
             </div>
