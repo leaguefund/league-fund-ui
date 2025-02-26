@@ -3,7 +3,7 @@ import { getTokenBalance, getLeagueNActiveTeams, getUserLeagues, getLeagueTotalB
 import { useAccount } from 'wagmi';
 
 const OnChainReadUtilsTest: React.FC = () => {
-  const [tokenAddress, setTokenAddress] = useState<`0x${string}`>('0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B');
+  const [tokenAddress] = useState<`0x${string}`>('0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B');
   const [account, setAccount] = useState<`0x${string}`>('0xE262C1e7c5177E28E51A5cf1C6944470697B2c9F');
   const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
   const [teamAddress, setTeamAddress] = useState<`0x${string}`>('0xE262C1e7c5177E28E51A5cf1C6944470697B2c9F');

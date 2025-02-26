@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import { getApproveCall, getCreateLeagueCall } from '../utils/createCallUtils';
-
 
 const CreateLeague: React.FC = () => {
   const [leagueName, setLeagueName] = useState('');
   const [dues, setDues] = useState(0);
   const [teamName, setTeamName] = useState('');
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
-  const factoryAddress = "0x6dCe56BEc9FB3a2CB065c4b49c79aBc8d0216f97";
+  const factoryAddress = "0x9Ca5a1402B5678B92a45f071c1581C463C078101";
 
   const [shouldSubmit, setShouldSubmit] = useState(false);
 
@@ -57,8 +56,8 @@ const CreateLeague: React.FC = () => {
       <TransactionDefault
         isSponsored={true}
         calls={[
-          getApproveCall(usdcAddress, factoryAddress, dues),
-          getCreateLeagueCall(leagueName, dues, teamName)
+          getApproveCall(usdcAddress, factoryAddress, dues * 1e6),
+          getCreateLeagueCall(leagueName, dues * 1e6, teamName)
         ]}
       />
     )}
