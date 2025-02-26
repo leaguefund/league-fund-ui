@@ -22,9 +22,6 @@ import {
   UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
-
-
-import OnChainReadUtilsTest from '../utils/OnChainReadUtilsTest';
 import DropdownLeagues from "@/components/example/DropdownExample/DropdownLeagues";
 type NavItem = {
   name: string;
@@ -465,7 +462,6 @@ const AppSidebar: React.FC = () => {
                 )}
               </h2>
               <DropdownLeagues />
-              <OnChainReadUtilsTest />
             </div>
             <div>
               <h2
