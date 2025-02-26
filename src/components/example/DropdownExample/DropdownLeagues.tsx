@@ -50,7 +50,7 @@ export default function DropdownLeagues() {
   function updateSelectedLeague(leagueAddress: `0x${string}`) {
     setSelectedLeagueAddress(leagueAddress)
     console.log("__1")
-    console.log(address)
+    console.log(selectedLeagueAddress)
     console.log("__2")
     setIsOpen(false);
   }
