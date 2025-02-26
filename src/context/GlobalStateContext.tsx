@@ -49,7 +49,6 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, verified: action.payload };
       sessionStorage.setItem('verified', String(action.payload));
       break;
-    case 'SET_LEAGUE_SELECTED':
     case 'SET_SELECTED_LEAGUE':
       nextState = { ...state, leagueSelected: action.payload };
       if (action.payload) sessionStorage.setItem('leagueSelected', JSON.stringify(action.payload));
