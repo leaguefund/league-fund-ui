@@ -1,4 +1,7 @@
 "use client";
+// Load debug utilities first
+import '../services/debug';
+
 import { Outfit, Montserrat } from "next/font/google";
 import "./globals.css";
 import "swiper/css";
@@ -10,6 +13,7 @@ import "flatpickr/dist/flatpickr.css";
 import '@coinbase/onchainkit/styles.css';
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { GlobalStateProvider } from "@/context/GlobalStateContext";
 import ClientInitializer from "@/components/ClientInitializer";
 import { WagmiProvider } from 'wagmi';
 import { config } from "@/config/wagmi";
