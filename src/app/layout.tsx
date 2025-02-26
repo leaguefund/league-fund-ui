@@ -46,8 +46,10 @@ export default function RootLayout({
             <Providers> 
             <ThemeProvider>
               <SidebarProvider>
-                <ClientInitializer />
-                {children}
+                <GlobalStateProvider>
+                  <ClientInitializer />
+                  {children}
+                </GlobalStateProvider>
               </SidebarProvider>
             </ThemeProvider>
             </Providers>
