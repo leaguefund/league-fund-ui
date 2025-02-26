@@ -89,7 +89,7 @@ const navItems: NavItem[] = [
       { name: "Page 7: Create League (Commissioner)", path: "/create-league"},
       { name: "Page 8: League Created", path: "/league-created"},
       { name: "Page 9: Invite Teams", path: "/invite-teams"},
-      { name: "Page 10: Invitations Sent", path: "/invitations-sent"},
+      { name: "Page 10: Invitations Sent", path: "/invites-sent"},
       { name: "Page 11: Join Sleeper League (Joiner)", path: "/join-league-sleeper"},
       { name: "Page 12: Connect Wallet (Joiner)", path: "/join-connect-wallet"},
       { name: "Page 13: Top Up USDC (Joiner)", path: "/join-top-up"},
