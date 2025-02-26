@@ -5,21 +5,21 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
 
-const JoinConnectWallet: React.FC = () => {
+const JoinTopUp: React.FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { state } = useGlobalState();
 
-  const handleConnectWallet = async () => {
+  const handleTopUpWallet = async () => {
     setIsLoading(true);
     try {
-      // TODO: Implement wallet connection functionality
-      console.log('Connecting wallet for user');
+      // TODO: Implement wallet top up functionality
+      console.log('Topping up wallet for user');
       // For now, just simulate an API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      router.push('/join-top-up');
+      router.push('/join-league');
     } catch (error) {
-      console.error('Error connecting wallet:', error);
+      console.error('Error topping up wallet:', error);
     } finally {
       setIsLoading(false);
     }
@@ -30,10 +30,10 @@ const JoinConnectWallet: React.FC = () => {
       <div className="max-w-4xl w-full mt-16 space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
-            Setup Wallet
+            Top Up Wallet
           </h1>
           <p className="text-xl md:text-2xl text-gray-300">
-            Let's get your dues paid for Champions League.
+            The Champions League requires $100 to join
           </p>
         </div>
 
@@ -52,21 +52,21 @@ const JoinConnectWallet: React.FC = () => {
 
         <div className="space-y-8">
           <button
-            onClick={handleConnectWallet}
+            onClick={handleTopUpWallet}
             disabled={isLoading}
             className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <div className="animate-spin rounded-full h-6 w-6 border-4 border-white/30 border-t-white" />
             ) : (
-              <span className="text-xl">Connect Wallet</span>
+              <span className="text-xl">Top Up Wallet</span>
             )}
           </button>
 
           <button
             className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center"
           >
-            What is a Wallet?
+            What is USDC?
           </button>
         </div>
       </div>
@@ -74,4 +74,4 @@ const JoinConnectWallet: React.FC = () => {
   );
 };
 
-export default JoinConnectWallet; 
+export default JoinTopUp; 
