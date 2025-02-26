@@ -95,7 +95,7 @@ const navItems: NavItem[] = [
       { name: "Page 13: Top Up USDC (Joiner)", path: "/join-top-up"},
       { name: "Page 14: Join League (Joiner)", path: "/join-league"},
       { name: "Page 15: League Welcome (Joiner)", path: "/league-welcome"},
-      { name: "Page 16: League", path: "/"},
+      { name: "Page 16: League", path: "/league"},
       { name: "Page 17: League Rewards", path: "/"},
       { name: "Page 18: Reward Choose Team", path: "/"},
       { name: "Page 19: Reward Define Reward", path: "/"},
