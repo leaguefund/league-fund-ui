@@ -38,7 +38,7 @@ export async function getUserLeagues(userAddress: `0x${string}`) {
 
     const allLeagues = await contract.read.getTeamLeagues([userAddress])
 
-    let userLeagues = []
+    const userLeagues = []
     if (allLeagues) {
         for (const league of allLeagues) {
             if (league.joined) {
