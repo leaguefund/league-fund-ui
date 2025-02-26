@@ -14,14 +14,8 @@ const InvitesSent: React.FC = () => {
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center space-x-2">
             <h1 className="text-4xl md:text-5xl font-bold text-white">
-              Invitations Sent
+              Invitations Sent 🎉
             </h1>
-            <Image
-              src="/images/icons/envelope-heart.png"
-              alt="Envelope with Heart"
-              width={40}
-              height={40}
-            />
           </div>
           <p className="text-xl md:text-2xl text-gray-300">
             Invites have been sent to

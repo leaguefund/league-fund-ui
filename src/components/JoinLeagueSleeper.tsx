@@ -39,14 +39,8 @@ const JoinLeagueSleeper: React.FC = () => {
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center space-x-2">
             <h1 className="text-4xl md:text-5xl font-bold text-white">
-              Welcome
+              Welcome 👋
             </h1>
-            <Image
-              src="/images/icons/wave.png"
-              alt="Wave"
-              width={40}
-              height={40}
-            />
           </div>
           <p className="text-xl md:text-2xl text-gray-300">
             Let&apos;s start with your Sleeper account
