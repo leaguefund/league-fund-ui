@@ -34,7 +34,7 @@ const ConfirmLeague: React.FC = () => {
       const response = await ApiService.readLeague();
       console.log('League read response:', response);
       if (selectedLeague) {
-        dispatch({ type: 'SET_LEAGUE_SELECTED', payload: selectedLeague });
+        dispatch({ type: 'SET_SELECTED_LEAGUE', payload: selectedLeague });
       }
       router.push('/request-verification');
     } catch (error) {

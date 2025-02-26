@@ -22,6 +22,10 @@ interface LeagueInviteData extends SessionData {
     role: string;
 }
 
+interface CreateLeagueData extends SessionData {
+    username: string;
+}
+
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
         const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
@@ -76,6 +80,16 @@ class ApiService {
 
     static readWallet() {
         return this.fetchData<SessionData>("backendApiWalletRead", {});
+    }
+
+    static connectWallet() {
+        console.log('Connecting wallet...');
+        return this.fetchData<SessionData>("backendApiConnectWallet", {});
+    }
+
+    static createLeague(username: string) {
+        console.log('Creating league...');
+        return this.fetchData<CreateLeagueData>("backendApiCreateLeague", { username });
     }
 }
 

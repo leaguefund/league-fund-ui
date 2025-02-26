@@ -49,10 +49,13 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, verified: action.payload };
       sessionStorage.setItem('verified', String(action.payload));
       break;
-    case 'SET_LEAGUE_SELECTED':
     case 'SET_SELECTED_LEAGUE':
       nextState = { ...state, leagueSelected: action.payload };
       if (action.payload) sessionStorage.setItem('leagueSelected', JSON.stringify(action.payload));
+      break;
+    case 'SET_INVITE_EMAILS':
+      nextState = { ...state, inviteEmails: action.payload };
+      sessionStorage.setItem('inviteEmails', JSON.stringify(action.payload));
       break;
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
@@ -63,12 +66,21 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       const email = sessionStorage.getItem('email');
       const phone = sessionStorage.getItem('phone');
       const verified = sessionStorage.getItem('verified');
+      const inviteEmails = sessionStorage.getItem('inviteEmails');
       
       if (sessionId) nextState.sessionId = sessionId;
       if (username) nextState.username = username;
       if (email) nextState.email = email;
       if (phone) nextState.phone = phone;
       if (verified) nextState.verified = verified === 'true';
+      if (inviteEmails) {
+        try {
+          nextState.inviteEmails = JSON.parse(inviteEmails);
+        } catch (error) {
+          console.error('Error parsing stored inviteEmails:', error);
+          nextState.inviteEmails = [];
+        }
+      }
 
       // Hydrate complex objects
       try {
