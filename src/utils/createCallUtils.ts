@@ -33,7 +33,7 @@ export function getJoinLeagueCall (leagueAddress: `0x${string}`, teamName: strin
     return {
         address: leagueAddress,
         abi: leagueContract.abi,
-        functionName: 'joinLeague',
+        functionName: 'joinSeason',
         args: [teamName],
     }
 }
