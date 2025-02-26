@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { getTokenBalance, getLeagueNActiveTeams, getTeamLeagues, getLeagueTotalBalance, getLeagueName } from './onChainReadUtils';
-// import { useAccount } from 'wagmi';
+import React, { useState, useEffect } from 'react';
+import { getTokenBalance, getLeagueNActiveTeams, getUserLeagues, getLeagueTotalBalance, getLeagueName } from './onChainReadUtils';
+import { useAccount } from 'wagmi';
 
 const OnChainReadUtilsTest: React.FC = () => {
   const [tokenAddress, setTokenAddress] = useState<`0x${string}`>('0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B');
@@ -8,12 +8,18 @@ const OnChainReadUtilsTest: React.FC = () => {
   const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
   const [teamAddress, setTeamAddress] = useState<`0x${string}`>('0xE262C1e7c5177E28E51A5cf1C6944470697B2c9F');
 
-//   const { address, isConnected } = useAccount()
+  const { address, isConnected } = useAccount()
 
-//   if (isConnected && address) {
-//     setAccount(address)
-//     setTeamAddress(address)
-//   }
+  useEffect(() => {
+    async function fetchAddress() {
+      if (address && isConnected) {
+        console.log('Account:', address)
+        setAccount(address)
+        setTeamAddress(address)
+      }
+    }
+    fetchAddress()
+  }, [address, isConnected])
 
   return (
     <div>
@@ -33,8 +39,8 @@ const OnChainReadUtilsTest: React.FC = () => {
         {getLeagueNActiveTeams(leagueAddress)}
       </div>
       <div>
-        <h2>Team Leagues</h2>
-        {getTeamLeagues(teamAddress).toString()}
+        <h2>User Leagues</h2>
+        {getUserLeagues(teamAddress).toString()}
       </div>
       <div>
         <h2>League Total Balance</h2>

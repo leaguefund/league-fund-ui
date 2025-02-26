@@ -88,7 +88,7 @@ const navItems: NavItem[] = [
       { name: "Page 4: Request Email Verification", path: "/request-verification"},
       { name: "Page 5: Email Verification", path: "/verification"},
       { name: "Page 6: Connect Wallet (Commissioner)", path: "/"},
-      { name: "Page 7: Create League (Commissioner)", path: "/"},
+      { name: "Page 7: Create League (Commissioner)", path: "/create-league"},
       { name: "Page 8: League Created", path: "/"},
       { name: "Page 9: Invite Teams", path: "/"},
       { name: "Page 10: Invitations Sent", path: "/"},

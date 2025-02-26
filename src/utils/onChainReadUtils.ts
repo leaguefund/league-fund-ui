@@ -26,7 +26,7 @@ export function getLeagueNActiveTeams(leagueAddress: `0x${string}`) {
     return (activeTeams?.length)
 }
 
-export function getTeamLeagues(teamAddress: `0x${string}`) {
+export function getUserLeagues(teamAddress: `0x${string}`) {
     const { data: leagues } = useReadContract({
         ...factoryContract,
         functionName: 'getTeamLeagues',
