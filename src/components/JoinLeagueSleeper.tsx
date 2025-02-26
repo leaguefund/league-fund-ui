@@ -3,12 +3,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useGlobalState } from '@/context/GlobalStateContext';
 
 const JoinLeagueSleeper: React.FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { state } = useGlobalState();
 
   // Placeholder data - replace with actual data later
   const users = [
@@ -51,7 +49,7 @@ const JoinLeagueSleeper: React.FC = () => {
             />
           </div>
           <p className="text-xl md:text-2xl text-gray-300">
-            Let's start with your Sleeper account
+            Let&apos;s start with your Sleeper account
           </p>
         </div>
 

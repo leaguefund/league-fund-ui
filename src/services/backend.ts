@@ -24,7 +24,7 @@ interface LeagueInviteData extends SessionData {
 
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
-        let url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
+        const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
         
         console.log('=== ApiService.fetchData ===');
         console.log('URL:', url);

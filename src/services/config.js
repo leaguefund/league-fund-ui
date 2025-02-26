@@ -13,7 +13,8 @@ const config = {
       backendApiLeagueInvite: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiWalletRead: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiLeagueRead: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
-      backendApiConnectWallet: "/v3/f9064b97-804c-481a-90a1-de58d912f561"
+      backendApiConnectWallet: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
+      backendApiCreateLeague: "/v1/api/league/create"
     },
     mainnet: {
       backendHost: "https://api.leaguefund.io",
@@ -23,7 +24,8 @@ const config = {
       backendApiLeagueInvite: "/v1/api/league/invite",
       backendApiWalletRead: "/v1/api/wallet/read",
       backendApiLeagueRead: "/v1/api/league/read",
-      backendApiConnectWallet: "/v1/api/wallet/connect"
+      backendApiConnectWallet: "/v1/api/wallet/connect",
+      backendApiCreateLeague: "/v1/api/league/create"
     },
   };
 

@@ -8,7 +8,6 @@ import { useGlobalState } from '@/context/GlobalStateContext';
 const JoinConnectWallet: React.FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { state } = useGlobalState();
 
   const handleConnectWallet = async () => {
     setIsLoading(true);
@@ -33,7 +32,7 @@ const JoinConnectWallet: React.FC = () => {
             Setup Wallet
           </h1>
           <p className="text-xl md:text-2xl text-gray-300">
-            Let's get your dues paid for Champions League.
+            Let&apos;s get your dues paid for Champions League.
           </p>
         </div>
 

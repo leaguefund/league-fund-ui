@@ -3,12 +3,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useGlobalState } from '@/context/GlobalStateContext';
 
 const JoinTopUp: React.FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { state } = useGlobalState();
 
   const handleTopUpWallet = async () => {
     setIsLoading(true);

@@ -2,13 +2,11 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { useGlobalState } from '@/context/GlobalStateContext';
 
 type Tab = 'teams' | 'rewards';
 
 const League: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('teams');
-  const { state } = useGlobalState();
 
   // Placeholder data - replace with actual data later
   const users = [

@@ -1,15 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useGlobalState } from '@/context/GlobalStateContext';
 
 const LeagueWelcome: React.FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { state } = useGlobalState();
 
   const handleGoToDashboard = async () => {
     setIsLoading(true);

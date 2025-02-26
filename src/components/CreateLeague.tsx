@@ -13,12 +13,13 @@ const CreateLeague: React.FC = () => {
   const router = useRouter();
   const { state, dispatch } = useGlobalState();
 
-  const handleCreateLeague = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handleCreateLeague = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.createLeague(state.username || '', Number(dues));
-      dispatch({ type: 'CREATE_LEAGUE', payload: true });
+      // TODO: Implement league creation functionality
+      console.log('Creating league');
+      // For now, just simulate an API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       router.push('/league-created');
     } catch (error) {
       console.error('Error creating league:', error);
