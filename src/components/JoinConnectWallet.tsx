@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useGlobalState } from '@/context/GlobalStateContext';
 
 const JoinConnectWallet: React.FC = () => {
   const router = useRouter();

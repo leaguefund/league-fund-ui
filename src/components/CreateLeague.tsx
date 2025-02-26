@@ -5,13 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
-import ApiService from '@/services/backend';
 
 const CreateLeague: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [dues, setDues] = useState('100');
   const router = useRouter();
-  const { state, dispatch } = useGlobalState();
+  const { state } = useGlobalState();
 
   const handleCreateLeague = async () => {
     setIsLoading(true);
