@@ -2,36 +2,53 @@
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { getTokenBalance, getLeagueNActiveTeams, getUserLeagues, getLeagueTotalBalance, getLeagueName } from '@/utils/onChainReadUtils';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@/components/ui/avatar/Avatar";
 import { useGlobalState } from '@/context/GlobalStateContext';
+import { useAccount } from 'wagmi';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
-  const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
-  const [teamAddress, setTeamAddress] = useState<`0x${string}`>('0xE262C1e7c5177E28E51A5cf1C6944470697B2c9F');
+  const [selectedLeagueAddress, setSelectedLeagueAddress] = useState<`0x${string}`>('0x');
+  const [userLeagues, setUserLeagues] = useState<{ league: `0x${string}`; joined: boolean; currentlyActive: boolean; }[]>([]);
   const { state, dispatch } = useGlobalState();
   // const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x');
   // setLeagueAddress('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
+
+  const { address, isConnected } = useAccount()
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
   }
 
-  var leas = getUserLeagues(teamAddress)
-  var leasS = leas.toString()
+  // var leas = await getUserLeagues(teamAddress)
+  // var leasS = leas.toString()
 
-  console.log("-----1-")
-  console.log(leas)
-  console.log("-----2-")
-  console.log(leasS)
-  console.log("-----3-")
+  useEffect(() => {
+    async function fetchUserLeagues() {
+      if (address && isConnected) {
+        const userLeagues = await getUserLeagues(address)
+        console.log('User Address:', address)
+        console.log('User Leagues:', userLeagues)
+        setUserLeagues(userLeagues)
+      }
+    }
+    fetchUserLeagues()
+  }, [address, isConnected])
+
+
+  // console.log("-----1-")
+  // console.log(leas)
+  // console.log("-----2-")
+  // console.log(leasS)
+  // console.log("-----3-")
 
   function closeDropdown() {
     setIsOpen(false);
   }
 
-  function updateSelectedLeague(address) {
+  function updateSelectedLeague(leagueAddress: `0x${string}`) {
+    setSelectedLeagueAddress(leagueAddress)
     console.log("__1")
     console.log(address)
     console.log("__2")
@@ -73,7 +90,7 @@ export default function DropdownLeagues() {
         <ul className="flex flex-col gap-1">
 
           {/* Each through Wallet's Leagues */}
-          {getUserLeagues(teamAddress).map(function(data) {
+          {userLeagues.map(function(data) {
             return (
               <li>
               <DropdownItem
