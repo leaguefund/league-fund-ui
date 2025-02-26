@@ -24,6 +24,7 @@ import {
 import SidebarWidget from "./SidebarWidget";
 
 import OnChainReadUtilsTest from '../utils/OnChainReadUtilsTest';
+import DropdownLeagues from "@/components/example/DropdownExample/DropdownLeagues";
 
 type NavItem = {
   name: string;
@@ -446,13 +447,43 @@ const AppSidebar: React.FC = () => {
           )}
         </Link>
       </div>
-      <div>
-      <h1>Welcome to League Fund</h1>
-        <OnChainReadUtilsTest />
-      </div>
+
       <div className="flex flex-col overflow-y-auto  duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
+            <div>
+              <h2
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                  !isExpanded && !isHovered
+                    ? "lg:justify-center"
+                    : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "League"
+                ) : (
+                  <HorizontaLDots />
+                )}
+              </h2>
+              <DropdownLeagues />
+              <OnChainReadUtilsTest />
+            </div>
+            <div>
+              <h2
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                  !isExpanded && !isHovered
+                    ? "lg:justify-center"
+                    : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Menu"
+                ) : (
+                  <HorizontaLDots />
+                )}
+              </h2>
+              {renderMenuItems(navItems, "main")}
+            </div>
             <div>
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
