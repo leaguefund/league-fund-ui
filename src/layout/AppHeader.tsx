@@ -3,6 +3,7 @@ import { useSidebar } from "@/context/SidebarContext";
 import React, { useEffect, useRef } from "react";
 import Logo from "@/components/logo/logo";
 import ConnectCoinbaseButton from "@/components/wallet-connect/connect";
+import { WalletDefault } from '@coinbase/onchainkit/wallet';
 
 const AppHeader: React.FC = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -59,6 +60,9 @@ const AppHeader: React.FC = () => {
         </button>
         <div className="flex-grow hidden lg:block"></div>
         <div className="flex items-center gap-4">
+
+          <WalletDefault />
+
           <ConnectCoinbaseButton />
           <Logo />
         </div>

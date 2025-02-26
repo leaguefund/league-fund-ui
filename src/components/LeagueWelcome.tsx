@@ -34,7 +34,6 @@ const ComponentTemplate: React.FC = () => {
             /> */}
             <span className="text-xl">League Dashboard </span>
           </Link>
-
           {/* <Link 
             href="/link-here"
           >
