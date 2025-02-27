@@ -51,8 +51,8 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       sessionStorage.setItem('verified', String(action.payload));
       break;
     case 'SET_SELECTED_LEAGUE':
-      nextState = { ...state, leagueSelected: action.payload };
-      if (action.payload) sessionStorage.setItem('leagueSelected', JSON.stringify(action.payload));
+      nextState = { ...state, selectedLeague: action.payload };
+      if (action.payload) sessionStorage.setItem('selectedLeague', JSON.stringify(action.payload));
       break;
     case 'SET_INVITE_EMAILS':
       nextState = { ...state, inviteEmails: action.payload };
@@ -70,6 +70,10 @@ function reducer(state: GlobalState, action: Action): GlobalState {
     case 'SET_SELECTED_LEAGUE_NAME':
       nextState = { ...state, selectedLeagueName: action.payload };
       break;  
+    case 'SET_LEAGUE_ADDRESS':
+      nextState = { ...state, leagueAddress: action.payload };
+      if (action.payload) sessionStorage.setItem('leagueAddress', action.payload);
+      break;
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
       
@@ -80,12 +84,15 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       const phone = sessionStorage.getItem('phone');
       const verified = sessionStorage.getItem('verified');
       const inviteEmails = sessionStorage.getItem('inviteEmails');
+      // const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress') as `0x${string}` | null;
+      const leagueAddress = sessionStorage.getItem('leagueAddress') as `0x${string}` | null;
       
       if (sessionId) nextState.sessionId = sessionId;
       if (username) nextState.username = username;
       if (email) nextState.email = email;
       if (phone) nextState.phone = phone;
       if (verified) nextState.verified = verified === 'true';
+      if (leagueAddress?.startsWith('0x')) nextState.leagueAddress = leagueAddress as `0x${string}`;
       if (inviteEmails) {
         try {
           nextState.inviteEmails = JSON.parse(inviteEmails);
@@ -100,8 +107,8 @@ function reducer(state: GlobalState, action: Action): GlobalState {
         const leagues = sessionStorage.getItem('leagues');
         if (leagues) nextState.leagues = JSON.parse(leagues);
         
-        const leagueSelected = sessionStorage.getItem('leagueSelected');
-        if (leagueSelected) nextState.leagueSelected = JSON.parse(leagueSelected);
+        const selectedLeague = sessionStorage.getItem('selectedLeague');
+        if (selectedLeague) nextState.selectedLeague = JSON.parse(selectedLeague);
       } catch (error) {
         console.error('Error parsing stored JSON:', error);
       }
@@ -144,8 +151,10 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       const email = sessionStorage.getItem('email');
       const phone = sessionStorage.getItem('phone');
       const verified = sessionStorage.getItem('verified');
-      const leagueSelected = sessionStorage.getItem('leagueSelected');
+      const selectedLeague = sessionStorage.getItem('selectedLeague');
       const sessionId = sessionStorage.getItem('sessionId');
+      const selectedLeagueName = sessionStorage.getItem('selectedLeagueName');
+      const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
 
       const hydratedState = {
         ...initialState,
@@ -156,13 +165,15 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         verified: verified === 'true',
         sessionId: sessionId || null,
         leagues: [],
-        leagueSelected: null,
+        selectedLeague: null,
         wallet: address || null,
+        selectedLeagueName: selectedLeagueName || null,
+        selectedLeagueAddress: (selectedLeagueAddress?.startsWith('0x') ? selectedLeagueAddress as `0x${string}` : null),
       };
 
       try {
         if (leagues) hydratedState.leagues = JSON.parse(leagues);
-        if (leagueSelected) hydratedState.leagueSelected = JSON.parse(leagueSelected);
+        if (selectedLeague) hydratedState.selectedLeague = JSON.parse(selectedLeague);
       } catch (error) {
         console.error('Error parsing stored JSON:', error);
       }
@@ -180,9 +191,11 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.email) sessionStorage.setItem('email', state.email);
       if (state.phone) sessionStorage.setItem('phone', state.phone);
       if (state.verified !== undefined) sessionStorage.setItem('verified', String(state.verified));
-      if (state.leagueSelected) sessionStorage.setItem('leagueSelected', JSON.stringify(state.leagueSelected));
+      if (state.selectedLeague) sessionStorage.setItem('selectedLeague', JSON.stringify(state.selectedLeague));
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
       if (address && isConnected) sessionStorage.setItem('wallet', address);
+      if (state.selectedLeagueName) sessionStorage.setItem('selectedLeagueName', state.selectedLeagueName);
+      if (state.selectedLeagueAddress) sessionStorage.setItem('selectedLeagueAddress', state.selectedLeagueAddress);
     }
   }, [state, address, isConnected]);
 

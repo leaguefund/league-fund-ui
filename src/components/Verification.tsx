@@ -14,10 +14,10 @@ const Verification: React.FC = () => {
 
   // Redirect if no email or league is selected
   useEffect(() => {
-    if (!state.email || !state.leagueSelected) {
+    if (!state.email || !state.selectedLeague) {
       router.push('/request-verification');
     }
-  }, [state.email, state.leagueSelected, router]);
+  }, [state.email, state.selectedLeague, router]);
 
   const handleValidate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +34,7 @@ const Verification: React.FC = () => {
     }
   };
 
-  if (!state.email || !state.leagueSelected) {
+  if (!state.email || !state.selectedLeague) {
     return null;
   }
 
@@ -54,21 +54,21 @@ const Verification: React.FC = () => {
           {/* League Info */}
           <div className="flex flex-col items-center space-y-4">
             <Image
-              src={state.leagueSelected.avatar || "/images/trophy.png"}
+              src={state.selectedLeague.avatar || "/images/trophy.png"}
               alt="League Avatar"
               width={120}
               height={120}
               className="rounded-lg"
             />
             <h2 className="text-2xl font-bold text-white">
-              {state.leagueSelected.name}
+              {state.selectedLeague.name}
             </h2>
             <div className="flex items-center space-x-4 text-gray-300">
               <span className="text-lg">
-                👥 {state.leagueSelected.members} Members
+                👥 {state.selectedLeague.members} Members
               </span>
               <span className="text-lg">
-                🏆 Season {state.leagueSelected.season}
+                🏆 Season {state.selectedLeague.season}
               </span>
             </div>
           </div>

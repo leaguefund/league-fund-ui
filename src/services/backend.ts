@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import envConfig from "./config";
 import { fetchWithSession } from "./fetch";
 
@@ -23,7 +24,9 @@ interface LeagueInviteData extends SessionData {
 }
 
 interface CreateLeagueData extends SessionData {
-    username: string;
+    league_id: string;
+    league_address: string;
+    league_dues_usdc: string;
 }
 
 class ApiService {
@@ -47,12 +50,19 @@ class ApiService {
         try {
             const response = await fetchWithSession(url, options);
             console.log('Response status:', response.status);
+            
+            const data = await response.json();
+            
             if (!response.ok) {
-                throw new Error(`API request failed: ${response.statusText}`);
+                throw new Error(data.message || `API request failed: ${response.statusText}`);
             }
-            return await response.json();
-        } catch (error) {
+            
+            return data;
+        } catch (error: any) {
             console.error("Error in fetchData:", error);
+            if (!error.message) {
+                throw new Error('An unexpected error occurred. Please try again.');
+            }
             throw error;
         }
     }
@@ -84,12 +94,20 @@ class ApiService {
 
     static connectWallet() {
         console.log('Connecting wallet...');
-        return this.fetchData<SessionData>("backendApiConnectWallet", {});
+        // return this.fetchData<SessionData>("backendApiConnectWallet", {});
     }
 
-    static createLeague(username: string) {
+    static createLeague() {
         console.log('Creating league...');
-        return this.fetchData<CreateLeagueData>("backendApiCreateLeague", { username });
+        const selectedLeague = sessionStorage.getItem('selectedLeague')
+        const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).id : '';
+        const data = {
+            session_id: sessionStorage.getItem('sessionID'),
+            league_id: selectedLeagueId || '',
+            league_address: sessionStorage.getItem('leagueAddress') || '',
+            league_dues_usdc: sessionStorage.getItem('leagueDues') || ''
+        }
+        return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
     }
 }
 

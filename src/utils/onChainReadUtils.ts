@@ -20,6 +20,12 @@ export async function getTokenBalance(tokenAddress: `0x${string}`, account: `0x$
 }
 
 export async function getLeagueNActiveTeams(leagueAddress: `0x${string}`) {
+    const activeTeams = await getLeagueActiveTeams(leagueAddress)
+    console.log("Active teams for League:", activeTeams)
+    return (activeTeams?.length)
+}
+
+export async function getLeagueActiveTeams(leagueAddress: `0x${string}`) {
     const contract = getContract({
         address: leagueAddress,
         abi: leagueContract.abi,
@@ -28,7 +34,7 @@ export async function getLeagueNActiveTeams(leagueAddress: `0x${string}`) {
 
     const activeTeams = await contract.read.getActiveTeams()
     console.log("Active teams for League:", activeTeams)
-    return (activeTeams?.length)
+    return (activeTeams)
 }
 
 export async function getUserLeagues(userAddress: `0x${string}`) {

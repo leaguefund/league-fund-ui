@@ -50,7 +50,7 @@ const ConnectWallet: React.FC = () => {
             className="rounded-lg"
           />
           <h2 className="text-2xl font-bold text-white">
-            {state.leagueSelected?.name || 'Champions League'}
+            {state.selectedLeague?.name || 'Champions League'}
           </h2>
         </div>
 
