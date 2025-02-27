@@ -4,7 +4,7 @@ import type React from "react";
 import { useState } from "react";
 
 const CopyInput: React.FC = () => {
-  const [website, setWebsite] = useState("www.tailadmin.com");
+  const [website, setWebsite] = useState(`https://leaguecontract.xyz/join?league_id=${sessionStorage.getItem('leagueAddress')}`);
   const [copyText, setCopyText] = useState("Copy");
 
   const copyWebsite = () => {
@@ -38,11 +38,10 @@ const CopyInput: React.FC = () => {
         <div>{copyText}</div>
       </button>
       <input
-        value={website}
-        onChange={(e) => setWebsite(e.target.value)}
+        value={`https://leaguecontract.xyz/join?league_id=${sessionStorage.getItem('leagueAddress')}`}
         type="url"
+        readOnly
         className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-3 pl-4 pr-[90px] text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
-        placeholder="Enter website URL"
       />
     </div>
   );
