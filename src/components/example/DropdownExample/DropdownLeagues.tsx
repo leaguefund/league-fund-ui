@@ -44,19 +44,19 @@ export default function DropdownLeagues() {
   }
   
   return (
-    <div>
-      <div className="relative inline-block text-gray-400">
+    <div className="w-full max-w-[280px]">
+      <div className="relative w-full">
         <button
           onClick={toggleDropdown}
-          className="inline-flex items-center dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+          className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 transition-colors duration-200"
         >
-          {state.address ? `${state.address.slice(0, 6)}...${state.address.slice(-4)}` : 'Account Menu'}
+          <div className="truncate">
+            {state.address ? `${state.address.slice(0, 6)}...${state.address.slice(-4)}` : 'Select League'}
+          </div>
           <svg
-            className={`duration-200 ease-in-out stroke-current ${
+            className={`flex-shrink-0 w-5 h-5 duration-200 ease-in-out stroke-current ${
               isOpen ? "rotate-180" : ""
             }`}
-            width="20"
-            height="20"
             viewBox="0 0 20 20"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -72,7 +72,7 @@ export default function DropdownLeagues() {
         </button>
 
         <Dropdown
-          className="absolute left-0 top-full z-40 mt-2 w-full min-w-[260px] rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-[#1E2635]"
+          className="absolute left-0 top-full z-40 mt-2 w-full rounded-xl border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700/50 dark:bg-gray-800"
           isOpen={isOpen}
           onClose={closeDropdown}
         >
@@ -81,16 +81,16 @@ export default function DropdownLeagues() {
               <li key={`${data.league}-${index}`}>
                 <DropdownItem
                   onItemClick={() => updateSelectedLeague(data.league)}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
+                  className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50 transition-colors duration-200"
                 >
-                  {data.league.slice(0, 6)}...{data.league.slice(-4)}
+                  <span className="truncate">{data.league.slice(0, 6)}...{data.league.slice(-4)}</span>
                 </DropdownItem>
               </li>
             ))}
           </ul>
         </Dropdown>
       </div>
-      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
         Connected Wallet: {state.address ? state.address.slice(0, 6) + '...' + state.address.slice(-4) : 'Not Connected'}
       </p>
     </div>
