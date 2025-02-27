@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { getLeagueRewards } from '../utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { RewardInfo } from '@/types/state';
+import NFTCard from "@/components/cards/card-with-image/NFTCard";
 
-const ClaimReward: React.FC = () => {
+const LeagueRewards: React.FC = () => {
   const [leagueRewards, setLeagueRewards] = useState<RewardInfo[]>([]);
 
   const { state } = useGlobalState();
@@ -21,7 +22,7 @@ const ClaimReward: React.FC = () => {
       }
     }
     fetchLeagueRewards();
-  }, [state.selectedLeagueAddress]);  
+  }, [state.selectedLeagueAddress]);
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -33,17 +34,26 @@ const ClaimReward: React.FC = () => {
       {leagueRewards.length > 0 && (
         <div>
           <h1>League Rewards</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {leagueRewards.map((reward, index) => (
-              <div key={index}>
-                <h3>{reward.teamName}</h3>
-                <h3>{reward.rewardName}</h3>
-                <p>{Number(reward.usdcAmount) / 1e6}</p>
-                <img src={reward.imageData} alt={reward.rewardName} />
-                </div>
+              <NFTCard
+              key={index}
+              imageSrc={reward.imageData}
+              title={reward.rewardName}
+              description={
+                <>
+                <span>Winner: {reward.teamName}</span>
+                <br />
+                <span>Amount: {Number(reward.usdcAmount) / 1e6} USDC</span>
+                </>
+              }
+              />
             ))}
-        </div>)}
-  </main>
+          </div>
+        </div>
+      )}
+    </main>
   );
 };
 
-export default ClaimReward; 
+export default LeagueRewards;
