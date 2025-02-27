@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getContract } from 'viem'
 import { tokenContract } from '../contracts/token'
 import { factoryContract } from '../contracts/leagueFactory'
 import { leagueContract } from '../contracts/league'
 import { publicClient, walletClient } from './client'
+import { WalletLeague } from '@/types/state'
 
 export async function getTokenBalance(tokenAddress: `0x${string}`, account: `0x${string}`) {
     const contract = getContract({
@@ -39,18 +41,23 @@ export async function getUserLeagues(userAddress: `0x${string}`) {
     const allLeagues = await contract.read.getTeamLeagues([userAddress])
 
     const userLeagues = await Promise.all(
-        allLeagues.map(async (league) => {
+        allLeagues.map(async (league: any) => {
             if (league.joined) {
-                return league
+                const name = await getLeagueName(league.league)
+                return {
+                    leagueName: name,
+                    leagueAddress: league.league,
+                    joined: league.joined,
+                    currentlyActive: league.currentlyActive,
+                    commissioner: false, // TODO: Get from contract
+                    treasurer: false, // TODO: Get from contract
+                }
             }
+            return undefined
         })
-    )
+    ) as (WalletLeague | undefined)[]
 
-    // Filter out undefined values
-    const filteredLeagues = userLeagues.filter((league): league is { league: `0x${string}`; joined: boolean; currentlyActive: boolean } => league !== undefined)
-    
-    console.log("All Leagues for User", filteredLeagues)
-    return filteredLeagues
+    return userLeagues.filter((league): league is WalletLeague => league !== undefined)
 }
 
 export async function getLeagueTotalBalance(leagueAddress: `0x${string}`) {

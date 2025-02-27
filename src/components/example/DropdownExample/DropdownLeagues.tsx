@@ -19,11 +19,14 @@ export default function DropdownLeagues() {
           const userLeagues = await getUserLeagues(state.wallet);
           console.log(state.wallet)
           console.log(userLeagues)
-          dispatch({ type: 'SET_WALLET_LEAGUES', payload: userLeagues });
+          // Filter out undefined values and ensure type safety
+          const validLeagues = userLeagues.filter((league): league is WalletLeague => league !== undefined);
+          dispatch({ type: 'SET_WALLET_LEAGUES', payload: validLeagues });
+          
           // Initialize with first league if none selected
-          if (userLeagues.length > 0 && !state.selectedLeagueAddress) {
-            dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: userLeagues[0].leagueName });
-            dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: userLeagues[0].leagueAddress });
+          if (validLeagues.length > 0 && !state.selectedLeagueAddress) {
+            dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: validLeagues[0].leagueName });
+            dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: validLeagues[0].leagueAddress });
           }
         } catch (error) {
           console.error('Error fetching leagues:', error);
@@ -35,6 +38,7 @@ export default function DropdownLeagues() {
       }
     };
     fetchLeagues();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.wallet, state.selectedLeagueAddress]);
 
   useEffect(() => {

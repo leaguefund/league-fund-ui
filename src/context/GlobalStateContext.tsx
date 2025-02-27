@@ -128,7 +128,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       console.log('Wallet NOT connected.')
       dispatch({ type: 'SET_WALLET_ADDRESS', payload: null });
     }
-  }, [address]);
+  }, [address, dispatch]);
 
   // Handle state hydration and storage
   useEffect(() => {
@@ -184,7 +184,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
       if (address && isConnected) sessionStorage.setItem('wallet', address);
     }
-  }, [state]);
+  }, [state, address, isConnected]);
 
   // Don't render anything until state is hydrated
   if (!state.hydrated) {
