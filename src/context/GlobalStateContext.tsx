@@ -108,7 +108,7 @@ function reducer(state: GlobalState, action: Action): GlobalState {
 
 export function GlobalStateProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
 
   // Watch for wallet address changes
   useEffect(() => {
@@ -118,7 +118,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
     } else {
       console.log('Wallet NOT connected.')
     }
-  }, [address]);
+  }, [address, dispatch]);
 
   // Handle state hydration and storage
   useEffect(() => {
@@ -172,7 +172,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.leagueSelected) sessionStorage.setItem('leagueSelected', JSON.stringify(state.leagueSelected));
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
     }
-  }, [state.hydrated, state.username, state.leagues, state.email, state.phone, state.verified, state.leagueSelected, state.sessionId]);
+  }, [state]);
 
   // Don't render anything until state is hydrated
   if (!state.hydrated) {

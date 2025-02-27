@@ -38,16 +38,19 @@ export async function getUserLeagues(userAddress: `0x${string}`) {
 
     const allLeagues = await contract.read.getTeamLeagues([userAddress])
 
-    let userLeagues = []
-    if (allLeagues) {
-        for (const league of allLeagues) {
+    const userLeagues = await Promise.all(
+        allLeagues.map(async (league) => {
             if (league.joined) {
-                userLeagues.push(league)
+                return league
             }
-        }
-    }
-    console.log("All Leagues for User", userLeagues)
-    return (userLeagues)
+        })
+    )
+
+    // Filter out undefined values
+    const filteredLeagues = userLeagues.filter((league): league is { league: `0x${string}`; joined: boolean; currentlyActive: boolean } => league !== undefined)
+    
+    console.log("All Leagues for User", filteredLeagues)
+    return filteredLeagues
 }
 
 export async function getLeagueTotalBalance(leagueAddress: `0x${string}`) {
