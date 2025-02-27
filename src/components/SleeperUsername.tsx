@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -6,6 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
+import { useNotification } from '@/context/NotificationContext';
 
 const SleeperUsername: React.FC = () => {
   // Local state for form input
@@ -16,6 +18,7 @@ const SleeperUsername: React.FC = () => {
   
   // Get both state and dispatch from global state
   const { state, dispatch } = useGlobalState();
+  const { showNotification } = useNotification();
 
   // If we already have a username in global state, use it
   useEffect(() => {
@@ -39,10 +42,20 @@ const SleeperUsername: React.FC = () => {
       // Update leagues if they come back in the response
       if (response.leagues) {
         dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
+        // Set the first league as the selected league
+        if (response.leagues.length > 0) {
+          dispatch({ type: 'SET_SELECTED_LEAGUE', payload: response.leagues[0] });
+        }
       }
       router.push('/confirm-league');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error finding league:', error);
+      showNotification({
+        variant: 'error',
+        title: 'Error',
+        description: error.message || 'Failed to find Sleeper user',
+        hideDuration: 5000
+      });
     } finally {
       setIsLoading(false);
     }
@@ -55,8 +68,8 @@ const SleeperUsername: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             What is your Sleeper Username?
           </h1>
-          {/* Show leagues count if we have them and leagueSelected exists */}
-          {state.leagues && state.leagueSelected && (
+          {/* Show leagues count if we have them and selectedLeague exists */}
+          {state.leagues && state.selectedLeague && (
             <p className="text-gray-300">
               Found {state.leagues.length} leagues for this account
             </p>

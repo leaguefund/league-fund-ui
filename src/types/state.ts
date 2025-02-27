@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface League {
     id: string;
     name: string;
@@ -42,7 +43,7 @@ export interface GlobalState {
     sessionId: string | null;
     username: string | null;
     leagues: League[] | null;
-    leagueSelected: League | null;
+    selectedLeague: League | null;
     email: string | null;
     phone: string | null;
     verified: boolean;
@@ -52,6 +53,7 @@ export interface GlobalState {
     walletLeagues: WalletLeague[] | null;
     selectedLeagueAddress: `0x${string}` | null;
     selectedLeagueName: string | null;
+    leagueAddress: `0x${string}` | null;
 }
 
 export type ActionMap = {
@@ -84,13 +86,14 @@ export type Action =
   | { type: 'SET_WALLET_LEAGUES'; payload: WalletLeague[] | null }
   | { type: 'SET_SELECTED_LEAGUE_ADDRESS'; payload: `0x${string}` | null }
   | { type: 'SET_SELECTED_LEAGUE_NAME'; payload: string | null }
+  | { type: 'SET_LEAGUE_ADDRESS'; payload: `0x${string}` | null }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {
     sessionId: null,
     username: null,
     leagues: null,
-    leagueSelected: null,
+    selectedLeague: null,
     email: null,
     phone: null,
     verified: false,
@@ -100,4 +103,5 @@ export const initialState: GlobalState = {
     walletLeagues: null,
     selectedLeagueAddress: null,
     selectedLeagueName: null,
+    leagueAddress: null,
 }; 
