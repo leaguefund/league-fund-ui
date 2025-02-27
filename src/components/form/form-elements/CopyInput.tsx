@@ -6,6 +6,7 @@ import { useState } from "react";
 const CopyInput: React.FC = () => {
   const [website, setWebsite] = useState(`https://leaguecontract.xyz/join?league_id=${sessionStorage.getItem('leagueAddress')}`);
   const [copyText, setCopyText] = useState("Copy");
+  console.log(setWebsite)
 
   const copyWebsite = () => {
     navigator.clipboard.writeText(website).then(() => {

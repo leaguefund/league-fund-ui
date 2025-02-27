@@ -12,7 +12,7 @@ const LeagueCreated: React.FC = () => {
 
   const handleInviteTeams = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    router.push('/invite-teams');
+    router.push('/league');
   };
 
   return (
