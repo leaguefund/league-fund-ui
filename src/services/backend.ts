@@ -95,9 +95,9 @@ class ApiService {
         return this.fetchData<SessionData>("backendApiConnectWallet", {});
     }
 
-    static createLeague(username?: string) {
+    static createLeague() {
         console.log('Creating league...');
-        let selectedLeague = sessionStorage.getItem('selectedLeague')
+        const selectedLeague = sessionStorage.getItem('selectedLeague')
         const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).id : '';
         const data = {
             session_id: sessionStorage.getItem('sessionID'),

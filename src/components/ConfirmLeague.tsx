@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { League } from '@/types/state';
 

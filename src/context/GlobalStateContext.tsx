@@ -84,7 +84,7 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       const phone = sessionStorage.getItem('phone');
       const verified = sessionStorage.getItem('verified');
       const inviteEmails = sessionStorage.getItem('inviteEmails');
-      const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress') as `0x${string}` | null;
+      // const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress') as `0x${string}` | null;
       const leagueAddress = sessionStorage.getItem('leagueAddress') as `0x${string}` | null;
       
       if (sessionId) nextState.sessionId = sessionId;

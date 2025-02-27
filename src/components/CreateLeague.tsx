@@ -1,12 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import { getApproveCall, getCreateLeagueCall } from '../utils/createCallUtils';
-import { ContractCall } from '@/types/state';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { useNotification } from '@/context/NotificationContext';
 import ApiService from '@/services/backend';
@@ -15,8 +14,7 @@ const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
   const [createLeague, setCreateLeague] = useState<string>('');
   const [hasCreatedLeague, setHasCreatedLeague] = useState(false);
-  const router = useRouter();
-  const { state, dispatch } = useGlobalState();
+  const { state } = useGlobalState();
   const { showNotification } = useNotification();
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
   const factoryAddress = "0x466C4Ff27b97fF5b11A3AD61F4b61d2e02a18e35";
@@ -56,7 +54,7 @@ const CreateLeague: React.FC = () => {
         setHasCreatedLeague(true);
         
         if (leagueAddress) {
-          await ApiService.createLeague(state.username || '');
+          await ApiService.createLeague();
           
           showNotification({
             variant: 'success',
