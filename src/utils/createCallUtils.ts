@@ -47,12 +47,12 @@ export function getAllocateRewardCall(leagueAddress: `0x${string}`, teamAddress:
     }
 }
 
-export function getClaimRewardCall(leagueAddress: `0x${string}`, imgURLs: string[]) {
+export function getClaimRewardCall(leagueAddress: `0x${string}`, imgURL: string) {
     return {
         address: leagueAddress,
         abi: leagueContract.abi,
         functionName: 'claimReward',
-        args: [imgURLs],
+        args: [imgURL],
     }
 }
 

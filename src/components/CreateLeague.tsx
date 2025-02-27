@@ -11,7 +11,7 @@ const CreateLeague: React.FC = () => {
   const [teamName, setTeamName] = useState('');
   const [calls, setCalls] = useState<ContractCall[]>([]);
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
-  const factoryAddress = "0x466C4Ff27b97fF5b11A3AD61F4b61d2e02a18e35";
+  const factoryAddress = "0xde527c61Baa3AbFbcc532625BbD855d56217DB09";
 
   useEffect(() => {
     async function fetchCalls() {

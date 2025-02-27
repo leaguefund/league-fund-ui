@@ -95,3 +95,15 @@ export async function getLeagueDues(leagueAddress: `0x${string}`) {
     console.log("League dues:", dues)
     return (dues)
 }
+
+export async function getUserRewards(leagueAddress: `0x${string}`, userAddress: `0x${string}`) {
+    const contract = getContract({
+        address: leagueAddress,
+        abi: leagueContract.abi,
+        client: { public: publicClient, wallet: walletClient }
+    })
+
+    const userRewards = await contract.read.getTeamRewards([userAddress])
+    console.log("User rewards:", userRewards)
+    return (userRewards)
+}
