@@ -19,12 +19,16 @@ export default function DropdownLeagues() {
       try {
         const userLeagues = await getUserLeagues(teamAddress);
         setLeagues(userLeagues);
+        // Initialize with first league if none selected
+        if (userLeagues.length > 0 && !state.address) {
+          dispatch({ type: 'SET_WALLET_ADDRESS', payload: userLeagues[0].league });
+        }
       } catch (error) {
         console.error('Error fetching leagues:', error);
       }
     };
     fetchLeagues();
-  }, [teamAddress]);
+  }, [teamAddress, dispatch, state.address]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -35,55 +39,60 @@ export default function DropdownLeagues() {
   }
 
   function updateSelectedLeague(address: `0x${string}`) {
-    console.log("Selected league:", address);
+    dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
     setIsOpen(false);
   }
   
   return (
-    <div className="relative inline-block text-gray-400">
-      <button
-        onClick={toggleDropdown}
-        className="inline-flex items-center dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
-      >
-        Account Menu
-        <svg
-          className={`duration-200 ease-in-out stroke-current ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+    <div>
+      <div className="relative inline-block text-gray-400">
+        <button
+          onClick={toggleDropdown}
+          className="inline-flex items-center dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
         >
-          <path
-            d="M4.79199 7.396L10.0003 12.6043L15.2087 7.396"
-            stroke=""
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
+          {state.address ? `${state.address.slice(0, 6)}...${state.address.slice(-4)}` : 'Account Menu'}
+          <svg
+            className={`duration-200 ease-in-out stroke-current ${
+              isOpen ? "rotate-180" : ""
+            }`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4.79199 7.396L10.0003 12.6043L15.2087 7.396"
+              stroke=""
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
 
-      <Dropdown
-        className="absolute left-0 top-full z-40 mt-2 w-full min-w-[260px] rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-[#1E2635]"
-        isOpen={isOpen}
-        onClose={closeDropdown}
-      >
-        <ul className="flex flex-col gap-1">
-          {leagues.map((data, index) => (
-            <li key={`${data.league}-${index}`}>
-              <DropdownItem
-                onItemClick={() => updateSelectedLeague(data.league)}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
-              >
-                {data.league}
-              </DropdownItem>
-            </li>
-          ))}
-        </ul>
-      </Dropdown>
+        <Dropdown
+          className="absolute left-0 top-full z-40 mt-2 w-full min-w-[260px] rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-[#1E2635]"
+          isOpen={isOpen}
+          onClose={closeDropdown}
+        >
+          <ul className="flex flex-col gap-1">
+            {leagues.map((data, index) => (
+              <li key={`${data.league}-${index}`}>
+                <DropdownItem
+                  onItemClick={() => updateSelectedLeague(data.league)}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
+                >
+                  {data.league.slice(0, 6)}...{data.league.slice(-4)}
+                </DropdownItem>
+              </li>
+            ))}
+          </ul>
+        </Dropdown>
+      </div>
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        Connected Wallet: {state.address ? state.address.slice(0, 6) + '...' + state.address.slice(-4) : 'Not Connected'}
+      </p>
     </div>
   );
 }
