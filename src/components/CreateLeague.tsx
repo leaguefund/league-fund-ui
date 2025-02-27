@@ -1,25 +1,31 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import { getApproveCall, getCreateLeagueCall } from '../utils/createCallUtils';
+import { ContractCall } from '@/types/state';
 
 const CreateLeague: React.FC = () => {
   const [leagueName, setLeagueName] = useState('');
   const [dues, setDues] = useState(0);
   const [teamName, setTeamName] = useState('');
+  const [calls, setCalls] = useState<ContractCall[]>([]);
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
   const factoryAddress = "0x466C4Ff27b97fF5b11A3AD61F4b61d2e02a18e35";
 
-  const [shouldSubmit, setShouldSubmit] = useState(false);
-
-  const handleSubmit = () => {
-    setShouldSubmit(true);
-    console.log([
-      getApproveCall(usdcAddress, factoryAddress, dues),
-      getCreateLeagueCall(leagueName, dues, teamName)
-    ])
-  };
+  useEffect(() => {
+    async function fetchCalls() {
+      if (leagueName && teamName) {
+        setCalls([
+          getApproveCall(usdcAddress, factoryAddress, dues * 1e6),
+          getCreateLeagueCall(leagueName, dues * 1e6, teamName)
+        ])
+      } else {
+        setCalls([]);
+      }
+    }
+    fetchCalls();
+  }, [leagueName, dues, teamName]);
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -50,15 +56,11 @@ const CreateLeague: React.FC = () => {
           placeholder="Team Name"
         />
       </div>
-      <button onClick={handleSubmit}>Create League</button>
 
-    {shouldSubmit && (
+    {calls.length > 0 && (
       <TransactionDefault
         isSponsored={true}
-        calls={[
-          getApproveCall(usdcAddress, factoryAddress, dues * 1e6),
-          getCreateLeagueCall(leagueName, dues * 1e6, teamName)
-        ]}
+        calls={calls}
       />
     )}
   </main>

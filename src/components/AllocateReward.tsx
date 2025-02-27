@@ -1,42 +1,52 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import { getAllocateRewardCall } from '../utils/createCallUtils';
+import { useGlobalState } from '@/context/GlobalStateContext';
+import DropdownLeagueActiveTeams from "@/components/example/DropdownExample/DropdownLeagueActiveTeams";
+import { TeamInfo, ContractCall } from '@/types/state';
 
 const AllocateReward: React.FC = () => {
-  const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x');
-  const [teamAddress, setTeamAddress] = useState<`0x${string}`>('0x');
+  const [teamAddress, setTeamAddress] = useState<`0x${string}` | null>(null);
   const [rewardName, setRewardName] = useState('');
   const [amount, setAmount] = useState(0);
+  const [calls, setCalls] = useState<ContractCall[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<TeamInfo | null>(null);
 
-  const [shouldSubmit, setShouldSubmit] = useState(false);
+  const { state } = useGlobalState();
 
-  const handleSubmit = () => {
-    setShouldSubmit(true);
-    console.log([
-      getAllocateRewardCall(leagueAddress, teamAddress, rewardName, amount * 1e6),
-    ])
-  };
+  // FOR THIS WHOLE PAGE, WE NEED TO MAKE SURE THAT THE USER IS THE COMMISSIONER OF THE LEAGUE
+  console.log(state.walletLeagues?.filter(league => league.leagueAddress === state.selectedLeagueAddress)[0].commissioner)
+
+  useEffect(() => {
+    async function fetchCalls() {
+      if (state.selectedLeagueAddress && teamAddress && rewardName) {
+        setCalls([
+          getAllocateRewardCall(state.selectedLeagueAddress, teamAddress, rewardName, amount * 1e6),
+        ])
+      } else {
+        setCalls([]);
+      }
+    }
+    fetchCalls();
+  }, [state.selectedLeagueAddress, teamAddress, rewardName, amount]);
+
+  useEffect(() => {
+    if (selectedTeam) {
+      setTeamAddress(selectedTeam.wallet);
+    } else {
+      setTeamAddress(null);
+    }
+  }, [selectedTeam]);
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div>
-        <h2>League Address</h2>
-        <input
-          type="text"
-          value={leagueAddress}
-          onChange={(e) => setLeagueAddress(e.target.value as `0x${string}`)}
-          placeholder="League Address"
-        />
-      </div>
-      <div>
-        <h2>Team Address</h2>
-        <input
-          type="text"
-          value={teamAddress}
-          onChange={(e) => setTeamAddress(e.target.value as `0x${string}`)}
-          placeholder="Team Address"
+        <h2>Winner</h2>
+        <DropdownLeagueActiveTeams
+          selectedTeam={selectedTeam}
+          setSelectedTeam={setSelectedTeam}
         />
       </div>
       <div>
@@ -57,18 +67,15 @@ const AllocateReward: React.FC = () => {
           placeholder="Reward Amount"
         />
       </div>
-      <button onClick={handleSubmit}>Join League</button>
 
-    {shouldSubmit && (
-      <TransactionDefault
-        isSponsored={true}
-        calls={[
-          getAllocateRewardCall(leagueAddress, teamAddress, rewardName, amount * 1e6),
-        ]}
-      />
-    )}
-  </main>
+      {calls.length > 0 && (
+        <TransactionDefault
+          isSponsored={true}
+          calls={calls}
+        />
+      )}
+    </main>
   );
 };
 
-export default AllocateReward; 
+export default AllocateReward;

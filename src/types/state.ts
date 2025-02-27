@@ -18,6 +18,18 @@ export interface WalletLeague {
     treasurer: boolean;
 }
 
+export interface TeamInfo {
+    name: string;
+    wallet: `0x${string}`;
+}
+
+export interface ContractCall {
+    address: `0x${string}`;
+    abi: any;
+    functionName: string;
+    args: any[];
+}
+
 export interface GlobalState {
     sessionId: string | null;
     username: string | null;
