@@ -3,6 +3,7 @@ import { getContract } from 'viem'
 import { tokenContract } from '../contracts/token'
 import { factoryContract } from '../contracts/leagueFactory'
 import { leagueContract } from '../contracts/league'
+import { rewardContract } from '../contracts/rewardNFT'
 import { publicClient, walletClient } from './client'
 import { WalletLeague } from '@/types/state'
 
@@ -58,6 +59,18 @@ export async function getUserLeagues(userAddress: `0x${string}`) {
     return userLeagues.filter((league): league is WalletLeague => league !== undefined)
 }
 
+export async function getRewardNFTAddress() {
+    const contract = getContract({
+        address: factoryContract.address,
+        abi: factoryContract.abi,
+        client: { public: publicClient, wallet: walletClient }
+    })
+
+    const rewardNFTAddress = await contract.read.leagueRewardNFT()
+    return rewardNFTAddress
+}
+
+
 export async function getLeagueTotalBalance(leagueAddress: `0x${string}`) {
     const contract = getContract({
         address: leagueAddress,
@@ -106,4 +119,17 @@ export async function getUserRewards(leagueAddress: `0x${string}`, userAddress: 
     const userRewards = await contract.read.getTeamRewards([userAddress])
     console.log("User rewards:", userRewards)
     return (userRewards)
+}
+
+export async function getLeagueRewards(leagueAddress: `0x${string}`) {
+    const rewardAddress = await getRewardNFTAddress()
+    const contract = getContract({
+        address: rewardAddress,
+        abi: rewardContract.abi,
+        client: { public: publicClient, wallet: walletClient }
+    })
+
+    const leagueRewards = await contract.read.getLeagueRewards([leagueAddress])
+    console.log("League rewards:", leagueRewards)
+    return (leagueRewards)
 }
