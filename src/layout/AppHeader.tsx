@@ -2,7 +2,6 @@
 import { useSidebar } from "@/context/SidebarContext";
 import React, { useEffect, useRef } from "react";
 import Logo from "@/components/logo/logo";
-import ConnectCoinbaseButton from "@/components/wallet-connect/connect";
 import { WalletDefault } from '@coinbase/onchainkit/wallet';
 
 const AppHeader: React.FC = () => {
@@ -63,7 +62,6 @@ const AppHeader: React.FC = () => {
 
           <WalletDefault />
 
-          <ConnectCoinbaseButton />
           <Logo />
         </div>
       </div>
