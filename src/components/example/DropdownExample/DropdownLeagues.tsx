@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-import { getTokenBalance, getLeagueNActiveTeams, getUserLeagues, getLeagueTotalBalance, getLeagueName } from '@/utils/onChainReadUtils';
-import Avatar from "@/components/ui/avatar/Avatar";
+import { getUserLeagues } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 
 export default function DropdownLeagues() {
