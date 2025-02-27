@@ -146,6 +146,8 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       const verified = sessionStorage.getItem('verified');
       const selectedLeague = sessionStorage.getItem('selectedLeague');
       const sessionId = sessionStorage.getItem('sessionId');
+      const selectedLeagueName = sessionStorage.getItem('selectedLeagueName');
+      const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
 
       const hydratedState = {
         ...initialState,
@@ -158,6 +160,8 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         leagues: [],
         selectedLeague: null,
         wallet: address || null,
+        selectedLeagueName: selectedLeagueName || null,
+        selectedLeagueAddress: selectedLeagueAddress || null
       };
 
       try {
@@ -183,6 +187,8 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.selectedLeague) sessionStorage.setItem('selectedLeague', JSON.stringify(state.selectedLeague));
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
       if (address && isConnected) sessionStorage.setItem('wallet', address);
+      if (state.selectedLeagueName) sessionStorage.setItem('selectedLeagueName', state.selectedLeagueName);
+      if (state.selectedLeagueAddress) sessionStorage.setItem('selectedLeagueAddress', state.selectedLeagueAddress);
     }
   }, [state, address, isConnected]);
 
