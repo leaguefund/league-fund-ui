@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { getLeagueName, getLeagueDues } from '@/utils/onChainReadUtils';
 import { useSidebar } from '@/context/SidebarContext';
@@ -35,13 +34,6 @@ const AuxiliaryHeader: React.FC = () => {
         isExpanded ? 'lg:ml-64' : 'lg:ml-20'
       }`}>
         <div className="flex items-center pl-5 lg:pl-6 min-w-0">
-          <Image
-            src="/images/trophy.png"
-            alt="League Icon"
-            width={22}
-            height={22}
-            className="rounded flex-shrink-0"
-          />
           <h2 className="text-base font-medium text-gray-800 dark:text-white truncate ml-3">
             {leagueName || 'Loading...'}
           </h2>
