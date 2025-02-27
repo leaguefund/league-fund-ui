@@ -9,7 +9,7 @@ const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState(0);
   const [teamName, setTeamName] = useState('');
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
-  const factoryAddress = "0x9Ca5a1402B5678B92a45f071c1581C463C078101";
+  const factoryAddress = "0x466C4Ff27b97fF5b11A3AD61F4b61d2e02a18e35";
 
   const [shouldSubmit, setShouldSubmit] = useState(false);
 

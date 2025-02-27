@@ -1,5 +1,10 @@
 import InviteTeams from '@/components/InviteTeams';
+import LeagueLayout from '@/components/layouts/LeagueLayout';
 
 export default function InviteTeamsPage() {
-  return <InviteTeams />;
+  return (
+    <LeagueLayout>
+      <InviteTeams />
+    </LeagueLayout>
+  );
 } 

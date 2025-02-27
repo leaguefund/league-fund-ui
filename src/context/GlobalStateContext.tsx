@@ -59,8 +59,17 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       sessionStorage.setItem('inviteEmails', JSON.stringify(action.payload));
       break;
     case 'SET_WALLET_ADDRESS':
-      nextState = { ...state, address: action.payload };
+      nextState = { ...state, wallet: action.payload };
       break;
+    case 'SET_WALLET_LEAGUES':
+      nextState = { ...state, walletLeagues: action.payload };
+      break;
+    case 'SET_SELECTED_LEAGUE_ADDRESS':
+      nextState = { ...state, selectedLeagueAddress: action.payload };
+      break;  
+    case 'SET_SELECTED_LEAGUE_NAME':
+      nextState = { ...state, selectedLeagueName: action.payload };
+      break;  
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
       
@@ -108,7 +117,7 @@ function reducer(state: GlobalState, action: Action): GlobalState {
 
 export function GlobalStateProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
 
   // Watch for wallet address changes
   useEffect(() => {
@@ -117,6 +126,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
     } else {
       console.log('Wallet NOT connected.')
+      dispatch({ type: 'SET_WALLET_ADDRESS', payload: null });
     }
   }, [address, dispatch]);
 
@@ -146,7 +156,8 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         verified: verified === 'true',
         sessionId: sessionId || null,
         leagues: [],
-        leagueSelected: null
+        leagueSelected: null,
+        wallet: address || null,
       };
 
       try {
@@ -171,8 +182,9 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.verified !== undefined) sessionStorage.setItem('verified', String(state.verified));
       if (state.leagueSelected) sessionStorage.setItem('leagueSelected', JSON.stringify(state.leagueSelected));
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
+      if (address && isConnected) sessionStorage.setItem('wallet', address);
     }
-  }, [state]);
+  }, [state, address, isConnected]);
 
   // Don't render anything until state is hydrated
   if (!state.hydrated) {
