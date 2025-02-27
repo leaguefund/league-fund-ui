@@ -63,6 +63,12 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       break;
     case 'SET_WALLET_LEAGUES':
       nextState = { ...state, walletLeagues: action.payload };
+      break;
+    case 'SET_SELECTED_LEAGUE_ADDRESS':
+      nextState = { ...state, selectedLeagueAddress: action.payload };
+      break;  
+    case 'SET_SELECTED_LEAGUE_NAME':
+      nextState = { ...state, selectedLeagueName: action.payload };
       break;  
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
