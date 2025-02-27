@@ -1,17 +1,17 @@
 "use client";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-import { getTokenBalance, getLeagueNActiveTeams, getUserLeagues, getLeagueTotalBalance, getLeagueName } from '@/utils/onChainReadUtils';
+import { getUserLeagues } from '@/utils/onChainReadUtils';
 import React, { useEffect, useState } from "react";
-import Avatar from "@/components/ui/avatar/Avatar";
-import { useGlobalState } from '@/context/GlobalStateContext';
+// import Avatar from "@/components/ui/avatar/Avatar";
+// import { useGlobalState } from '@/context/GlobalStateContext';
 import { useAccount } from 'wagmi';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLeagueAddress, setSelectedLeagueAddress] = useState<`0x${string}`>('0x');
   const [userLeagues, setUserLeagues] = useState<{ league: `0x${string}`; joined: boolean; currentlyActive: boolean; }[]>([]);
-  const { state, dispatch } = useGlobalState();
+  // const { state, dispatch } = useGlobalState();
   // const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x');
   // setLeagueAddress('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
 
@@ -92,7 +92,7 @@ export default function DropdownLeagues() {
           {/* Each through Wallet's Leagues */}
           {userLeagues.map(function(data) {
             return (
-              <li>
+              <li key={data.league}>
               <DropdownItem
                 onItemClick={() => updateSelectedLeague(data.league)}
                 className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
