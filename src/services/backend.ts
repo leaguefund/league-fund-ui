@@ -24,7 +24,9 @@ interface LeagueInviteData extends SessionData {
 }
 
 interface CreateLeagueData extends SessionData {
-    username: string;
+    league_id: string;
+    league_address: string;
+    league_dues_usdc: string;
 }
 
 class ApiService {
@@ -92,7 +94,7 @@ class ApiService {
 
     static connectWallet() {
         console.log('Connecting wallet...');
-        return this.fetchData<SessionData>("backendApiConnectWallet", {});
+        // return this.fetchData<SessionData>("backendApiConnectWallet", {});
     }
 
     static createLeague() {
