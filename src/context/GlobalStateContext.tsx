@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { GlobalState, Action, initialState } from '@/types/state';
+import { useAccount } from 'wagmi';
 
 const GlobalStateContext = createContext<{
   state: GlobalState;
@@ -57,6 +58,9 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, inviteEmails: action.payload };
       sessionStorage.setItem('inviteEmails', JSON.stringify(action.payload));
       break;
+    case 'SET_WALLET_ADDRESS':
+      nextState = { ...state, address: action.payload };
+      break;
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
       
@@ -104,8 +108,18 @@ function reducer(state: GlobalState, action: Action): GlobalState {
 
 export function GlobalStateProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { address, isConnected } = useAccount()
+
+  console.log('address', address)
 
   useEffect(() => {
+    if(address) { 
+      console.log('case a')
+      dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
+    } else {
+      console.log('case b')
+    }
+
     // On mount only - log initial state and hydrate from storage
     if (!state.hydrated) {
       console.group('🚀 Initial State');

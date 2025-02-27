@@ -47,6 +47,8 @@ export type Action =
   | { type: 'CONNECT_WALLET'; payload: boolean }
   | { type: 'CREATE_LEAGUE'; payload: boolean }
   | { type: 'SET_INVITE_EMAILS'; payload: string[] }
+  | { type: 'SET_WALLET_ADDRESS'; payload: `0x${string}` }
+  | { type: 'SET_WALLET_LEAGUES'; payload: `0x${string}` }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {
