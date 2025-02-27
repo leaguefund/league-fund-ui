@@ -99,6 +99,7 @@ const CreateLeague: React.FC = () => {
               <TransactionDefault
                 isSponsored={true}
                 calls={currentCalls}
+                buttonText="Create League Treasury"
               />
             </div>
           </div>
