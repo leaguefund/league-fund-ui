@@ -9,6 +9,7 @@ import { getApproveCall, getCreateLeagueCall } from '../utils/createCallUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { useNotification } from '@/context/NotificationContext';
 import ApiService from '@/services/backend';
+import { useRouter } from 'next/navigation';
 
 const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
@@ -19,6 +20,7 @@ const CreateLeague: React.FC = () => {
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
   const factoryAddress = "0x466C4Ff27b97fF5b11A3AD61F4b61d2e02a18e35";
   const duesInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   // Auto-focus the dues input and set createLeague
   useEffect(() => {
@@ -54,7 +56,8 @@ const CreateLeague: React.FC = () => {
         setHasCreatedLeague(true);
         
         if (leagueAddress) {
-          await ApiService.createLeague();
+          ApiService.createLeague();
+          router.push('/league-created');
           
           showNotification({
             variant: 'success',
