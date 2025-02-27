@@ -31,8 +31,6 @@ const ConfirmLeague: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await ApiService.readLeague();
-      console.log('League read response:', response);
       if (selectedLeague) {
         console.log('Saving selectedLeague to state:', selectedLeague);
         dispatch({ type: 'SET_SELECTED_LEAGUE', payload: selectedLeague });
@@ -40,7 +38,7 @@ const ConfirmLeague: React.FC = () => {
         const stored = sessionStorage.getItem('selectedLeague');
         console.log('Stored in sessionStorage:', stored);
       }
-      router.push('/request-verification');
+      router.push('/create-league');
     } catch (error) {
       console.error('Error confirming league:', error);
     } finally {
