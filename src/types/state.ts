@@ -22,7 +22,7 @@ export interface GlobalState {
     sessionId: string | null;
     username: string | null;
     leagues: League[] | null;
-    leagueSelected: League | null;
+    selectedLeague: League | null;
     email: string | null;
     phone: string | null;
     verified: boolean;
@@ -70,7 +70,7 @@ export const initialState: GlobalState = {
     sessionId: null,
     username: null,
     leagues: null,
-    leagueSelected: null,
+    selectedLeague: null,
     email: null,
     phone: null,
     verified: false,

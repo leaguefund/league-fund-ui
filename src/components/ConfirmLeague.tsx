@@ -34,7 +34,11 @@ const ConfirmLeague: React.FC = () => {
       const response = await ApiService.readLeague();
       console.log('League read response:', response);
       if (selectedLeague) {
+        console.log('Saving selectedLeague to state:', selectedLeague);
         dispatch({ type: 'SET_SELECTED_LEAGUE', payload: selectedLeague });
+        // Verify it was saved to sessionStorage
+        const stored = sessionStorage.getItem('selectedLeague');
+        console.log('Stored in sessionStorage:', stored);
       }
       router.push('/request-verification');
     } catch (error) {
@@ -48,6 +52,8 @@ const ConfirmLeague: React.FC = () => {
     const selected = state.leagues?.find(league => league.name === e.target.value);
     if (selected) {
       setSelectedLeague(selected);
+      // Update global state and sessionStorage with the new selection
+      dispatch({ type: 'SET_SELECTED_LEAGUE', payload: selected });
     }
   };
 
@@ -66,11 +72,11 @@ const ConfirmLeague: React.FC = () => {
           {/* League Image and Details */}
           <div className="flex flex-col items-center space-y-4">
             <Image 
-              src={selectedLeague.logo || "/images/placeholder.png"}
+              src={selectedLeague.avatar || "/images/placeholder.png"}
               alt="League Avatar" 
               width={120} 
               height={120}
-              className="rounded-lg"
+              className="rounded-full"
             />
             <h2 className="text-2xl font-bold text-white">{selectedLeague.name}</h2>
           </div>
