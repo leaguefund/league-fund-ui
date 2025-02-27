@@ -29,23 +29,17 @@ const AuxiliaryHeader: React.FC = () => {
   }, [state.address]);
 
   return (
-    <header className="sticky top-[57px] flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
+    <header className={`sticky top-[57px] flex w-full bg-white border-b border-gray-200 z-[99990] dark:border-gray-800 dark:bg-gray-900 ${
+      isExpanded ? 'lg:pl-64' : 'lg:pl-20'
+    }`}>
       <div className="flex items-center justify-between w-full px-5 py-3 lg:px-6">
-        <div className={`flex items-center h-12 transition-all duration-300 ${
-          isExpanded ? 'lg:ml-64' : 'lg:ml-20'
-        }`}>
-          <div className="flex items-center pl-5 lg:pl-6 min-w-0">
-            <h2 className="text-base font-medium text-gray-800 dark:text-white truncate ml-3">
-              {leagueName || 'Loading...'}
-            </h2>
-          </div>
-          <div className="ml-auto px-5 lg:px-6">
-            <div className="px-3 py-1.5 bg-white rounded-lg dark:bg-gray-800">
-              <span className="text-base font-medium text-gray-800 dark:text-white">
-                ${leagueDues}
-                </span>
-            </div>
-          </div>
+        <h2 className="text-base font-medium text-gray-800 dark:text-white truncate">
+          {leagueName || 'Loading...'}
+        </h2>
+        <div className="bg-gray-50 rounded-lg dark:bg-gray-800 px-2 py-1">
+          <span className="text-base font-medium text-gray-800 dark:text-white">
+            ${leagueDues}
+          </span>
         </div>
       </div>
     </header>
