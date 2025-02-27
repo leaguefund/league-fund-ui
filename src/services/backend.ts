@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import envConfig from "./config";
 import { fetchWithSession } from "./fetch";
 

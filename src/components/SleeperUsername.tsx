@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -67,8 +68,8 @@ const SleeperUsername: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             What is your Sleeper Username?
           </h1>
-          {/* Show leagues count if we have them and leagueSelected exists */}
-          {state.leagues && state.leagueSelected && (
+          {/* Show leagues count if we have them and selectedLeague exists */}
+          {state.leagues && state.selectedLeague && (
             <p className="text-gray-300">
               Found {state.leagues.length} leagues for this account
             </p>
