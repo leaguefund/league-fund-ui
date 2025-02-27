@@ -9,17 +9,25 @@ export interface League {
     logo?: string;
 }
 
+export interface WalletLeague {
+    league: `0x${string}`;
+    joined: boolean;
+    currentlyActive: boolean;
+    name?: string;
+}
+
 export interface GlobalState {
     sessionId: string | null;
     username: string | null;
     leagues: League[] | null;
-    leagueSelected: League | null;
+    leagueSelected: `0x${string}` | null;
     email: string | null;
     phone: string | null;
     verified: boolean;
     hydrated: boolean;
     inviteEmails: string[];
-    address: `0x${string}` | null;
+    wallet: `0x${string}` | null;
+    walletLeagues: WalletLeague[] | null;
 }
 
 export type ActionMap = {
@@ -44,12 +52,12 @@ export type Action =
   | { type: 'SET_EMAIL'; payload: string }
   | { type: 'SET_PHONE'; payload: string }
   | { type: 'SET_VERIFIED'; payload: boolean }
-  | { type: 'SET_LEAGUE_SELECTED' | 'SET_SELECTED_LEAGUE'; payload: League }
+  | { type: 'SET_LEAGUE_SELECTED' | 'SET_SELECTED_LEAGUE'; payload: `0x${string}` | null }
   | { type: 'CONNECT_WALLET'; payload: boolean }
   | { type: 'CREATE_LEAGUE'; payload: boolean }
   | { type: 'SET_INVITE_EMAILS'; payload: string[] }
-  | { type: 'SET_WALLET_ADDRESS'; payload: `0x${string}` }
-  | { type: 'SET_WALLET_LEAGUES'; payload: `0x${string}` }
+  | { type: 'SET_WALLET_ADDRESS'; payload: `0x${string}` | null }
+  | { type: 'SET_WALLET_LEAGUES'; payload: WalletLeague[] | null }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {
@@ -62,5 +70,6 @@ export const initialState: GlobalState = {
     verified: false,
     hydrated: false,
     inviteEmails: [],
-    address: null
+    wallet: null,
+    walletLeagues: null
 }; 

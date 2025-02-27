@@ -7,27 +7,30 @@ import { useGlobalState } from '@/context/GlobalStateContext';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
-  const [leagues, setLeagues] = useState<Array<{ league: `0x${string}`; joined: boolean; currentlyActive: boolean }>>([]);
-  const [teamAddress] = useState<`0x${string}`>('0xE262C1e7c5177E28E51A5cf1C6944470697B2c9F');
   const { state, dispatch } = useGlobalState();
-  // const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x');
-  // setLeagueAddress('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
 
   useEffect(() => {
     const fetchLeagues = async () => {
-      try {
-        const userLeagues = await getUserLeagues(teamAddress);
-        setLeagues(userLeagues);
-        // Initialize with first league if none selected
-        if (userLeagues.length > 0 && !state.address) {
-          dispatch({ type: 'SET_WALLET_ADDRESS', payload: userLeagues[0].league });
+      if (state.wallet) {
+        try {
+          const userLeagues = await getUserLeagues(state.wallet);
+          console.log(state.wallet)
+          console.log(userLeagues)
+          dispatch({ type: 'SET_WALLET_LEAGUES', payload: userLeagues });
+          // Initialize with first league if none selected
+          if (userLeagues.length > 0 && !state.leagueSelected) {
+            dispatch({ type: 'SET_SELECTED_LEAGUE', payload: userLeagues[0].league });
+          }
+        } catch (error) {
+          console.error('Error fetching leagues:', error);
         }
-      } catch (error) {
-        console.error('Error fetching leagues:', error);
+      } else {
+        dispatch({ type: 'SET_WALLET_LEAGUES', payload: null });
+        dispatch({ type: 'SET_SELECTED_LEAGUE', payload: null });
       }
     };
     fetchLeagues();
-  }, [teamAddress, dispatch, state.address]);
+  }, [dispatch, state.wallet, state.leagueSelected]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -38,7 +41,7 @@ export default function DropdownLeagues() {
   }
 
   function updateSelectedLeague(address: `0x${string}`) {
-    dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
+    dispatch({ type: 'SET_SELECTED_LEAGUE', payload: address });
     setIsOpen(false);
   }
   
@@ -50,7 +53,7 @@ export default function DropdownLeagues() {
           className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 transition-colors duration-200"
         >
           <div className="truncate">
-            {state.address ? `${state.address.slice(0, 6)}...${state.address.slice(-4)}` : 'Select League'}
+            {state.leagueSelected ? `${state.leagueSelected.slice(0, 6)}...${state.leagueSelected.slice(-4)}` : 'Select League'}
           </div>
           <svg
             className={`flex-shrink-0 w-5 h-5 duration-200 ease-in-out stroke-current ${
@@ -76,7 +79,7 @@ export default function DropdownLeagues() {
           onClose={closeDropdown}
         >
           <ul className="flex flex-col gap-1">
-            {leagues.map((data, index) => (
+            {state.walletLeagues?.map((data, index) => (
               <li key={`${data.league}-${index}`}>
                 <DropdownItem
                   onItemClick={() => updateSelectedLeague(data.league)}
@@ -90,7 +93,7 @@ export default function DropdownLeagues() {
         </Dropdown>
       </div>
       <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
-        Connected Wallet: {state.address ? state.address.slice(0, 6) + '...' + state.address.slice(-4) : 'Not Connected'}
+        Selected League: {state.leagueSelected ? state.leagueSelected.slice(0, 6) + '...' + state.leagueSelected.slice(-4) : ''}
       </p>
     </div>
   );

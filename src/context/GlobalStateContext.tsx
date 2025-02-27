@@ -59,8 +59,11 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       sessionStorage.setItem('inviteEmails', JSON.stringify(action.payload));
       break;
     case 'SET_WALLET_ADDRESS':
-      nextState = { ...state, address: action.payload };
+      nextState = { ...state, wallet: action.payload };
       break;
+    case 'SET_WALLET_LEAGUES':
+      nextState = { ...state, walletLeagues: action.payload };
+      break;  
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
       
@@ -117,6 +120,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
     } else {
       console.log('Wallet NOT connected.')
+      dispatch({ type: 'SET_WALLET_ADDRESS', payload: null });
     }
   }, [address, dispatch]);
 
