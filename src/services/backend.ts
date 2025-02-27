@@ -95,9 +95,10 @@ class ApiService {
         return this.fetchData<SessionData>("backendApiConnectWallet", {});
     }
 
-    static createLeague(username: string) {
+    static createLeague(username?: string) {
         console.log('Creating league...');
-        return this.fetchData<CreateLeagueData>("backendApiCreateLeague", { username });
+        const data = username ? { username } : {};
+        return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
     }
 }
 

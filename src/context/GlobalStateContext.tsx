@@ -70,6 +70,10 @@ function reducer(state: GlobalState, action: Action): GlobalState {
     case 'SET_SELECTED_LEAGUE_NAME':
       nextState = { ...state, selectedLeagueName: action.payload };
       break;  
+    case 'SET_LEAGUE_ADDRESS':
+      nextState = { ...state, leagueAddress: action.payload };
+      if (action.payload) sessionStorage.setItem('leagueAddress', action.payload);
+      break;
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
       
@@ -81,13 +85,14 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       const verified = sessionStorage.getItem('verified');
       const inviteEmails = sessionStorage.getItem('inviteEmails');
       const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress') as `0x${string}` | null;
-      console.log('selectedLeagueAddress:', selectedLeagueAddress);
+      const leagueAddress = sessionStorage.getItem('leagueAddress') as `0x${string}` | null;
       
       if (sessionId) nextState.sessionId = sessionId;
       if (username) nextState.username = username;
       if (email) nextState.email = email;
       if (phone) nextState.phone = phone;
       if (verified) nextState.verified = verified === 'true';
+      if (leagueAddress?.startsWith('0x')) nextState.leagueAddress = leagueAddress as `0x${string}`;
       if (inviteEmails) {
         try {
           nextState.inviteEmails = JSON.parse(inviteEmails);
