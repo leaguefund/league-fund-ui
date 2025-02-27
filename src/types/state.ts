@@ -19,6 +19,7 @@ export interface GlobalState {
     verified: boolean;
     hydrated: boolean;
     inviteEmails: string[];
+    address: `0x${string}` | null;
 }
 
 export type ActionMap = {
@@ -60,5 +61,6 @@ export const initialState: GlobalState = {
     phone: null,
     verified: false,
     hydrated: false,
-    inviteEmails: []
+    inviteEmails: [],
+    address: null
 }; 
