@@ -73,14 +73,6 @@ const ConfirmLeague: React.FC = () => {
               className="rounded-lg"
             />
             <h2 className="text-2xl font-bold text-white">{selectedLeague.name}</h2>
-            <div className="flex items-center space-x-4 text-gray-300">
-              <div className="flex items-center">
-                <span className="text-lg">👥 {selectedLeague.teams} Teams</span>
-              </div>
-              <div className="flex items-center">
-                <span className="text-lg">🏆 {selectedLeague.started} Start</span>
-              </div>
-            </div>
           </div>
 
           {/* Confirm Button */}
