@@ -117,6 +117,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
     } else {
       console.log('Wallet NOT connected.')
+      dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
     }
   }, [address, dispatch]);
 
