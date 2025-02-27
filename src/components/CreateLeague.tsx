@@ -13,6 +13,7 @@ import ApiService from '@/services/backend';
 
 const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
+  const [createLeague, setCreateLeague] = useState<string>('');
   const router = useRouter();
   const { state, dispatch } = useGlobalState();
   const { showNotification } = useNotification();
@@ -20,15 +21,47 @@ const CreateLeague: React.FC = () => {
   const factoryAddress = "0x466C4Ff27b97fF5b11A3AD61F4b61d2e02a18e35";
   const duesInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus the dues input
+  // Auto-focus the dues input and set createLeague
   useEffect(() => {
     duesInputRef.current?.focus();
+    setCreateLeague(Math.random().toString(36).substring(2, 8)); // Using 6 characters for the random string
   }, []);
 
+  // Save dues to global state and storage
+  useEffect(() => {
+    if (dues) {
+      sessionStorage.setItem('leagueDues', dues);
+    }
+  }, [dues]);
+
+  // Handle transaction status changes
+  const handleTransactionStatus = async (status: { statusName: string; statusData?: any }) => {
+    if (status.statusName === 'success') {
+      try {
+        const sessionId = state.sessionId || sessionStorage.getItem('sessionId') || '';
+        const leagueId = state.selectedLeague?.id || sessionStorage.getItem('selectedLeagueId') || '';
+        
+        // Create the league in the backend
+        await ApiService.createLeague(state.username || '');
+
+        showNotification({
+          variant: 'success',
+          title: 'League created successfully!'
+        });
+      } catch (error) {
+        console.error('Error creating league:', error);
+        showNotification({
+          variant: 'error',
+          title: 'Error creating league'
+        });
+      }
+    }
+  };
+
   // Calculate current calls based on dues
-  const currentCalls = Number(dues) > 0 && state.selectedLeague?.name ? [
+  const currentCalls = Number(dues) > 0 && createLeague ? [
     getApproveCall(usdcAddress, factoryAddress, Number(dues) * 1e6),
-    getCreateLeagueCall(state.selectedLeague.name, Number(dues) * 1e6, state.selectedLeague.name)
+    getCreateLeagueCall(createLeague, Number(dues) * 1e6, createLeague)
   ] : [];
 
   return (
@@ -76,9 +109,9 @@ const CreateLeague: React.FC = () => {
               <label className="text-xl text-gray-300">Team Name</label>
               <input
                 type="text"
-                value={state.selectedLeague?.name || sessionStorage.getItem('selectedLeagueName') || ''}
-                readOnly
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white cursor-not-allowed"
+                value={createLeague}
+                onChange={(e) => setCreateLeague(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white"
               />
             </div>
 
@@ -99,7 +132,7 @@ const CreateLeague: React.FC = () => {
               <TransactionDefault
                 isSponsored={true}
                 calls={currentCalls}
-                buttonText="Create League Treasury"
+                onStatus={handleTransactionStatus}
               />
             </div>
           </div>
