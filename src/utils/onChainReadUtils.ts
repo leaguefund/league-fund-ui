@@ -43,15 +43,7 @@ export async function getUserLeagues(userAddress: `0x${string}`) {
     const userLeagues = await Promise.all(
         allLeagues.map(async (league: any) => {
             if (league.joined) {
-                const name = await getLeagueName(league.league)
-                return {
-                    leagueName: name,
-                    leagueAddress: league.league,
-                    joined: league.joined,
-                    currentlyActive: league.currentlyActive,
-                    commissioner: false, // TODO: Get from contract
-                    treasurer: false, // TODO: Get from contract
-                }
+                return league
             }
             return undefined
         })
