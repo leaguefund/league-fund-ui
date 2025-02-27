@@ -14,6 +14,7 @@ import ApiService from '@/services/backend';
 const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
   const [createLeague, setCreateLeague] = useState<string>('');
+  const [hasCreatedLeague, setHasCreatedLeague] = useState(false);
   const router = useRouter();
   const { state, dispatch } = useGlobalState();
   const { showNotification } = useNotification();
@@ -46,22 +47,21 @@ const CreateLeague: React.FC = () => {
   }) => {
     console.log('Transaction status:', status);
     
-    if (status.statusName === 'success' && status.statusData?.transactionReceipts?.[0]?.logs?.[2]) {
+    if (!hasCreatedLeague && status.statusName === 'success' && status.statusData?.transactionReceipts?.[0]?.logs?.[2]) {
       try {
         // Save the league address from the specific path in the response
         const leagueAddress = status.statusData.transactionReceipts[0].logs[2];
         sessionStorage.setItem('leagueAddress', leagueAddress);
+        setHasCreatedLeague(true);
         
-        const sessionId = state.sessionId || sessionStorage.getItem('sessionId') || '';
-        const leagueId = state.selectedLeague?.id || sessionStorage.getItem('selectedLeagueId') || '';
-        
-        // Create the league in the backend
-        await ApiService.createLeague(state.username || '');
-
-        showNotification({
-          variant: 'success',
-          title: 'League created successfully!'
-        });
+        if (leagueAddress) {
+          await ApiService.createLeague(state.username || '');
+          
+          showNotification({
+            variant: 'success',
+            title: 'League created successfully!'
+          });
+        }
       } catch (error) {
         console.error('Error creating league:', error);
         showNotification({
