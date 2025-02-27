@@ -21,8 +21,8 @@ export const fetchWithSession = async (url: string, options: RequestInit = {}): 
     // Merge existing body with session data
     const finalBody = {
         ...existingBody,
-        sessionID: sessionId || '',
-        sessionExpiry: sessionExpiry || ''
+        session_id: sessionId || '',
+        session_expiry: sessionExpiry || ''
     };
 
     // Create final options with POST method enforced

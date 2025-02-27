@@ -50,8 +50,8 @@ const SleeperUsername: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             What is your Sleeper Username?
           </h1>
-          {/* Show leagues count if we have them */}
-          {state.leagues && (
+          {/* Show leagues count if we have them and leagueSelected exists */}
+          {state.leagues && state.leagueSelected && (
             <p className="text-gray-300">
               Found {state.leagues.length} leagues for this account
             </p>
