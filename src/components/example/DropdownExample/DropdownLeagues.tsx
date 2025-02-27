@@ -1,40 +1,41 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { getTokenBalance, getLeagueNActiveTeams, getUserLeagues, getLeagueTotalBalance, getLeagueName } from '@/utils/onChainReadUtils';
-import React, { useState } from "react";
 import Avatar from "@/components/ui/avatar/Avatar";
 import { useGlobalState } from '@/context/GlobalStateContext';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
-  const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
-  const [teamAddress, setTeamAddress] = useState<`0x${string}`>('0xE262C1e7c5177E28E51A5cf1C6944470697B2c9F');
+  const [leagues, setLeagues] = useState<Array<{ league: `0x${string}`; joined: boolean; currentlyActive: boolean }>>([]);
+  const [teamAddress] = useState<`0x${string}`>('0xE262C1e7c5177E28E51A5cf1C6944470697B2c9F');
   const { state, dispatch } = useGlobalState();
   // const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x');
   // setLeagueAddress('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
+
+  useEffect(() => {
+    const fetchLeagues = async () => {
+      try {
+        const userLeagues = await getUserLeagues(teamAddress);
+        setLeagues(userLeagues);
+      } catch (error) {
+        console.error('Error fetching leagues:', error);
+      }
+    };
+    fetchLeagues();
+  }, [teamAddress]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
   }
 
-  var leas = getUserLeagues(teamAddress)
-  var leasS = leas.toString()
-
-  console.log("-----1-")
-  console.log(leas)
-  console.log("-----2-")
-  console.log(leasS)
-  console.log("-----3-")
-
   function closeDropdown() {
     setIsOpen(false);
   }
 
-  function updateSelectedLeague(address) {
-    console.log("__1")
-    console.log(address)
-    console.log("__2")
+  function updateSelectedLeague(address: `0x${string}`) {
+    console.log("Selected league:", address);
     setIsOpen(false);
   }
   
@@ -71,20 +72,16 @@ export default function DropdownLeagues() {
         onClose={closeDropdown}
       >
         <ul className="flex flex-col gap-1">
-
-          {/* Each through Wallet's Leagues */}
-          {getUserLeagues(teamAddress).map(function(data) {
-            return (
-              <li>
+          {leagues.map((data, index) => (
+            <li key={`${data.league}-${index}`}>
               <DropdownItem
                 onItemClick={() => updateSelectedLeague(data.league)}
                 className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
               >
                 {data.league}
               </DropdownItem>
-              </li>
-            )
-          })}
+            </li>
+          ))}
         </ul>
       </Dropdown>
     </div>
