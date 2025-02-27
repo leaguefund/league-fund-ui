@@ -30,25 +30,25 @@ const AuxiliaryHeader: React.FC = () => {
   }, [state.address]);
 
   return (
-    <div className="sticky top-[73px] w-full bg-gray-50/80 border-b border-gray-200 backdrop-blur-sm z-50 dark:bg-gray-900/50 dark:border-gray-800">
-      <div className={`flex items-center justify-between h-14 px-5 lg:px-6 transition-all duration-300 ${
+    <div key={isExpanded ? 'expanded' : 'collapsed'} className="sticky top-[57px] w-full bg-gray-100 border-b border-gray-200 z-[99998] dark:bg-gray-800/40 dark:border-gray-800">
+      <div className={`w-full flex items-center h-12 transition-all duration-300 ${
         isExpanded ? 'lg:ml-64' : 'lg:ml-20'
       }`}>
-        <div className="flex items-center space-x-4 min-w-0">
+        <div className="flex items-center pl-5 lg:pl-6 min-w-0">
           <Image
             src="/images/trophy.png"
             alt="League Icon"
-            width={24}
-            height={24}
+            width={22}
+            height={22}
             className="rounded flex-shrink-0"
           />
-          <h2 className="text-base font-medium text-gray-900 dark:text-white truncate">
+          <h2 className="text-base font-medium text-gray-800 dark:text-white truncate ml-3">
             {leagueName || 'Loading...'}
           </h2>
         </div>
-        <div className="flex items-center justify-center">
-          <div className="px-3 py-1.5 bg-gray-100/80 rounded-lg dark:bg-gray-800/50 backdrop-blur-sm">
-            <span className="text-base font-medium text-gray-900 dark:text-white">
+        <div className="ml-auto px-5 lg:px-6">
+          <div className="px-3 py-1.5 bg-white rounded-lg dark:bg-gray-700/60">
+            <span className="text-base font-medium text-gray-800 dark:text-white">
               ${leagueDues}
             </span>
           </div>

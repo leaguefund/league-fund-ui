@@ -9,10 +9,12 @@ interface LeagueLayoutProps {
 
 const LeagueLayout: React.FC<LeagueLayoutProps> = ({ children }) => {
   return (
-    <>
+    <div className="flex flex-col w-full">
       <AuxiliaryHeader />
-      {children}
-    </>
+      <div className="flex-1 pt-12">
+        {children}
+      </div>
+    </div>
   );
 };
 
