@@ -35,9 +35,23 @@ const CreateLeague: React.FC = () => {
   }, [dues]);
 
   // Handle transaction status changes
-  const handleTransactionStatus = async (status: { statusName: string; statusData?: any }) => {
-    if (status.statusName === 'success') {
+  const handleTransactionStatus = async (status: { 
+    statusName: string; 
+    statusData?: any;
+    result?: {
+      receipts?: Array<{
+        logs?: Array<string>;
+      }>;
+    };
+  }) => {
+    console.log('Transaction status:', status);
+    
+    if (status.statusName === 'CONFIRMED' && status.result?.receipts?.[0]?.logs?.[2]) {
       try {
+        // Save the league address from the specific path in the response
+        const leagueAddress = status.result.receipts[0].logs[2];
+        sessionStorage.setItem('leagueAddress', leagueAddress);
+        
         const sessionId = state.sessionId || sessionStorage.getItem('sessionId') || '';
         const leagueId = state.selectedLeague?.id || sessionStorage.getItem('selectedLeagueId') || '';
         
