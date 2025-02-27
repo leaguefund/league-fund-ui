@@ -97,7 +97,14 @@ class ApiService {
 
     static createLeague(username?: string) {
         console.log('Creating league...');
-        const data = username ? { username } : {};
+        let selectedLeague = sessionStorage.getItem('selectedLeague')
+        const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).id : '';
+        const data = {
+            session_id: sessionStorage.getItem('sessionID'),
+            league_id: selectedLeagueId || '',
+            league_address: sessionStorage.getItem('leagueAddress') || '',
+            league_dues_usdc: sessionStorage.getItem('leagueDues') || ''
+        }
         return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
     }
 }
