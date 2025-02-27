@@ -80,6 +80,8 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       const phone = sessionStorage.getItem('phone');
       const verified = sessionStorage.getItem('verified');
       const inviteEmails = sessionStorage.getItem('inviteEmails');
+      const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress') as `0x${string}` | null;
+      console.log('selectedLeagueAddress:', selectedLeagueAddress);
       
       if (sessionId) nextState.sessionId = sessionId;
       if (username) nextState.username = username;
@@ -161,7 +163,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         selectedLeague: null,
         wallet: address || null,
         selectedLeagueName: selectedLeagueName || null,
-        selectedLeagueAddress: selectedLeagueAddress || null
+        selectedLeagueAddress: (selectedLeagueAddress?.startsWith('0x') ? selectedLeagueAddress as `0x${string}` : null),
       };
 
       try {
