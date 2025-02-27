@@ -108,18 +108,20 @@ function reducer(state: GlobalState, action: Action): GlobalState {
 
 export function GlobalStateProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { address, isConnected } = useAccount()
+  const { address, isConnected } = useAccount();
 
-  console.log('address', address)
-
+  // Watch for wallet address changes
   useEffect(() => {
     if(address) { 
-      console.log('case a')
+      console.log('Wallet connected!')
       dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
     } else {
-      console.log('case b')
+      console.log('Wallet NOT connected.')
     }
+  }, [address]);
 
+  // Handle state hydration and storage
+  useEffect(() => {
     // On mount only - log initial state and hydrate from storage
     if (!state.hydrated) {
       console.group('🚀 Initial State');
@@ -170,7 +172,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.leagueSelected) sessionStorage.setItem('leagueSelected', JSON.stringify(state.leagueSelected));
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
     }
-  }, [state]); // This effect runs on every state change
+  }, [state.hydrated, state.username, state.leagues, state.email, state.phone, state.verified, state.leagueSelected, state.sessionId]);
 
   // Don't render anything until state is hydrated
   if (!state.hydrated) {
