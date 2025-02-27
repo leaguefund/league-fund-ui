@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
+import { useNotification } from '@/context/NotificationContext';
 
 const SleeperUsername: React.FC = () => {
   // Local state for form input
@@ -16,6 +17,7 @@ const SleeperUsername: React.FC = () => {
   
   // Get both state and dispatch from global state
   const { state, dispatch } = useGlobalState();
+  const { showNotification } = useNotification();
 
   // If we already have a username in global state, use it
   useEffect(() => {
@@ -41,8 +43,14 @@ const SleeperUsername: React.FC = () => {
         dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
       }
       router.push('/confirm-league');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error finding league:', error);
+      showNotification({
+        variant: 'error',
+        title: 'Error',
+        description: error.message || 'Failed to find Sleeper user',
+        hideDuration: 5000
+      });
     } finally {
       setIsLoading(false);
     }

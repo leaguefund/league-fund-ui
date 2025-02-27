@@ -47,13 +47,22 @@ class ApiService {
         try {
             const response = await fetchWithSession(url, options);
             console.log('Response status:', response.status);
+            
+            const data = await response.json();
+            
             if (!response.ok) {
-                throw new Error(`API request failed: ${response.statusText}`);
+                throw new Error(data.message || `API request failed: ${response.statusText}`);
             }
-            return await response.json();
-        } catch (error) {
+            
+            return data;
+        } catch (error: any) {
             console.error("Error in fetchData:", error);
-            throw error;
+            // If the error is already formatted (from our API), throw it as is
+            if (error.message) {
+                throw error;
+            }
+            // Otherwise wrap it in a more user-friendly message
+            throw new Error('An unexpected error occurred. Please try again.');
         }
     }
 
