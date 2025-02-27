@@ -12,9 +12,7 @@ import { useNotification } from '@/context/NotificationContext';
 import ApiService from '@/services/backend';
 
 const CreateLeague: React.FC = () => {
-  const [leagueName, setLeagueName] = useState('');
-  const [dues, setDues] = useState(0);
-  const [teamName, setTeamName] = useState('');
+  const [dues, setDues] = useState<string>('');
   const [calls, setCalls] = useState<ContractCall[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -23,10 +21,16 @@ const CreateLeague: React.FC = () => {
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
   const factoryAddress = "0x466C4Ff27b97fF5b11A3AD61F4b61d2e02a18e35";
   const hasAttemptedApiCall = useRef(false);
+  const duesInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-focus the dues input
+  useEffect(() => {
+    duesInputRef.current?.focus();
+  }, []);
 
   const handleCreateLeague = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!leagueName || !teamName || isLoading) return;
+    if (isLoading) return;
 
     setIsLoading(true);
     try {
@@ -81,17 +85,18 @@ const CreateLeague: React.FC = () => {
 
   useEffect(() => {
     async function fetchCalls() {
-      if (leagueName && teamName) {
+      const duesNumber = Number(dues);
+      if (duesNumber > 0 && state.selectedLeague?.name) {
         setCalls([
-          getApproveCall(usdcAddress, factoryAddress, dues * 1e6),
-          getCreateLeagueCall(leagueName, dues * 1e6, teamName)
+          getApproveCall(usdcAddress, factoryAddress, duesNumber * 1e6),
+          getCreateLeagueCall(state.selectedLeague.name, duesNumber * 1e6, state.selectedLeague.name)
         ])
       } else {
         setCalls([]);
       }
     }
     fetchCalls();
-  }, [leagueName, dues, teamName]);
+  }, [dues, state.selectedLeague]);
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -145,31 +150,21 @@ const CreateLeague: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xl text-gray-300">League Name</label>
-              <input
-                type="text"
-                value={leagueName}
-                onChange={(e) => setLeagueName(e.target.value)}
-                placeholder="Enter league name"
-                className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-2">
               <label className="text-xl text-gray-300">League Dues (USDC)</label>
               <input
+                ref={duesInputRef}
                 type="number"
                 value={dues}
-                onChange={(e) => setDues(Number(e.target.value))}
+                onChange={(e) => setDues(e.target.value)}
                 placeholder="Enter league dues"
-                className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
+                className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
               />
             </div>
 
             {/* Create League Button */}
             <button 
               onClick={handleCreateLeague}
-              disabled={isLoading || !leagueName}
+              disabled={isLoading || !dues || Number(dues) <= 0}
               className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
@@ -179,16 +174,6 @@ const CreateLeague: React.FC = () => {
               )}
             </button>
           </div>
-
-          {/* Transaction Button */}
-          {calls.length > 0 && (
-            <div className="w-full">
-              <TransactionDefault
-                isSponsored={true}
-                calls={calls}
-              />
-            </div>
-          )}
 
           {/* Start Over Link */}
           <Link 
