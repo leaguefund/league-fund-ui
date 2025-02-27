@@ -47,6 +47,11 @@ const ClaimReward: React.FC = () => {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
+      { !rewardPending && (
+        <div>
+          <h1>You have no claimable rewards</h1>
+        </div>
+      )}
       { rewardPending && (
       <div>
         <h2>Image URL</h2>

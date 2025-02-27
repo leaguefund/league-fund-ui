@@ -54,6 +54,12 @@ const AllocateReward: React.FC = () => {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
+      { !isCommissioner && (
+        <div>
+          <h1>You are not the commissioner of this league.</h1>
+          <h1>Only the commissioner can allocate rewards.</h1>
+        </div>
+      )}
       { isCommissioner && (
               <>
                 <div>

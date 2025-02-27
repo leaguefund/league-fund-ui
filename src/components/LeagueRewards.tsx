@@ -25,17 +25,23 @@ const ClaimReward: React.FC = () => {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
-      <div>
-        <h1>League Rewards</h1>
-          {leagueRewards.map((reward, index) => (
-            <div key={index}>
-              <h3>{reward.teamName}</h3>
-              <h3>{reward.rewardName}</h3>
-              <p>{Number(reward.usdcAmount) / 1e6}</p>
-              <img src={reward.imageData} alt={reward.rewardName} />
-              </div>
-          ))}
-      </div>
+      {leagueRewards.length === 0 && (
+        <div>
+          <h1>No rewards have been minted for this league</h1>
+        </div>
+      )}
+      {leagueRewards.length > 0 && (
+        <div>
+          <h1>League Rewards</h1>
+            {leagueRewards.map((reward, index) => (
+              <div key={index}>
+                <h3>{reward.teamName}</h3>
+                <h3>{reward.rewardName}</h3>
+                <p>{Number(reward.usdcAmount) / 1e6}</p>
+                <img src={reward.imageData} alt={reward.rewardName} />
+                </div>
+            ))}
+        </div>)}
   </main>
   );
 };
