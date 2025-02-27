@@ -23,6 +23,14 @@ export interface TeamInfo {
     wallet: `0x${string}`;
 }
 
+export interface RewardInfo {
+    leagueName: string;
+    teamName: string;
+    rewardName: string;
+    usdcAmount: BigInt;
+    imageData: string;
+}
+
 export interface ContractCall {
     address: `0x${string}`;
     abi: any;
