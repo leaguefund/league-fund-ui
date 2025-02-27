@@ -4,42 +4,35 @@ import React, { createContext, useContext, useState } from 'react';
 import Notification from '@/components/ui/notification/Notification';
 
 interface NotificationContextType {
-  showNotification: (props: { 
-    variant: "success" | "info" | "warning" | "error";
-    title: string;
-    description?: string;
-    hideDuration?: number;
-  }) => void;
+  showNotification: (props: NotificationProps) => void;
+}
+
+interface NotificationProps {
+  variant: "success" | "info" | "warning" | "error";
+  title: string;
+  description?: string;
+  hideDuration?: number;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
-  const [notification, setNotification] = useState<{
-    visible: boolean;
-    props: {
-      variant: "success" | "info" | "warning" | "error";
-      title: string;
-      description?: string;
-      hideDuration?: number;
-    };
-  } | null>(null);
+  const [notification, setNotification] = useState<NotificationProps | null>(null);
 
-  const showNotification = (props: {
-    variant: "success" | "info" | "warning" | "error";
-    title: string;
-    description?: string;
-    hideDuration?: number;
-  }) => {
-    setNotification({ visible: true, props });
+  const showNotification = (props: NotificationProps) => {
+    setNotification(props);
+  };
+
+  const hideNotification = () => {
+    setNotification(null);
   };
 
   return (
     <NotificationContext.Provider value={{ showNotification }}>
       {children}
-      {notification?.visible && (
+      {notification && (
         <div className="fixed bottom-4 right-4 z-50">
-          <Notification {...notification.props} />
+          <Notification {...notification} onClose={hideNotification} />
         </div>
       )}
     </NotificationContext.Provider>
