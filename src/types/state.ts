@@ -62,8 +62,8 @@ export type Action =
   | { type: 'SET_INVITE_EMAILS'; payload: string[] }
   | { type: 'SET_WALLET_ADDRESS'; payload: `0x${string}` | null }
   | { type: 'SET_WALLET_LEAGUES'; payload: WalletLeague[] | null }
-  |  { type: 'SET_SELECTED_LEAGUE_ADDRESS'; payload: `0x${string}` | null }
-  |  { type: 'SET_SELECTED_LEAGUE_NAME'; payload: string | null }
+  | { type: 'SET_SELECTED_LEAGUE_ADDRESS'; payload: `0x${string}` | null }
+  | { type: 'SET_SELECTED_LEAGUE_NAME'; payload: string | null }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {

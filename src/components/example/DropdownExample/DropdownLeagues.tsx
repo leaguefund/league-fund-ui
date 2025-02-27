@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-import { getUserLeagues } from '@/utils/onChainReadUtils';
+import { getUserLeagues, getLeagueTotalBalance, getLeagueNActiveTeams } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { WalletLeague } from '@/types/state';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
+  const [leagueBalance, setLeagueBalance] = useState<number | null>(null);
+  const [activeTeams, setActiveTeams] = useState<number | null>(null);
   const { state, dispatch } = useGlobalState();
 
   useEffect(() => {
@@ -30,10 +32,31 @@ export default function DropdownLeagues() {
         dispatch({ type: 'SET_WALLET_LEAGUES', payload: null });
         dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: null });
         dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: null });
-  }
+      }
     };
     fetchLeagues();
-  }, [dispatch, state.wallet, state.selectedLeagueAddress]);
+  }, [state.wallet, state.selectedLeagueAddress]);
+
+  useEffect(() => {
+    const fetchLeagueInfo = async () => {
+      if (state.selectedLeagueAddress) {
+        try {
+          const totalBalance = await getLeagueTotalBalance(state.selectedLeagueAddress);
+          const activeTeams = await getLeagueNActiveTeams(state.selectedLeagueAddress);
+          console.log('League Balance:', totalBalance);
+          console.log('League Teams:', activeTeams);
+          setLeagueBalance(totalBalance);
+          setActiveTeams(activeTeams);
+        } catch (error) {
+          console.error('Error fetching league info:', error);
+        }
+      } else {
+        setLeagueBalance(null);
+        setActiveTeams(null);
+      }
+    };
+    fetchLeagueInfo();
+  }, [state.selectedLeagueAddress]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -98,6 +121,15 @@ export default function DropdownLeagues() {
       </div>
       <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
         Selected League: {state.selectedLeagueName ? state.selectedLeagueName : ''}
+      </p>
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
+        League Address: {state.selectedLeagueAddress ? <span className="truncate">{state.selectedLeagueAddress.slice(0, 6)}...{state.selectedLeagueAddress.slice(-4)}</span> : ''}
+      </p>
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
+        League USDC balance: {leagueBalance ? leagueBalance : ''}
+      </p>
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
+        Active teams: {activeTeams ? activeTeams : ''}
       </p>
     </div>
   );
