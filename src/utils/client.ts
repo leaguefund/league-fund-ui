@@ -7,7 +7,7 @@ export const publicClient = createPublicClient({
 })
  
 // eg: Metamask
-export const walletClient = createWalletClient({
+export const walletClient = typeof window !== 'undefined' && window.ethereum ? createWalletClient({
   chain: baseSepolia,
-  transport: custom(window.ethereum!),
-})
+  transport: custom(window.ethereum),
+}) : undefined;
