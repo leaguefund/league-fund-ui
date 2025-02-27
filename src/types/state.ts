@@ -27,7 +27,7 @@ export interface RewardInfo {
     leagueName: string;
     teamName: string;
     rewardName: string;
-    usdcAmount: BigInt;
+    usdcAmount: bigint;
     imageData: string;
 }
 
