@@ -30,7 +30,7 @@ const AuxiliaryHeader: React.FC = () => {
   }, [state.address]);
 
   return (
-    <div key={isExpanded ? 'expanded' : 'collapsed'} className="left-0 right-0 bg-gray-100 border-b border-gray-200 z-[99998] dark:bg-gray-900 dark:border-gray-800">
+    <div className="sticky top-[57px] left-0 right-0 bg-gray-100 border-b border-gray-200 z-[99998] dark:bg-gray-900 dark:border-gray-800">
       <div className={`flex items-center h-12 transition-all duration-300 ${
         isExpanded ? 'lg:ml-64' : 'lg:ml-20'
       }`}>
