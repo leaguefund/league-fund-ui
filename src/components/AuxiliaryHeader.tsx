@@ -30,8 +30,8 @@ const AuxiliaryHeader: React.FC = () => {
   }, [state.address]);
 
   return (
-    <div key={isExpanded ? 'expanded' : 'collapsed'} className="sticky top-[57px] w-full bg-gray-100 border-b border-gray-200 z-[99998] dark:bg-gray-800/40 dark:border-gray-800">
-      <div className={`w-full flex items-center h-12 transition-all duration-300 ${
+    <div key={isExpanded ? 'expanded' : 'collapsed'} className="sticky top-[57px] left-0 right-0 bg-gray-100 border-b border-gray-200 z-[99998] dark:bg-gray-900 dark:border-gray-800">
+      <div className={`flex items-center h-12 transition-all duration-300 ${
         isExpanded ? 'lg:ml-64' : 'lg:ml-20'
       }`}>
         <div className="flex items-center pl-5 lg:pl-6 min-w-0">
@@ -47,7 +47,7 @@ const AuxiliaryHeader: React.FC = () => {
           </h2>
         </div>
         <div className="ml-auto px-5 lg:px-6">
-          <div className="px-3 py-1.5 bg-white rounded-lg dark:bg-gray-700/60">
+          <div className="px-3 py-1.5 bg-white rounded-lg dark:bg-gray-800">
             <span className="text-base font-medium text-gray-800 dark:text-white">
               ${leagueDues}
             </span>
