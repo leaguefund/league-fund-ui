@@ -1,5 +1,5 @@
-import Landing from "@/components/Landing";
+import SleeperUsername from "@/components/SleeperUsername";
 
 export default function Home() {
-  return <Landing />;
+  return <SleeperUsername />;
 } 

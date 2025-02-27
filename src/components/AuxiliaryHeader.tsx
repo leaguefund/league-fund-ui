@@ -13,10 +13,11 @@ const AuxiliaryHeader: React.FC = () => {
 
   React.useEffect(() => {
     const fetchLeagueInfo = async () => {
-      if (state.address) {
+      const contractAddress = state.leagueSelected?.contractAddress;
+      if (contractAddress) {
         try {
-          const name = await getLeagueName(state.address);
-          const dues = await getLeagueDues(state.address);
+          const name = await getLeagueName(contractAddress);
+          const dues = await getLeagueDues(contractAddress);
           setLeagueName(name);
           setLeagueDues(dues);
         } catch (error) {
@@ -26,7 +27,7 @@ const AuxiliaryHeader: React.FC = () => {
     };
 
     fetchLeagueInfo();
-  }, [state.address]);
+  }, [state.leagueSelected?.contractAddress]);
 
   return (
     <header className="sticky top-[57px] flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
