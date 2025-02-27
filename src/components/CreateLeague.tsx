@@ -50,7 +50,8 @@ const CreateLeague: React.FC = () => {
     if (!hasCreatedLeague && status.statusName === 'success' && status.statusData?.transactionReceipts?.[0]?.logs?.[2]) {
       try {
         // Save the league address from the specific path in the response
-        const leagueAddress = status.statusData.transactionReceipts[0].logs[2];
+        const leagueAddress = status.statusData.transactionReceipts[0].logs[2].address;
+        console.log('League address:', leagueAddress);
         sessionStorage.setItem('leagueAddress', leagueAddress);
         setHasCreatedLeague(true);
         
