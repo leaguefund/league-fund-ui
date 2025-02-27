@@ -13,14 +13,11 @@ import ApiService from '@/services/backend';
 
 const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
-  const [calls, setCalls] = useState<ContractCall[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { state, dispatch } = useGlobalState();
   const { showNotification } = useNotification();
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
   const factoryAddress = "0x466C4Ff27b97fF5b11A3AD61F4b61d2e02a18e35";
-  const hasAttemptedApiCall = useRef(false);
   const duesInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-focus the dues input
@@ -28,75 +25,11 @@ const CreateLeague: React.FC = () => {
     duesInputRef.current?.focus();
   }, []);
 
-  const handleCreateLeague = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (isLoading) return;
-
-    setIsLoading(true);
-    try {
-      const response = await ApiService.createLeague(state.username || '');
-      if (response.league_address) {
-        dispatch({ 
-          type: 'SET_LEAGUE_ADDRESS', 
-          payload: response.league_address as `0x${string}` 
-        });
-        router.push('/confirm-league');
-      }
-    } catch (error: any) {
-      console.error('Error creating league:', error);
-      showNotification({
-        variant: 'error',
-        title: 'Error',
-        description: error.message || 'Failed to create league',
-        hideDuration: 5000
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Fetch league data on component mount
-  useEffect(() => {
-    async function fetchLeagueData() {
-      // Skip if we've already attempted the call
-      if (hasAttemptedApiCall.current) return;
-      
-      hasAttemptedApiCall.current = true;
-      try {
-        const response = await ApiService.createLeague(state.username || '');
-        if (response.league_address) {
-          dispatch({ 
-            type: 'SET_LEAGUE_ADDRESS', 
-            payload: response.league_address as `0x${string}` 
-          });
-        }
-      } catch (error: any) {
-        console.error('Error fetching league data:', error);
-        showNotification({
-          variant: 'error',
-          title: 'Error',
-          description: error.message || 'Failed to fetch league data',
-          hideDuration: 5000
-        });
-      }
-    }
-    fetchLeagueData();
-  }, [dispatch, showNotification, state.username]);
-
-  useEffect(() => {
-    async function fetchCalls() {
-      const duesNumber = Number(dues);
-      if (duesNumber > 0 && state.selectedLeague?.name) {
-        setCalls([
-          getApproveCall(usdcAddress, factoryAddress, duesNumber * 1e6),
-          getCreateLeagueCall(state.selectedLeague.name, duesNumber * 1e6, state.selectedLeague.name)
-        ])
-      } else {
-        setCalls([]);
-      }
-    }
-    fetchCalls();
-  }, [dues, state.selectedLeague]);
+  // Calculate current calls based on dues
+  const currentCalls = Number(dues) > 0 && state.selectedLeague?.name ? [
+    getApproveCall(usdcAddress, factoryAddress, Number(dues) * 1e6),
+    getCreateLeagueCall(state.selectedLeague.name, Number(dues) * 1e6, state.selectedLeague.name)
+  ] : [];
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -161,18 +94,13 @@ const CreateLeague: React.FC = () => {
               />
             </div>
 
-            {/* Create League Button */}
-            <button 
-              onClick={handleCreateLeague}
-              disabled={isLoading || !dues || Number(dues) <= 0}
-              className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-4 border-white/30 border-t-white" />
-              ) : (
-                <span className="text-xl">Create League Treasury</span>
-              )}
-            </button>
+            {/* Transaction Button */}
+            <div className="w-full [&_button]:w-full [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:space-x-3 [&_button]:bg-gray-700 [&_button:hover]:bg-gray-600 [&_button]:text-white [&_button]:py-6 [&_button]:rounded-lg [&_button]:transition-colors [&_button:disabled]:opacity-50 [&_button:disabled]:cursor-not-allowed [&_button_span]:text-xl">
+              <TransactionDefault
+                isSponsored={true}
+                calls={currentCalls}
+              />
+            </div>
           </div>
 
           {/* Start Over Link */}
