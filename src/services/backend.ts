@@ -57,12 +57,10 @@ class ApiService {
             return data;
         } catch (error: any) {
             console.error("Error in fetchData:", error);
-            // If the error is already formatted (from our API), throw it as is
-            if (error.message) {
-                throw error;
+            if (!error.message) {
+                throw new Error('An unexpected error occurred. Please try again.');
             }
-            // Otherwise wrap it in a more user-friendly message
-            throw new Error('An unexpected error occurred. Please try again.');
+            throw error;
         }
     }
 
