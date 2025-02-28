@@ -138,7 +138,7 @@ const MintReward: React.FC = () => {
   const fetchNewImage = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.getRewardImage();
+      const response = await ApiService.getRewardImage(inputValue);
       setImageData(response.image_data);
     } catch (error: any) {
       console.error('Error generating new reward image:', error);
@@ -229,7 +229,7 @@ const MintReward: React.FC = () => {
                 />
                 <button 
                   onClick={handleChange}
-                  disabled={isLoading}
+                  disabled={isLoading || !inputValue.trim()}
                   className="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Change

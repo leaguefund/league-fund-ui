@@ -33,6 +33,7 @@ interface RewardImageData extends SessionData {
     name: string;
     receiver_wallet: string;
     league_address: string;
+    prompt_text: string;
 }
 
 interface RewardReadData extends SessionData {
@@ -121,13 +122,14 @@ class ApiService {
         return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
     }
 
-    static getRewardImage() {
+    static getRewardImage(promptText: string) {
         console.log('Fetching reward image...');
         const selectedLeague = sessionStorage.getItem('selectedLeague');
         const data = {
             name: sessionStorage.getItem('username') || '',
-            receiver_wallet: '',
-            league_address: sessionStorage.getItem('leagueAddress') || ''
+            receiver_wallet: sessionStorage.getItem('wallet') || '',
+            league_address: sessionStorage.getItem('leagueAddress') || '',
+            prompt_text: promptText
         }
         return this.fetchData<RewardImageData>("backendApiRewardImage", data);
     }
