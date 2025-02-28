@@ -76,7 +76,7 @@ const MintReward: React.FC = () => {
   // Load initial image when rewards are available
   useEffect(() => {
     const loadImage = async () => {
-      if (rewardPending && !hasLoadedImage) {
+      if (!hasLoadedImage && rewardPending) {
         try {
           const response = await ApiService.readRewardImage();
           setImageData(response.image_data);
@@ -91,7 +91,7 @@ const MintReward: React.FC = () => {
       }
     };
     loadImage();
-  }, [rewardPending, hasLoadedImage, showNotification]);
+  }, [rewardPending, hasLoadedImage]);
 
   // Update contract calls when image data changes
   useEffect(() => {

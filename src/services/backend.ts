@@ -47,7 +47,8 @@ class ApiService {
         
         console.log('=== ApiService.fetchData ===');
         console.log('URL:', url);
-        console.log('Body:', body);
+        console.log('Raw body:', body);
+        console.log('Stringified body:', JSON.stringify(body));
 
         const options: RequestInit = {
             method: 'POST',
@@ -57,7 +58,7 @@ class ApiService {
             body: JSON.stringify(body)
         };
 
-        console.log('Options before fetchWithSession:', options);
+        console.log('Final request options:', options);
 
         try {
             const response = await fetchWithSession(url, options);
@@ -137,10 +138,16 @@ class ApiService {
 
     static readRewardImage() {
         console.log('Reading reward image...');
+        const storedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
+        console.log('Value from sessionStorage (selectedLeagueAddress):', storedLeagueAddress);
+        
         const data = {
-            league_address: sessionStorage.getItem('leagueAddress') || '',
+            league_address: storedLeagueAddress || '',
             winner_wallet: sessionStorage.getItem('wallet') || ''
-        }
+        };
+        console.log('Data object created:', data);
+        console.log('Data object stringified:', JSON.stringify(data));
+        
         return this.fetchData<RewardReadData>("backendApiRewardRead", data);
     }
 }
