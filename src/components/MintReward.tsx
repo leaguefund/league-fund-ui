@@ -9,7 +9,7 @@ import { useNotification } from '@/context/NotificationContext';
 const MintReward: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageData, setImageData] = useState<string | null>(null);
-  const [inputValue, setInputValue] = useState('Pengiun');
+  const [inputValue, setInputValue] = useState('');
   const router = useRouter();
   
   const { state } = useGlobalState();
@@ -58,12 +58,12 @@ const MintReward: React.FC = () => {
           </p>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-8 flex flex-col items-center">
           {/* Reward Image Section */}
-          <div className="space-y-4">
-            <label className="text-xl text-gray-300">Reward Artwork</label>
+          <div className="space-y-4 w-full max-w-[320px]">
+            <label className="text-xl text-gray-300 block text-center">Reward Artwork</label>
             <div className="flex flex-col items-center">
-              <div className="relative w-full max-w-[400px] aspect-square bg-gray-800 rounded-lg overflow-hidden">
+              <div className="relative w-full aspect-square bg-gray-800 rounded-lg overflow-hidden">
                 {isLoading ? (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/30 border-t-white" />
@@ -80,7 +80,7 @@ const MintReward: React.FC = () => {
               </div>
               
               {/* Input and Change Button */}
-              <div className="w-full max-w-[400px] mt-4 flex gap-2">
+              <div className="w-[140%] -mx-[20%] mt-4 flex gap-2">
                 <input 
                   type="text"
                   value={inputValue}
@@ -100,13 +100,15 @@ const MintReward: React.FC = () => {
           </div>
 
           {/* Claim Reward Button */}
-          <button 
-            onClick={handleClaimReward}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="text-xl">Claim Reward NFT</span>
-          </button>
+          <div className="w-full max-w-[320px]">
+            <button 
+              onClick={handleClaimReward}
+              disabled={isLoading}
+              className="w-[140%] -mx-[20%] flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span className="text-xl">Claim Reward NFT</span>
+            </button>
+          </div>
         </div>
       </div>
     </main>
