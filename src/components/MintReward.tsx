@@ -15,6 +15,12 @@ interface Reward {
   name: string;
 }
 
+interface OnChainReward {
+  name: string;
+  amount: bigint;
+  nft_image?: string;
+}
+
 const MintReward: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -28,9 +34,9 @@ const MintReward: React.FC = () => {
   const { state } = useGlobalState();
   const { showNotification } = useNotification();
 
-  // Check if user has claimable rewards
+  // Check if user has claimable rewards and load initial image
   useEffect(() => {
-    async function fetchUserRewards() {
+    async function initialize() {
       console.log('Fetching user rewards with params:', {
         selectedLeagueAddress: state.selectedLeagueAddress,
         wallet: state.wallet
@@ -38,7 +44,7 @@ const MintReward: React.FC = () => {
 
       if (state.selectedLeagueAddress && state.wallet) {
         try {
-          const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet);
+          const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet) as OnChainReward[];
           console.log('User Rewards Response:', {
             rewards: teamRewards,
             hasRewards: teamRewards.length > 0,
@@ -50,6 +56,22 @@ const MintReward: React.FC = () => {
               name: teamRewards[0].name,
               amount: teamRewards[0].amount.toString()
             });
+            // Load initial image
+            setIsLoading(true);
+            try {
+              const response = await ApiService.readRewardImage();
+              setImageData(response.reward.nft_image);
+            } catch (error: any) {
+              console.error('Error fetching initial reward image:', error);
+              showNotification({
+                variant: 'error',
+                title: 'Error',
+                description: error.message || 'Failed to fetch initial reward image',
+                hideDuration: 5000
+              });
+            } finally {
+              setIsLoading(false);
+            }
           }
         } catch (error) {
           console.error('Error fetching user rewards:', error);
@@ -66,7 +88,7 @@ const MintReward: React.FC = () => {
         setIsInitialLoading(false);
       }
     }
-    fetchUserRewards();
+    initialize();
   }, [state.wallet, state.selectedLeagueAddress]);
 
   // Update contract calls when image data changes
@@ -82,24 +104,6 @@ const MintReward: React.FC = () => {
     }
     fetchCalls();
   }, [state.selectedLeagueAddress, imageData]);
-
-  const fetchInitialImage = async () => {
-    setIsLoading(true);
-    try {
-      const response = await ApiService.readRewardImage();
-      setImageData(response.image_data);
-    } catch (error: any) {
-      console.error('Error fetching initial reward image:', error);
-      showNotification({
-        variant: 'error',
-        title: 'Error',
-        description: error.message || 'Failed to fetch initial reward image',
-        hideDuration: 5000
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const fetchNewImage = async () => {
     setIsLoading(true);
@@ -118,11 +122,6 @@ const MintReward: React.FC = () => {
       setIsLoading(false);
     }
   };
-
-  // Initial image load
-  useEffect(() => {
-    fetchInitialImage();
-  }, []);
 
   const handleChange = () => {
     fetchNewImage();
