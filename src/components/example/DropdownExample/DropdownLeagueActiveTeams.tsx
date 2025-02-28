@@ -27,6 +27,9 @@ export default function DropdownLeagueActiveTeams({
           console.log(state.selectedLeagueAddress)
           console.log(activeTeams)
           setActiveTeams([...activeTeams]);
+          if (activeTeams.length > 0 && !selectedTeam) {
+            setSelectedTeam(activeTeams[0]);
+          }
         } catch (error) {
           console.error('Error fetching leagues:', error);
         }
@@ -35,7 +38,7 @@ export default function DropdownLeagueActiveTeams({
       }
     };
     fetchActiveTeams();
-  }, [state.selectedLeagueAddress]);
+  }, [state.selectedLeagueAddress, selectedTeam, setSelectedTeam]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);

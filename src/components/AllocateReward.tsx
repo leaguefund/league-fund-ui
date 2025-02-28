@@ -22,6 +22,9 @@ const AllocateReward: React.FC = () => {
     async function checkCommissioner() {
       if (state.walletLeagues?.filter(league => league.leagueAddress === state.selectedLeagueAddress)[0].commissioner) {
         setIsCommissioner(true);
+        setTimeout(() => {
+          rewardNameInputRef.current?.focus();
+        }, 0);
       } else {
         setIsCommissioner(false);
       }
@@ -49,10 +52,6 @@ const AllocateReward: React.FC = () => {
       setTeamAddress(null);
     }
   }, [selectedTeam]);
-
-  useEffect(() => {
-    rewardNameInputRef.current?.focus();
-  }, []);
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -116,14 +115,13 @@ const AllocateReward: React.FC = () => {
               </div>
 
               {/* Transaction Button */}
-              {calls.length > 0 && (
-                <div className="pt-4">
-                  <TransactionDefault
-                    isSponsored={true}
-                    calls={calls}
-                  />
-                </div>
-              )}
+              <div className="pt-4">
+                <TransactionDefault
+                  isSponsored={true}
+                  calls={calls}
+                  disabled={!teamAddress || !rewardName || amount <= 0}
+                />
+              </div>
             </form>
           </>
         )}
