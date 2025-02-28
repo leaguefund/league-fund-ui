@@ -7,8 +7,8 @@ const Logo = () => {
       <Image
         src="/images/logo/LeagueFund.png" // ✅ Ensure the leading slash
         alt="LeagueFund Logo"
-        width={100} // Adjust as needed
-        height={100}
+        width={150} // Adjust as needed
+        height={150}
         priority
       />
     </Link>

@@ -10,6 +10,8 @@ import { useGlobalState } from '@/context/GlobalStateContext';
 import { useNotification } from '@/context/NotificationContext';
 import ApiService from '@/services/backend';
 import { useRouter } from 'next/navigation';
+import { WalletDefault } from '@coinbase/onchainkit/wallet';
+import { useAccount } from 'wagmi';
 
 const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
@@ -21,6 +23,8 @@ const CreateLeague: React.FC = () => {
   const factoryAddress = "0xde527c61Baa3AbFbcc532625BbD855d56217DB09";
   const duesInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  // const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
 
   // Auto-focus the dues input and set createLeague
   useEffect(() => {
@@ -84,6 +88,7 @@ const CreateLeague: React.FC = () => {
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
         {/* Title Section */}
+        123-{isConnected}-456
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             Create League
@@ -144,13 +149,21 @@ const CreateLeague: React.FC = () => {
             </div>
 
             {/* Transaction Button */}
-            <div className="w-full [&_button]:w-full [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:space-x-3 [&_button]:bg-gray-700 [&_button:hover]:bg-gray-600 [&_button]:text-white [&_button]:py-6 [&_button]:rounded-lg [&_button]:transition-colors [&_button:disabled]:opacity-50 [&_button:disabled]:cursor-not-allowed [&_button_span]:text-xl">
-              <TransactionDefault
-                isSponsored={true}
-                calls={currentCalls}
-                onStatus={handleTransactionStatus}
-              />
-            </div>
+            { isConnected && (
+                <div className="w-full [&_button]:w-full [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:space-x-3 [&_button]:bg-gray-700 [&_button:hover]:bg-gray-600 [&_button]:text-white [&_button]:py-6 [&_button]:rounded-lg [&_button]:transition-colors [&_button:disabled]:opacity-50 [&_button:disabled]:cursor-not-allowed [&_button_span]:text-xl">
+                <TransactionDefault
+                  isSponsored={true}
+                  calls={currentCalls}
+                  onStatus={handleTransactionStatus}
+                />
+              </div>
+            )}
+            { !isConnected && (
+              <div className="w-full [&_button]:w-full [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:space-x-3 [&_button]:bg-gray-700 [&_button:hover]:bg-gray-600 [&_button]:text-white [&_button]:py-6 [&_button]:rounded-lg [&_button]:transition-colors [&_button:disabled]:opacity-50 [&_button:disabled]:cursor-not-allowed [&_button_span]:text-xl">
+                <WalletDefault />
+              </div>              
+            )}
+
           </div>
 
           {/* Start Over Link */}

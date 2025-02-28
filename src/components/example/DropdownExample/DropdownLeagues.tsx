@@ -8,8 +8,8 @@ import { WalletLeague } from '@/types/state';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
-  const [leagueBalance, setLeagueBalance] = useState<number | null>(null);
-  const [activeTeams, setActiveTeams] = useState<number | null>(null);
+  // const [leagueBalance, setLeagueBalance] = useState<number | null>(null);
+  // const [activeTeams, setActiveTeams] = useState<number | null>(null);
   const { state, dispatch } = useGlobalState();
 
   useEffect(() => {
@@ -49,14 +49,14 @@ export default function DropdownLeagues() {
           const activeTeams = await getLeagueNActiveTeams(state.selectedLeagueAddress);
           console.log('League Balance:', totalBalance);
           console.log('League Teams:', activeTeams);
-          setLeagueBalance(totalBalance);
-          setActiveTeams(activeTeams);
+          // setLeagueBalance(totalBalance);
+          // setActiveTeams(activeTeams);
         } catch (error) {
           console.error('Error fetching league info:', error);
         }
       } else {
-        setLeagueBalance(null);
-        setActiveTeams(null);
+        // setLeagueBalance(null);
+        // setActiveTeams(null);
       }
     };
     fetchLeagueInfo();
@@ -116,14 +116,15 @@ export default function DropdownLeagues() {
                   onItemClick={() => updateSelectedLeague(data)}
                   className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50 transition-colors duration-200"
                 >
-                  <span className="truncate">{data.leagueName}</span>
+                  <span>{data.leagueName}</span><br></br>
+                  <span className="truncate">{data.leagueAddress}</span>
                 </DropdownItem>
               </li>
             ))}
           </ul>
         </Dropdown>
       </div>
-      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
+      {/* <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
         Selected League: {state.selectedLeagueName ? state.selectedLeagueName : ''}
       </p>
       <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
@@ -134,7 +135,7 @@ export default function DropdownLeagues() {
       </p>
       <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
         Active teams: {activeTeams ? activeTeams : ''}
-      </p>
+      </p> */}
     </div>
   );
 }
