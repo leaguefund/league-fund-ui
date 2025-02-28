@@ -32,7 +32,10 @@ const JoinTopUp: React.FC = () => {
       console.log('Topping up wallet for user');
       // For now, just simulate an API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      router.push('/join-league');
+      
+      // Get the league address from global state
+      const leagueAddress = state.selectedWalletLeague;
+      router.push(`/join-league${leagueAddress ? `?league_address=${leagueAddress}` : ''}`);
     } catch (error) {
       console.error('Error topping up wallet:', error);
     } finally {
