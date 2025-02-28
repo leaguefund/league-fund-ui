@@ -188,6 +188,9 @@ module.exports = {
         14.5: "3.625rem",
         15: "3.75rem",
       },
+      minHeight: {
+        screen: '70vh'
+      }
     },
   },
   plugins: [require("@tailwindcss/forms"), require("autoprefixer")],
