@@ -537,14 +537,14 @@ const AppSidebar: React.FC = () => {
               {/* {renderMenuItems(navItems, "main")} */}
               <ul className="flex flex-col gap-4">
                 <li key="balance">
-                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                   <span className="menu-item-text">💰 ${leagueBalance}</span>
-                    </a>
+                  </a>
                 </li>
                 <li key="yield">
-                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                   <span className="menu-item-text text-gray-400">📈 Yield <Badge variant="light" color="primary">Coming Soon</Badge></span>
-                    </a>
+                  </a>
                 </li>
             </ul>
             </div>
@@ -566,7 +566,7 @@ const AppSidebar: React.FC = () => {
               {/* {renderMenuItems(navItems, "main")} */}
               <ul className="flex flex-col gap-4">
                 <li key="teams">
-                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                   <span className="menu-item-text">
                       👏 
                       {activeTeams.length > 1 ? (
@@ -578,18 +578,17 @@ const AppSidebar: React.FC = () => {
                   </a>
                 </li>
                 <li key="invite">
-                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                   <span className="menu-item-text">
                       🔗 Invite Link 
                     </span>
                   </a>
                 </li>
                 <li key="settings">
-                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                   
                     <span className="menu-item-text text-gray-400">
                       🎚️ Season Settings 
-                      {/* <Badge variant="light" color="primary">Coming Soon</Badge> */}
                     </span>
                   </a>
                 </li>
@@ -610,11 +609,10 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-              {/* {renderMenuItems(navItems, "main")} */}
               <ul className="flex flex-col gap-4">
                 <li key="allocate">
                 {isCommissioner && (
-                      <a className="menu-item group menu-item-inactive" href="/allocate-rewards">
+                      <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                       <span className="menu-item-text">💸 Send</span>
                       </a>
                     )}
@@ -623,7 +621,7 @@ const AppSidebar: React.FC = () => {
                   )}
                 </li>
                 <li key="claim">
-                  <a className="menu-item group menu-item-inactive" href="/mint-reward">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                   <span className="menu-item-text">🏆 Claim</span>
                   </a>
                 </li>
