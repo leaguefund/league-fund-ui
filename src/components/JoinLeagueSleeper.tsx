@@ -61,14 +61,20 @@ const JoinLeagueSleeper: React.FC = () => {
     initializeWithLeagueAddress();
   }, [searchParams, dispatch]);
 
-  const handleSelectUser = async (username: string) => {
+  const handleSelectUser = async (user: TeamMember) => {
     setIsLoading(true);
     try {
-      // TODO: Implement user selection functionality
-      console.log('Selected user:', username);
-      // For now, just simulate an API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      router.push('/join-connect-wallet');
+      // Set the selected user in global state (as fallback for page refreshes)
+      dispatch({
+        type: 'SET_SELECTED_SLEEPER_USER',
+        payload: {
+          username: user.username,
+          avatar: user.avatar
+        }
+      });
+      
+      // Navigate with user data as props
+      router.push(`/join-connect-wallet?username=${encodeURIComponent(user.username)}&avatar=${encodeURIComponent(user.avatar || '')}`);
     } catch (error) {
       console.error('Error selecting user:', error);
     } finally {
@@ -102,7 +108,7 @@ const JoinLeagueSleeper: React.FC = () => {
           {leagueData?.teams.teams.map((user, index) => (
             <button
               key={index}
-              onClick={() => handleSelectUser(user.username)}
+              onClick={() => handleSelectUser(user)}
               disabled={isLoading}
               className="flex flex-col items-center p-6 bg-gray-800/50 rounded-lg hover:bg-gray-700/50 transition-colors space-y-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
