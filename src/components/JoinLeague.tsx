@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import { getApproveCall, getJoinLeagueCall } from '../utils/createCallUtils';
 import { getLeagueDues } from '../utils/onChainReadUtils';
@@ -14,7 +14,12 @@ const JoinLeague: React.FC = () => {
   const [calls, setCalls] = useState<ContractCall[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const teamNameInputRef = useRef<HTMLInputElement>(null);
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
+
+  useEffect(() => {
+    teamNameInputRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     async function fetchDues() {
@@ -42,18 +47,25 @@ const JoinLeague: React.FC = () => {
     fetchCalls();
   }, [leagueAddress, teamName, dues]);
 
-  const handleJoinLeague = async () => {
+  const handleJoinLeague = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (!leagueAddress || !teamName) return;
+    
     setIsLoading(true);
     try {
       // For now, just simulate an API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      router.push('/join-league');
+      router.push('/league');
     } catch (error) {
       console.error('Error joining league:', error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const isFormValid = Boolean(leagueAddress && teamName && !isLoading);
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -67,15 +79,17 @@ const JoinLeague: React.FC = () => {
           </p>
         </div>
 
-        <div className="space-y-8">
+        <form onSubmit={handleJoinLeague} className="space-y-8">
           <div className="space-y-2">
             <label className="text-xl text-gray-300">Team Name</label>
             <input
+              ref={teamNameInputRef}
               type="text"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
               placeholder="Enter your team name"
               className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
+              required
             />
           </div>
 
@@ -87,12 +101,13 @@ const JoinLeague: React.FC = () => {
               onChange={(e) => setLeagueAddress(e.target.value as `0x${string}`)}
               placeholder="Enter league address"
               className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
+              required
             />
           </div>
 
           <button
-            onClick={handleJoinLeague}
-            disabled={isLoading}
+            type="submit"
+            disabled={!isFormValid}
             className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
@@ -101,7 +116,7 @@ const JoinLeague: React.FC = () => {
               <span className="text-xl">Join League</span>
             )}
           </button>
-        </div>
+        </form>
 
         {calls.length > 0 && (
           <div className="mt-8">
