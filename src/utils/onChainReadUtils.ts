@@ -38,6 +38,18 @@ export async function getLeagueActiveTeams(leagueAddress: `0x${string}`) {
     return (activeTeams)
 }
 
+export async function getCommissioner(leagueAddress: `0x${string}`, userAddress: `0x${string}`) {
+    const contract = getContract({
+        address: leagueAddress,
+        abi: leagueContract.abi,
+        client: { public: publicClient, wallet: walletClient }
+    })
+
+    const isCommissioner = await contract.read.hasRole(["0xf40a29943eea2d5a1b57ac2700eb4e82e89f06c5825e85a2046bfcfb4eea28a7" ,userAddress])
+    return (isCommissioner)
+}
+
+
 export async function getUserLeagues(userAddress: `0x${string}`) {
     const contract = getContract({
         address: factoryContract.address,
@@ -69,7 +81,6 @@ export async function getRewardNFTAddress() {
     const rewardNFTAddress = await contract.read.leagueRewardNFT()
     return rewardNFTAddress
 }
-
 
 export async function getLeagueTotalBalance(leagueAddress: `0x${string}`) {
     const contract = getContract({

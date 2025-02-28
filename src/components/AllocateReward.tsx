@@ -17,9 +17,6 @@ const AllocateReward: React.FC = () => {
 
   const { state } = useGlobalState();
 
-  // FOR THIS WHOLE PAGE, WE NEED TO MAKE SURE THAT THE USER IS THE COMMISSIONER OF THE LEAGUE
-  console.log(state.walletLeagues?.filter(league => league.leagueAddress === state.selectedLeagueAddress)[0].commissioner)
-
   useEffect(() => {
     async function checkCommissioner() {
       if (state.walletLeagues?.filter(league => league.leagueAddress === state.selectedLeagueAddress)[0].commissioner) {

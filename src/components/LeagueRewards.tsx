@@ -33,7 +33,6 @@ const LeagueRewards: React.FC = () => {
       )}
       {leagueRewards.length > 0 && (
         <div>
-          <h1>League Rewards</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {leagueRewards.map((reward, index) => (
               <NFTCard
