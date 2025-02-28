@@ -51,48 +51,79 @@ const AllocateReward: React.FC = () => {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
-      { !isCommissioner && (
-        <div>
-          <h1>You are not the commissioner of this league.</h1>
-          <h1>Only the commissioner can allocate rewards.</h1>
-        </div>
-      )}
-      { isCommissioner && (
-              <>
-                <div>
-                  <h2>Winner</h2>
-                  <DropdownLeagueActiveTeams
-                    selectedTeam={selectedTeam}
-                    setSelectedTeam={setSelectedTeam}
-                  />
-                </div>
-                <div>
-                  <h2>Reward Name</h2>
-                  <input
-                    type="text"
-                    value={rewardName}
-                    onChange={(e) => setRewardName(e.target.value)}
-                    placeholder="Reward Name"
-                  />
-                </div>
-                <div>
-                  <h2>Reward Amount</h2>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(Number(e.target.value))}
-                    placeholder="Reward Amount"
-                  />
-                </div>
-              </>
-            )}
+      <div className="max-w-4xl w-full mt-16 space-y-12">
+        {!isCommissioner ? (
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Commissioner Access Only
+            </h1>
+            <p className="text-xl text-gray-300">
+              Only the commissioner can allocate rewards for this league.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="text-center space-y-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-white">
+                Allocate League Reward
+              </h1>
+              <p className="text-xl text-gray-300">
+                Select a team and specify their reward details
+              </p>
+            </div>
 
-      {calls.length > 0 && (
-        <TransactionDefault
-          isSponsored={true}
-          calls={calls}
-        />
-      )}
+            <form 
+              className="space-y-8 max-w-[320px] mx-auto"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              {/* Winner Selection */}
+              <div className="space-y-2">
+                <label className="text-xl text-gray-300">Winner</label>
+                <DropdownLeagueActiveTeams
+                  selectedTeam={selectedTeam}
+                  setSelectedTeam={setSelectedTeam}
+                />
+              </div>
+
+              {/* Reward Name */}
+              <div className="space-y-2">
+                <label className="text-xl text-gray-300">Reward Name</label>
+                <input
+                  type="text"
+                  value={rewardName}
+                  onChange={(e) => setRewardName(e.target.value)}
+                  className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
+                  placeholder="Enter reward name"
+                />
+              </div>
+
+              {/* Reward Amount */}
+              <div className="space-y-2">
+                <label className="text-xl text-gray-300">Reward Amount (USDC)</label>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
+                  placeholder="Enter amount in USDC"
+                  min="0"
+                  step="1"
+                />
+              </div>
+
+              {/* Transaction Button */}
+              {calls.length > 0 && (
+                <div className="pt-4">
+                  <TransactionDefault
+                    isSponsored={true}
+                    calls={calls}
+                  />
+                </div>
+              )}
+            </form>
+          </>
+        )}
+      </div>
     </main>
   );
 };
