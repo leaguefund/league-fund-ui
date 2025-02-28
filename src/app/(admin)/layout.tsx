@@ -1,5 +1,6 @@
 "use client";
 
+import AuxiliaryHeader from "@/components/AuxiliaryHeader";
 import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
@@ -27,12 +28,13 @@ export default function AdminLayout({
       <Backdrop />
       {/* Main Content Area */}
       <div
-        className={`flex-1 transition-all  duration-300 ease-in-out ${mainContentMargin}`}
+        className={`flex-1 flex flex-col h-screen transition-all duration-300 ease-in-out ${mainContentMargin}`}
       >
         {/* Header */}
         <AppHeader />
+        <AuxiliaryHeader />
         {/* Page Content */}
-        <div className="p-4 mx-auto max-w-screen-2xl md:p-6">{children}</div>
+        <div className="flex-1 p-4 mx-auto w-full max-w-screen-2xl md:p-6 overflow-auto">{children}</div>
       </div>
     </div>
   );
