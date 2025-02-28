@@ -32,7 +32,7 @@ const JoinConnectWallet: React.FC = () => {
       console.log('Connecting wallet for user');
       // For now, just simulate an API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      router.push('/join-top-up');
+      router.push(`/join-top-up?username=${encodeURIComponent(user.username)}&avatar=${encodeURIComponent(user.avatar || '')}`);
     } catch (error) {
       console.error('Error connecting wallet:', error);
     } finally {
@@ -45,7 +45,7 @@ const JoinConnectWallet: React.FC = () => {
       <div className="max-w-4xl w-full mt-16 space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
-            Setup Wallet
+            Set Up Wallet
           </h1>
           <p className="text-xl md:text-2xl text-gray-300">
             Let&apos;s get your dues paid for Champions League.
