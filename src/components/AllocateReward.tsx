@@ -102,12 +102,10 @@ const AllocateReward: React.FC = () => {
                 <label className="text-xl text-gray-300">Reward Amount (USDC)</label>
                 <input
                   type="number"
-                  value={amount}
+                  value={amount || ''}
                   onChange={(e) => setAmount(Number(e.target.value))}
-                  className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
-                  placeholder="Enter amount in USDC"
-                  min="0"
-                  step="1"
+                  className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                  placeholder="Enter reward amount"
                 />
               </div>
 
