@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import { getAllocateRewardCall } from '../utils/createCallUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
@@ -14,6 +14,7 @@ const AllocateReward: React.FC = () => {
   const [calls, setCalls] = useState<ContractCall[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<TeamInfo | null>(null);
   const [isCommissioner, setIsCommissioner] = useState(false);
+  const rewardNameInputRef = useRef<HTMLInputElement>(null);
 
   const { state } = useGlobalState();
 
@@ -48,6 +49,10 @@ const AllocateReward: React.FC = () => {
       setTeamAddress(null);
     }
   }, [selectedTeam]);
+
+  useEffect(() => {
+    rewardNameInputRef.current?.focus();
+  }, []);
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -89,6 +94,7 @@ const AllocateReward: React.FC = () => {
               <div className="space-y-2">
                 <label className="text-xl text-gray-300">Reward Name</label>
                 <input
+                  ref={rewardNameInputRef}
                   type="text"
                   value={rewardName}
                   onChange={(e) => setRewardName(e.target.value)}
