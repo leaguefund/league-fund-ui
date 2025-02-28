@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import AuxiliaryHeader from '../AuxiliaryHeader';
 
 interface LeagueLayoutProps {
   children: React.ReactNode;
