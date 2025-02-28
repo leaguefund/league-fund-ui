@@ -119,16 +119,18 @@ class ApiService {
         // return this.fetchData<SessionData>("backendApiConnectWallet", {});
     }
 
-    static createLeague() {
+    static createLeague(wallet_address: string) {
         console.log('Creating league...');
-        const selectedLeague = sessionStorage.getItem('selectedLeague')
+        const selectedLeague = sessionStorage.getItem('selectedLeague');
         const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).id : '';
         const data = {
             session_id: sessionStorage.getItem('sessionID'),
             league_id: selectedLeagueId || '',
+            wallet_address: wallet_address || '',
             league_address: sessionStorage.getItem('leagueAddress') || '',
             league_dues_usdc: sessionStorage.getItem('leagueDues') || ''
-        }
+        };
+        console.log("Creating league data", data);
         return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
     }
 
@@ -161,4 +163,4 @@ class ApiService {
     }
 }
 
-export default ApiService; 
+export default ApiService;
