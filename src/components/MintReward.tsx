@@ -2,18 +2,52 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { TransactionDefault } from "@coinbase/onchainkit/transaction";
 import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { useNotification } from '@/context/NotificationContext';
+import { getClaimRewardCall } from '../utils/createCallUtils';
+import { getUserRewards } from '../utils/onChainReadUtils';
+import { ContractCall } from '@/types/state';
 
 const MintReward: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageData, setImageData] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
+  const [rewardPending, setRewardPending] = useState(false);
+  const [calls, setCalls] = useState<ContractCall[]>([]);
   const router = useRouter();
   
   const { state } = useGlobalState();
   const { showNotification } = useNotification();
+
+  // Check if user has claimable rewards
+  useEffect(() => {
+    async function fetchUserRewards() {
+      if (state.selectedLeagueAddress && state.wallet) {
+        const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet);
+        console.log('User Rewards:', teamRewards);
+        setRewardPending(teamRewards.length > 0);
+      } else {
+        setRewardPending(false);
+      }
+    }
+    fetchUserRewards();
+  }, [state.wallet, state.selectedLeagueAddress]);
+
+  // Update contract calls when image data changes
+  useEffect(() => {
+    async function fetchCalls() {
+      if (state.selectedLeagueAddress && imageData) {
+        setCalls([
+          getClaimRewardCall(state.selectedLeagueAddress, `data:image/png;base64,${imageData}`),
+        ]);
+      } else {
+        setCalls([]);
+      }
+    }
+    fetchCalls();
+  }, [state.selectedLeagueAddress, imageData]);
 
   const fetchRewardImage = async () => {
     setIsLoading(true);
@@ -41,10 +75,20 @@ const MintReward: React.FC = () => {
     fetchRewardImage();
   };
 
-  const handleClaimReward = async () => {
-    // Stub for future functionality
-    console.log('Claim reward functionality will be implemented here');
-  };
+  if (!rewardPending) {
+    return (
+      <main className="min-h-screen flex flex-col items-center px-4">
+        <div className="max-w-4xl w-full mt-16 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            No Rewards Available
+          </h1>
+          <p className="text-gray-300">
+            You don't have any claimable rewards at this time.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -99,15 +143,23 @@ const MintReward: React.FC = () => {
             </div>
           </div>
 
-          {/* Claim Reward Button */}
+          {/* Claim Reward Button/Transaction */}
           <div className="w-full max-w-[320px]">
-            <button 
-              onClick={handleClaimReward}
-              disabled={isLoading}
-              className="w-[140%] -mx-[20%] flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="text-xl">Claim Reward NFT</span>
-            </button>
+            {calls.length > 0 ? (
+              <div className="w-[140%] -mx-[20%]">
+                <TransactionDefault
+                  isSponsored={true}
+                  calls={calls}
+                />
+              </div>
+            ) : (
+              <button 
+                disabled={true}
+                className="w-[140%] -mx-[20%] flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="text-xl">Generate Image First</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
