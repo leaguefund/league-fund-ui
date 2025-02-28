@@ -2,32 +2,65 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-import { getUserLeagues } from '@/utils/onChainReadUtils';
+import { getUserLeagues, getLeagueTotalBalance, getLeagueNActiveTeams } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
+import { WalletLeague } from '@/types/state';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
-  const [leagues, setLeagues] = useState<Array<{ league: `0x${string}`; joined: boolean; currentlyActive: boolean }>>([]);
-  const [teamAddress] = useState<`0x${string}`>('0xE262C1e7c5177E28E51A5cf1C6944470697B2c9F');
+  // const [leagueBalance, setLeagueBalance] = useState<number | null>(null);
+  // const [activeTeams, setActiveTeams] = useState<number | null>(null);
   const { state, dispatch } = useGlobalState();
-  // const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x');
-  // setLeagueAddress('0x2c2Ff53deC9810D449d9Ea45A669a3614Ff7C3DE');
 
   useEffect(() => {
     const fetchLeagues = async () => {
-      try {
-        const userLeagues = await getUserLeagues(teamAddress);
-        setLeagues(userLeagues);
-        // Initialize with first league if none selected
-        if (userLeagues.length > 0 && !state.address) {
-          dispatch({ type: 'SET_WALLET_ADDRESS', payload: userLeagues[0].league });
+      if (state.wallet) {
+        try {
+          const userLeagues = await getUserLeagues(state.wallet);
+          console.log(state.wallet)
+          console.log(userLeagues)
+          // Filter out undefined values and ensure type safety
+          const validLeagues = userLeagues.filter((league): league is WalletLeague => league !== undefined);
+          dispatch({ type: 'SET_WALLET_LEAGUES', payload: validLeagues });
+          
+          // Initialize with first league if none selected
+          if (validLeagues.length > 0 && !state.selectedLeagueAddress) {
+            dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: validLeagues[0].leagueName });
+            dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: validLeagues[0].leagueAddress });
+          }
+        } catch (error) {
+          console.error('Error fetching leagues:', error);
         }
-      } catch (error) {
-        console.error('Error fetching leagues:', error);
+      } else {
+        dispatch({ type: 'SET_WALLET_LEAGUES', payload: null });
+        dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: null });
+        dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: null });
       }
     };
     fetchLeagues();
-  }, [teamAddress, dispatch, state.address]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.wallet, state.selectedLeagueAddress]);
+
+  useEffect(() => {
+    const fetchLeagueInfo = async () => {
+      if (state.selectedLeagueAddress) {
+        try {
+          const totalBalance = await getLeagueTotalBalance(state.selectedLeagueAddress);
+          const activeTeams = await getLeagueNActiveTeams(state.selectedLeagueAddress);
+          console.log('League Balance:', totalBalance);
+          console.log('League Teams:', activeTeams);
+          // setLeagueBalance(totalBalance);
+          // setActiveTeams(activeTeams);
+        } catch (error) {
+          console.error('Error fetching league info:', error);
+        }
+      } else {
+        // setLeagueBalance(null);
+        // setActiveTeams(null);
+      }
+    };
+    fetchLeagueInfo();
+  }, [state.selectedLeagueAddress]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -37,8 +70,9 @@ export default function DropdownLeagues() {
     setIsOpen(false);
   }
 
-  function updateSelectedLeague(address: `0x${string}`) {
-    dispatch({ type: 'SET_WALLET_ADDRESS', payload: address });
+  function updateSelectedLeague(league: WalletLeague) {
+    dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: league.leagueName });
+    dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: league.leagueAddress });
     setIsOpen(false);
   }
   
@@ -50,7 +84,7 @@ export default function DropdownLeagues() {
           className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 transition-colors duration-200"
         >
           <div className="truncate">
-            {state.address ? `${state.address.slice(0, 6)}...${state.address.slice(-4)}` : 'Select League'}
+            {state.selectedLeagueName ? `${state.selectedLeagueName}` : 'Select League'}
           </div>
           <svg
             className={`flex-shrink-0 w-5 h-5 duration-200 ease-in-out stroke-current ${
@@ -76,22 +110,32 @@ export default function DropdownLeagues() {
           onClose={closeDropdown}
         >
           <ul className="flex flex-col gap-1">
-            {leagues.map((data, index) => (
-              <li key={`${data.league}-${index}`}>
+            {state.walletLeagues?.map((data, index) => (
+              <li key={`${data.leagueName}-${index}`}>
                 <DropdownItem
-                  onItemClick={() => updateSelectedLeague(data.league)}
+                  onItemClick={() => updateSelectedLeague(data)}
                   className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50 transition-colors duration-200"
                 >
-                  <span className="truncate">{data.league.slice(0, 6)}...{data.league.slice(-4)}</span>
+                  <span>{data.leagueName}</span><br></br>
+                  <span className="truncate">{data.leagueAddress}</span>
                 </DropdownItem>
               </li>
             ))}
           </ul>
         </Dropdown>
       </div>
-      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
-        Connected Wallet: {state.address ? state.address.slice(0, 6) + '...' + state.address.slice(-4) : 'Not Connected'}
+      {/* <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
+        Selected League: {state.selectedLeagueName ? state.selectedLeagueName : ''}
       </p>
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
+        League Address: {state.selectedLeagueAddress ? <span className="truncate">{state.selectedLeagueAddress.slice(0, 6)}...{state.selectedLeagueAddress.slice(-4)}</span> : ''}
+      </p>
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
+        League USDC balance: {leagueBalance ? leagueBalance : ''}
+      </p>
+      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
+        Active teams: {activeTeams ? activeTeams : ''}
+      </p> */}
     </div>
   );
 }

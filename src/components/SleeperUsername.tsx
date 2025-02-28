@@ -1,30 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
+import { useNotification } from '@/context/NotificationContext';
 
 const SleeperUsername: React.FC = () => {
   // Local state for form input
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   
   // Get both state and dispatch from global state
   const { state, dispatch } = useGlobalState();
+  const { showNotification } = useNotification();
 
   // If we already have a username in global state, use it
   useEffect(() => {
     if (state.username) {
       setUsername(state.username);
     }
+    // Auto-focus the input
+    inputRef.current?.focus();
   }, [state.username]);
 
-  const handleFindLeague = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!username || isLoading) return;
+    
     setIsLoading(true);
     try {
       const response = await ApiService.getSleeperUser(username);
@@ -34,10 +42,20 @@ const SleeperUsername: React.FC = () => {
       // Update leagues if they come back in the response
       if (response.leagues) {
         dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
+        // Set the first league as the selected league
+        if (response.leagues.length > 0) {
+          dispatch({ type: 'SET_SELECTED_LEAGUE', payload: response.leagues[0] });
+        }
       }
       router.push('/confirm-league');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error finding league:', error);
+      showNotification({
+        variant: 'error',
+        title: 'Error',
+        description: error.message || 'Failed to find Sleeper user',
+        hideDuration: 5000
+      });
     } finally {
       setIsLoading(false);
     }
@@ -50,19 +68,20 @@ const SleeperUsername: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             What is your Sleeper Username?
           </h1>
-          {/* Show leagues count if we have them and leagueSelected exists */}
-          {state.leagues && state.leagueSelected && (
+          {/* Show leagues count if we have them and selectedLeague exists */}
+          {state.leagues && state.selectedLeague && (
             <p className="text-gray-300">
               Found {state.leagues.length} leagues for this account
             </p>
           )}
         </div>
 
-        <div className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Username Input Section */}
           <div className="space-y-2">
             <label className="text-xl text-gray-300">Sleeper Username</label>
             <input 
+              ref={inputRef}
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -78,9 +97,9 @@ const SleeperUsername: React.FC = () => {
           </div>
 
           {/* Find League Button */}
-          <Link 
-            href="/confirm-league"
-            onClick={handleFindLeague}
+          <button 
+            type="submit"
+            disabled={isLoading || !username}
             className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
@@ -97,16 +116,17 @@ const SleeperUsername: React.FC = () => {
                 <span className="text-xl">Find League</span>
               </>
             )}
-          </Link>
+          </button>
 
           {/* Create League Link */}
           <Link 
-            href="/create-league" 
+            target="_blank"
+            href="https://support.fantasypoints.com/hc/en-us/articles/4408091462925-Where-do-I-find-my-Sleeper-username#:~:text=To%20get%20your%20Sleeper%20username,hover%20over%20your%20account%20avatar" 
             className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
           >
-            Create League Manually
+            Where can I find my username? 
           </Link>
-        </div>
+        </form>
       </div>
     </main>
   );

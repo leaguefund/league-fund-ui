@@ -1,25 +1,30 @@
 "use client";
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
+import Logo from "@/components/logo/logo";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
+import { TeamInfo } from '@/types/state';
+import Badge from "@/components/ui/badge/Badge";
+import { useGlobalState } from '@/context/GlobalStateContext';
+import { getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner } from '@/utils/onChainReadUtils';
 import {
   BoxCubeIcon,
-  CalenderIcon,
+  // CalenderIcon,
   ChatIcon,
   ChevronDownIcon,
   DocsIcon,
-  GridIcon,
+  // GridIcon,
   HorizontaLDots,
-  ListIcon,
+  // ListIcon,
   MailIcon,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
-  TableIcon,
-  TaskIcon,
-  UserCircleIcon,
+  // TableIcon,
+  // TaskIcon,
+  // UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 import DropdownLeagues from "@/components/example/DropdownExample/DropdownLeagues";
@@ -31,51 +36,51 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [
-      { name: "Ecommerce", path: "/", pro: false },
-      { name: "Analytics", path: "/analytics", pro: true },
-      { name: "Marketing", path: "/marketing", pro: true },
-      { name: "CRM", path: "/crm", pro: true },
-      { name: "Stocks", path: "/stocks", new: true, pro: true },
-    ],
-  },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    name: "Task",
-    icon: <TaskIcon />,
-    subItems: [
-      { name: "List", path: "/task-list", pro: true },
-      { name: "Kanban", path: "/task-kanban", pro: true },
-    ],
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [
-      { name: "Form Elements", path: "/form-elements", pro: false },
-      { name: "Form Layout", path: "/form-layout", pro: true },
-    ],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [
-      { name: "Basic Tables", path: "/basic-tables", pro: false },
-      { name: "Data Tables", path: "/data-tables", pro: true },
-    ],
-  },
+  // {
+  //   icon: <GridIcon />,
+  //   name: "Dashboard",
+  //   subItems: [
+  //     { name: "Ecommerce", path: "/", pro: false },
+  //     { name: "Analytics", path: "/analytics", pro: true },
+  //     { name: "Marketing", path: "/marketing", pro: true },
+  //     { name: "CRM", path: "/crm", pro: true },
+  //     { name: "Stocks", path: "/stocks", new: true, pro: true },
+  //   ],
+  // },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/calendar",
+  // },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "User Profile",
+  //   path: "/profile",
+  // },
+  // {
+  //   name: "Task",
+  //   icon: <TaskIcon />,
+  //   subItems: [
+  //     { name: "List", path: "/task-list", pro: true },
+  //     { name: "Kanban", path: "/task-kanban", pro: true },
+  //   ],
+  // },
+  // {
+  //   name: "Forms",
+  //   icon: <ListIcon />,
+  //   subItems: [
+  //     { name: "Form Elements", path: "/form-elements", pro: false },
+  //     { name: "Form Layout", path: "/form-layout", pro: true },
+  //   ],
+  // },
+  // {
+  //   name: "Tables",
+  //   icon: <TableIcon />,
+  //   subItems: [
+  //     { name: "Basic Tables", path: "/basic-tables", pro: false },
+  //     { name: "Data Tables", path: "/data-tables", pro: true },
+  //   ],
+  // },
   {
     name: "Pages",
     icon: <PageIcon />,
@@ -98,9 +103,9 @@ const navItems: NavItem[] = [
       { name: "Page 16: League", path: "/league"},
       { name: "Page 17: League Rewards", path: "/"},
       { name: "Page 18: Reward Choose Team", path: "/"},
-      { name: "Page 19: Reward Define Reward", path: "/"},
+      { name: "Page 19: Reward Define Reward", path: "/allocate-reward"},
       { name: "Page 20: Reward Sent", path: "/"},
-      { name: "Page 21: Mint Reward", path: "/"},
+      { name: "Page 21: Mint Reward", path: "/claim-reward"},
       { name: "Page 22: Reward Minted", path: "/"},
       { name: "Page 23: Supply Liquidty", path: "/"},
       { name: "Page 24: Remove Liquidty", path: "/"},
@@ -196,7 +201,36 @@ const supportItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
+  const { state } = useGlobalState();
+  const [activeTeams, setActiveTeams] = useState<TeamInfo[]>([]);
+  const [leagueBalance, setLeagueBalance] = React.useState<number>(0);
+    const [isCommissioner, setIsCommissioner] = useState(false);
 
+  React.useEffect(() => {
+    const fetchLeagueInfo = async () => {
+      const contractAddress = state.selectedLeagueAddress;
+      if (contractAddress) {
+        try {
+          // const name = await getLeagueName(contractAddress);
+          const balance = await getLeagueTotalBalance(contractAddress);
+          const activeTeams = await getLeagueActiveTeams(contractAddress);
+          // const toStore: TeamInfo[] = [];
+          const isCommissioner = state.wallet ? await getCommissioner(contractAddress, state.wallet) : false;
+          setIsCommissioner(isCommissioner);
+
+          // for (const team of activeTeams) {
+          //   const isCommissioner = await getCommissioner(contractAddress, team.wallet);
+          //   toStore.push({ ...team, owner: isCommissioner });
+          // }
+          setActiveTeams([...activeTeams]);
+          setLeagueBalance(balance);
+        } catch (error) {
+          console.error('Error fetching league info:', error);
+        }
+      }
+    };
+    fetchLeagueInfo();
+  }, [state.selectedLeagueAddress]);
   const renderMenuItems = (
     navItems: NavItem[],
     menuType: "main" | "support" | "others"
@@ -398,7 +432,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-full transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed flex flex-col top-16 lg:top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-[calc(100vh-4rem)] lg:h-full transition-all duration-300 ease-in-out z-50 border-r border-gray-200 z-999999
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -412,35 +446,39 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex  ${
+        className={`py-6 flex  ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
         <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
-              <Image
+              {/* <Image
                 className="dark:hidden"
                 src="/images/logo/logo.svg"
                 alt="Logo"
                 width={150}
                 height={40}
-              />
-              <Image
+              /> */}
+              {/* <Image
                 className="hidden dark:block"
                 src="/images/logo/logo-dark.svg"
                 alt="Logo"
                 width={150}
                 height={40}
-              />
+              /> */}
+              <div><Logo /></div>
             </>
+                   
           ) : (
-            <Image
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
+            <div></div>
+            
+            // <Image
+            //   src="/images/logo/logo-icon.svg"
+            //   alt="Logo"
+            //   width={32}
+            //   height={32}
+            // />
           )}
         </Link>
       </div>
@@ -461,7 +499,11 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
+
               <DropdownLeagues />
+              <h2 className={`mb-4 text-xs truncate flex leading-[20px] text-gray-500`}>
+                  📜 {state.selectedLeagueAddress}
+              </h2>
             </div>
             <div>
               <h2
@@ -472,7 +514,117 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                  "Treasury"
+                ) : (
+                  <HorizontaLDots />
+                )}
+              </h2>
+              {/* {renderMenuItems(navItems, "main")} */}
+              <ul className="flex flex-col gap-4">
+                <li key="balance">
+                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <span className="menu-item-text">💰 ${leagueBalance}</span>
+                    </a>
+                </li>
+                <li key="yield">
+                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <span className="menu-item-text text-gray-400">📈 Yield <Badge variant="light" color="primary">Coming Soon</Badge></span>
+                    </a>
+                </li>
+            </ul>
+            </div>
+
+            <div>
+              <h2
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                  !isExpanded && !isHovered
+                    ? "lg:justify-center"
+                    : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Season"
+                ) : (
+                  <HorizontaLDots />
+                )}
+              </h2>
+              {/* {renderMenuItems(navItems, "main")} */}
+              <ul className="flex flex-col gap-4">
+                <li key="teams">
+                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <span className="menu-item-text">
+                      👏 
+                      {activeTeams.length > 1 ? (
+                        ` ${activeTeams.length} Teams`
+                      ) : (
+                        ` ${activeTeams.length} Team`
+                      )}
+                    </span>
+                  </a>
+                </li>
+                <li key="invite">
+                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  <span className="menu-item-text">
+                      🔗 Invite Link 
+                    </span>
+                  </a>
+                </li>
+                <li key="settings">
+                  <a className="menu-item group menu-item-inactive" href="/calendar">
+                  
+                    <span className="menu-item-text text-gray-400">
+                      🎚️ Season Settings 
+                      {/* <Badge variant="light" color="primary">Coming Soon</Badge> */}
+                    </span>
+                  </a>
+                </li>
+            </ul>
+            </div>
+            <div>
+              {state.selectedLeagueAddress}xx
+              <h2
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                  !isExpanded && !isHovered
+                    ? "lg:justify-center"
+                    : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Rewards"
+                ) : (
+                  <HorizontaLDots />
+                )}
+              </h2>
+              {/* {renderMenuItems(navItems, "main")} */}
+              <ul className="flex flex-col gap-4">
+                <li key="allocate">
+                {isCommissioner && (
+                      <a className="menu-item group menu-item-inactive" href="/allocate-rewards">
+                      <span className="menu-item-text">💸 Send</span>
+                      </a>
+                    )}
+                    {!isCommissioner && (
+                      <span className="menu-item-text">💸 Send <Badge variant="light" color="primary">Commissioner Only</Badge></span>
+                  )}
+                </li>
+                <li key="claim">
+                  <a className="menu-item group menu-item-inactive" href="/mint-reward">
+                  <span className="menu-item-text">🏆 Claim</span>
+                  </a>
+                </li>
+            </ul>
+            </div>
+            
+            <div>
+              <h2
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                  !isExpanded && !isHovered
+                    ? "lg:justify-center"
+                    : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Developer"
                 ) : (
                   <HorizontaLDots />
                 )}

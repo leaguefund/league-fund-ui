@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
   AlertIcon,
   CheckCircleIcon,
@@ -13,15 +13,25 @@ interface NotificationProps {
   title: string; // Title text
   description?: string; // Optional description
   hideDuration?: number; // Time in milliseconds to hide the notification (default: 5000ms)
+  onClose: () => void; // Callback when notification should be closed
 }
 
 const Notification: React.FC<NotificationProps> = ({
   variant,
   title,
   description,
-  hideDuration = 3000, // Default hide duration: 5 seconds
+  hideDuration = 3000, // Default hide duration: 3 seconds
+  onClose
 }) => {
-  const [isVisible, setIsVisible] = useState(true);
+  // Auto-hide effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, hideDuration);
+
+    // Cleanup timer on unmount
+    return () => clearTimeout(timer);
+  }, [hideDuration, onClose]);
 
   // Styling configuration for each alert type
   const variantStyles = {
@@ -48,18 +58,6 @@ const Notification: React.FC<NotificationProps> = ({
   };
 
   const { borderColor, iconBg, icon } = variantStyles[variant];
-
-  const handleClose = () => {
-    // Hide the notification
-    setIsVisible(false);
-
-    // Show it again after the specified time
-    setTimeout(() => {
-      setIsVisible(true);
-    }, hideDuration);
-  };
-
-  if (!isVisible) return null; // Don't render anything if not visible
 
   return (
     <div
@@ -88,7 +86,7 @@ const Notification: React.FC<NotificationProps> = ({
 
       {/* Close Button */}
       <button
-        onClick={handleClose}
+        onClick={onClose}
         className="text-gray-400 hover:text-gray-800 dark:hover:text-white/90"
       >
         <CloseIcon />

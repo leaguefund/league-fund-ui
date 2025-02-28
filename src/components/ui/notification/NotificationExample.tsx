@@ -25,6 +25,11 @@ export default function NotificationExample() {
   const handleAcceptAll = () => {
     alert("Accept All clicked");
   };
+
+  const handleClose = () => {
+    // Empty handler for example notifications
+  };
+
   return (
     <div className="space-y-5 sm:space-y-6">
       {/* Announcement Banner */}
@@ -47,19 +52,19 @@ export default function NotificationExample() {
       </ComponentCard>
       {/* Success */}
       <ComponentCard title="Success Notification">
-        <Notification variant="success" title="Success! Action Completed!" />
+        <Notification variant="success" title="Success! Action Completed!" onClose={handleClose} />
       </ComponentCard>
       {/* Info */}
       <ComponentCard title="Info Notification">
-        <Notification variant="info" title="Heads Up! New Information" />
+        <Notification variant="info" title="Heads Up! New Information" onClose={handleClose} />
       </ComponentCard>
       {/* Warning */}
       <ComponentCard title="Warning Notification">
-        <Notification variant="warning" title="Alert: Double Check Required" />
+        <Notification variant="warning" title="Alert: Double Check Required" onClose={handleClose} />
       </ComponentCard>
       {/* Error */}
       <ComponentCard title="Error Notification">
-        <Notification variant="error" title="Something Went Wrong" />
+        <Notification variant="error" title="Something Went Wrong" onClose={handleClose} />
       </ComponentCard>
     </div>
   );

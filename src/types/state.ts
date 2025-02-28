@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface League {
     id: string;
     name: string;
@@ -9,17 +10,51 @@ export interface League {
     logo?: string;
 }
 
+export interface WalletLeague {
+    leagueName: string;
+    leagueAddress: `0x${string}`;
+    joined: boolean;
+    currentlyActive: boolean;
+    commissioner: boolean;
+    treasurer: boolean;
+}
+
+export interface TeamInfo {
+    name: string;
+    wallet: `0x${string}`;
+    owner?: boolean;
+}
+
+export interface RewardInfo {
+    leagueName: string;
+    teamName: string;
+    rewardName: string;
+    usdcAmount: bigint;
+    imageData: string;
+}
+
+export interface ContractCall {
+    address: `0x${string}`;
+    abi: any;
+    functionName: string;
+    args: any[];
+}
+
 export interface GlobalState {
     sessionId: string | null;
     username: string | null;
     leagues: League[] | null;
-    leagueSelected: League | null;
+    selectedLeague: League | null;
     email: string | null;
     phone: string | null;
     verified: boolean;
     hydrated: boolean;
     inviteEmails: string[];
-    address: `0x${string}` | null;
+    wallet: `0x${string}` | null;
+    walletLeagues: WalletLeague[] | null;
+    selectedLeagueAddress: `0x${string}` | null;
+    selectedLeagueName: string | null;
+    leagueAddress: `0x${string}` | null;
 }
 
 export type ActionMap = {
@@ -48,19 +83,26 @@ export type Action =
   | { type: 'CONNECT_WALLET'; payload: boolean }
   | { type: 'CREATE_LEAGUE'; payload: boolean }
   | { type: 'SET_INVITE_EMAILS'; payload: string[] }
-  | { type: 'SET_WALLET_ADDRESS'; payload: `0x${string}` }
-  | { type: 'SET_WALLET_LEAGUES'; payload: `0x${string}` }
+  | { type: 'SET_WALLET_ADDRESS'; payload: `0x${string}` | null }
+  | { type: 'SET_WALLET_LEAGUES'; payload: WalletLeague[] | null }
+  | { type: 'SET_SELECTED_LEAGUE_ADDRESS'; payload: `0x${string}` | null }
+  | { type: 'SET_SELECTED_LEAGUE_NAME'; payload: string | null }
+  | { type: 'SET_LEAGUE_ADDRESS'; payload: `0x${string}` | null }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {
     sessionId: null,
     username: null,
     leagues: null,
-    leagueSelected: null,
+    selectedLeague: null,
     email: null,
     phone: null,
     verified: false,
     hydrated: false,
     inviteEmails: [],
-    address: null
+    wallet: null,
+    walletLeagues: null,
+    selectedLeagueAddress: null,
+    selectedLeagueName: null,
+    leagueAddress: null,
 }; 

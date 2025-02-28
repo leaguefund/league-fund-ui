@@ -19,6 +19,7 @@ import { WagmiProvider } from 'wagmi';
 import { config } from "@/config/wagmi";
 import { Providers } from "../../providers";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { NotificationProvider } from '@/context/NotificationContext';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -47,8 +48,10 @@ export default function RootLayout({
             <ThemeProvider>
               <SidebarProvider>
                 <GlobalStateProvider>
-                  <ClientInitializer />
-                  {children}
+                  <NotificationProvider>
+                    <ClientInitializer />
+                    {children}
+                  </NotificationProvider>
                 </GlobalStateProvider>
               </SidebarProvider>
             </ThemeProvider>

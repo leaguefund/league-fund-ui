@@ -1,5 +1,10 @@
 import InvitesSent from '@/components/InvitesSent';
+import LeagueLayout from '@/components/layouts/LeagueLayout';
 
 export default function InvitesSentPage() {
-  return <InvitesSent />;
+  return (
+    <LeagueLayout>
+      <InvitesSent />
+    </LeagueLayout>
+  );
 } 

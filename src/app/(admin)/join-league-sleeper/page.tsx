@@ -1,5 +1,10 @@
 import JoinLeagueSleeper from '@/components/JoinLeagueSleeper';
+import LeagueLayout from '@/components/layouts/LeagueLayout';
 
 export default function JoinLeagueSleeperPage() {
-  return <JoinLeagueSleeper />;
+  return (
+    <LeagueLayout>
+      <JoinLeagueSleeper />
+    </LeagueLayout>
+  );
 } 
