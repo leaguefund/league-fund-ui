@@ -29,6 +29,18 @@ interface CreateLeagueData extends SessionData {
     league_dues_usdc: string;
 }
 
+interface RewardImageData extends SessionData {
+    name: string;
+    receiver_wallet: string;
+    league_address: string;
+    prompt_text: string;
+}
+
+interface RewardReadData extends SessionData {
+    league_address: string;
+    winner_wallet: string;
+}
+
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
         const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
@@ -108,6 +120,27 @@ class ApiService {
             league_dues_usdc: sessionStorage.getItem('leagueDues') || ''
         }
         return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
+    }
+
+    static getRewardImage(promptText: string) {
+        console.log('Fetching reward image...');
+        const selectedLeague = sessionStorage.getItem('selectedLeague');
+        const data = {
+            name: sessionStorage.getItem('username') || '',
+            receiver_wallet: sessionStorage.getItem('wallet') || '',
+            league_address: sessionStorage.getItem('leagueAddress') || '',
+            prompt_text: promptText
+        }
+        return this.fetchData<RewardImageData>("backendApiRewardImage", data);
+    }
+
+    static readRewardImage() {
+        console.log('Reading reward image...');
+        const data = {
+            league_address: sessionStorage.getItem('leagueAddress') || '',
+            winner_wallet: sessionStorage.getItem('wallet') || ''
+        }
+        return this.fetchData<RewardReadData>("backendApiRewardRead", data);
     }
 }
 

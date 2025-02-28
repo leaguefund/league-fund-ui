@@ -240,9 +240,16 @@ const AppSidebar: React.FC = () => {
       setShowDeveloperSection(prev => !prev);
       console.log('Developer section is now:', !showDeveloperSection ? 'visible' : 'hidden');
     };
-    console.log('Use toggleDeveloperSection() to show/hide the developer section');
+    (window as any).clearSession = () => {
+      sessionStorage.clear();
+      console.log('Session storage cleared');
+    };
+    console.log('Available commands:');
+    console.log('1. toggleDeveloperSection() - Show/hide developer section');
+    console.log('2. clearSession() - Clear all session storage');
     return () => {
       delete (window as any).toggleDeveloperSection;
+      delete (window as any).clearSession;
     };
   }, [showDeveloperSection]);
 
