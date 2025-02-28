@@ -10,11 +10,18 @@ import { getClaimRewardCall } from '../utils/createCallUtils';
 import { getUserRewards } from '../utils/onChainReadUtils';
 import { ContractCall } from '@/types/state';
 
+interface Reward {
+  amount: string;
+  name: string;
+}
+
 const MintReward: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [imageData, setImageData] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [rewardPending, setRewardPending] = useState(false);
+  const [currentReward, setCurrentReward] = useState<Reward | null>(null);
   const [calls, setCalls] = useState<ContractCall[]>([]);
   const router = useRouter();
   
@@ -24,12 +31,39 @@ const MintReward: React.FC = () => {
   // Check if user has claimable rewards
   useEffect(() => {
     async function fetchUserRewards() {
+      console.log('Fetching user rewards with params:', {
+        selectedLeagueAddress: state.selectedLeagueAddress,
+        wallet: state.wallet
+      });
+
       if (state.selectedLeagueAddress && state.wallet) {
-        const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet);
-        console.log('User Rewards:', teamRewards);
-        setRewardPending(teamRewards.length > 0);
+        try {
+          const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet);
+          console.log('User Rewards Response:', {
+            rewards: teamRewards,
+            hasRewards: teamRewards.length > 0,
+            timestamp: new Date().toISOString()
+          });
+          setRewardPending(teamRewards.length > 0);
+          if (teamRewards.length > 0) {
+            setCurrentReward({
+              name: teamRewards[0].name,
+              amount: teamRewards[0].amount.toString()
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching user rewards:', error);
+          setRewardPending(false);
+        } finally {
+          setIsInitialLoading(false);
+        }
       } else {
+        console.log('Missing required parameters for fetching rewards:', {
+          hasLeagueAddress: !!state.selectedLeagueAddress,
+          hasWallet: !!state.wallet
+        });
         setRewardPending(false);
+        setIsInitialLoading(false);
       }
     }
     fetchUserRewards();
@@ -75,6 +109,14 @@ const MintReward: React.FC = () => {
     fetchRewardImage();
   };
 
+  if (isInitialLoading) {
+    return (
+      <main className="min-h-screen flex flex-col items-center justify-center px-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/30 border-t-white" />
+      </main>
+    );
+  }
+
   if (!rewardPending) {
     return (
       <main className="min-h-screen flex flex-col items-center px-4">
@@ -90,15 +132,20 @@ const MintReward: React.FC = () => {
     );
   }
 
+  // Format the amount by removing 'n' and converting to a number
+  const formattedAmount = currentReward ? 
+    (parseInt(currentReward.amount.replace('n', '')) / 1000000).toString() : 
+    '0';
+
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
-            Victory 🎉
+            {currentReward?.name} Wins! 🎉
           </h1>
           <p className="text-gray-300">
-            In addition to $900 you get to generate trophy art
+            In addition to ${formattedAmount}, you get to generate trophy art.
           </p>
         </div>
 
