@@ -23,14 +23,16 @@ const CreateLeague: React.FC = () => {
   const factoryAddress = "0xde527c61Baa3AbFbcc532625BbD855d56217DB09";
   const duesInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  // const { address, isConnected } = useAccount();
-  const { isConnected } = useAccount();
+  const { isConnected, address: wallet_address } = useAccount();
 
   // Auto-focus the dues input and set createLeague
   useEffect(() => {
     duesInputRef.current?.focus();
-    setCreateLeague(Math.random().toString(36).substring(2, 8)); // Using 6 characters for the random string
-  }, []);
+    if (state.selectedLeague) {
+      setCreateLeague(state.selectedLeague.name); // Using 6 characters for the random string
+    }
+    // setCreateLeague(Math.random().toString(36).substring(2, 8)); // Using 6 characters for the random string
+  }, [state.selectedLeague]);
 
   // Save dues to global state and storage
   useEffect(() => {
@@ -49,7 +51,11 @@ const CreateLeague: React.FC = () => {
       }>;
     };
   }) => {
+    console.log('=================');
     console.log('Transaction status:', status);
+    console.log('-----------------');
+    console.log('transactionReceipts (first):', status.statusData?.transactionReceipts?.[0]);
+    console.log('=================');
     
     if (!hasCreatedLeague && status.statusName === 'success' && status.statusData?.transactionReceipts?.[0]?.logs?.[2]) {
       try {
@@ -60,7 +66,7 @@ const CreateLeague: React.FC = () => {
         setHasCreatedLeague(true);
         
         if (leagueAddress) {
-          ApiService.createLeague();
+          handleCreateLeague();
           router.push('/league-created');
           
           showNotification({
@@ -78,6 +84,19 @@ const CreateLeague: React.FC = () => {
     }
   };
 
+  const handleCreateLeague = async () => {
+    try {
+        if (wallet_address) {
+          await ApiService.createLeague(wallet_address);
+        } else {
+          console.error('Wallet address is undefined');
+        }
+        console.log('League created successfully');
+    } catch (error) {
+        console.error('Error creating league:', error);
+    }
+  };
+
   // Calculate current calls based on dues
   const currentCalls = Number(dues) > 0 && createLeague ? [
     getApproveCall(usdcAddress, factoryAddress, Number(dues) * 1e6),
@@ -88,7 +107,6 @@ const CreateLeague: React.FC = () => {
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
         {/* Title Section */}
-        123-{isConnected}-456
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             Create League
@@ -114,6 +132,39 @@ const CreateLeague: React.FC = () => {
 
         {/* Main Actions */}
         <div className="space-y-8">
+
+        <div className="space-y-2">
+              <label className="text-xl text-gray-300">League Name</label>
+              <input
+                type="text"
+                value={createLeague}
+                onChange={(e) => setCreateLeague(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xl text-gray-300">
+                <span>
+                League Dues
+                <Image src="/images/logo/usd-coin-usdc-logo.png" className="inline-flex pl-1"
+                alt="Logo"
+                width={24}
+                height={24}
+                />
+                </span>
+              </label>
+{/* public/images/logo/usd-coin-usdc-logo.png */}
+              <input
+                ref={duesInputRef}
+                type="number"
+                value={dues}
+                onChange={(e) => setDues(e.target.value)}
+                placeholder="Enter league dues"
+                className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+              />
+            </div>
+
           {/* League Details Form */}
           <div className="space-y-6">
             <div className="space-y-2">
@@ -125,29 +176,7 @@ const CreateLeague: React.FC = () => {
                 className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white cursor-not-allowed"
               />
             </div>
-
-            <div className="space-y-2">
-              <label className="text-xl text-gray-300">Team Name</label>
-              <input
-                type="text"
-                value={createLeague}
-                onChange={(e) => setCreateLeague(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xl text-gray-300">League Dues (USDC)</label>
-              <input
-                ref={duesInputRef}
-                type="number"
-                value={dues}
-                onChange={(e) => setDues(e.target.value)}
-                placeholder="Enter league dues"
-                className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-              />
-            </div>
-
+            
             {/* Transaction Button */}
             { isConnected && (
                 <div className="w-full [&_button]:w-full [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:space-x-3 [&_button]:bg-gray-700 [&_button:hover]:bg-gray-600 [&_button]:text-white [&_button]:py-6 [&_button]:rounded-lg [&_button]:transition-colors [&_button:disabled]:opacity-50 [&_button:disabled]:cursor-not-allowed [&_button_span]:text-xl">
@@ -179,4 +208,4 @@ const CreateLeague: React.FC = () => {
   );
 };
 
-export default CreateLeague; 
+export default CreateLeague;
