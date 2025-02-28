@@ -33,63 +33,71 @@ const MintReward: React.FC = () => {
   
   const { state } = useGlobalState();
   const { showNotification } = useNotification();
+  const [hasLoadedImage, setHasLoadedImage] = useState(false);
 
-  // Check if user has claimable rewards and load initial image
+  // Check if user has claimable rewards
   useEffect(() => {
-    async function initialize() {
-      console.log('Fetching user rewards with params:', {
-        selectedLeagueAddress: state.selectedLeagueAddress,
-        wallet: state.wallet
-      });
-
-      if (state.selectedLeagueAddress && state.wallet) {
-        try {
-          const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet) as OnChainReward[];
-          console.log('User Rewards Response:', {
-            rewards: teamRewards,
-            hasRewards: teamRewards.length > 0,
-            timestamp: new Date().toISOString()
-          });
-          setRewardPending(teamRewards.length > 0);
-          if (teamRewards.length > 0) {
-            setCurrentReward({
-              name: teamRewards[0].name,
-              amount: teamRewards[0].amount.toString()
-            });
-            // Load initial image
-            setIsLoading(true);
-            try {
-              const response = await ApiService.readRewardImage();
-              setImageData(response.reward.nft_image);
-            } catch (error: any) {
-              console.error('Error fetching initial reward image:', error);
-              showNotification({
-                variant: 'error',
-                title: 'Error',
-                description: error.message || 'Failed to fetch initial reward image',
-                hideDuration: 5000
-              });
-            } finally {
-              setIsLoading(false);
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching user rewards:', error);
-          setRewardPending(false);
-        } finally {
-          setIsInitialLoading(false);
-        }
-      } else {
+    async function checkRewards() {
+      if (!state.selectedLeagueAddress || !state.wallet) {
         console.log('Missing required parameters for fetching rewards:', {
           hasLeagueAddress: !!state.selectedLeagueAddress,
           hasWallet: !!state.wallet
         });
         setRewardPending(false);
         setIsInitialLoading(false);
+        return;
+      }
+
+      try {
+        const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet) as OnChainReward[];
+        console.log('User Rewards Response:', {
+          rewards: teamRewards,
+          hasRewards: teamRewards.length > 0,
+          timestamp: new Date().toISOString()
+        });
+        
+        setRewardPending(teamRewards.length > 0);
+        if (teamRewards.length > 0) {
+          setCurrentReward({
+            name: teamRewards[0].name,
+            amount: teamRewards[0].amount.toString()
+          });
+          setHasLoadedImage(false); // Reset flag when rewards change
+        }
+      } catch (error) {
+        console.error('Error fetching user rewards:', error);
+        setRewardPending(false);
+      } finally {
+        setIsInitialLoading(false);
       }
     }
-    initialize();
+    checkRewards();
   }, [state.wallet, state.selectedLeagueAddress]);
+
+  // Load initial image when rewards are available
+  useEffect(() => {
+    async function loadImage() {
+      if (!rewardPending || hasLoadedImage) return;
+
+      setIsLoading(true);
+      try {
+        const response = await ApiService.readRewardImage();
+        setImageData(response.reward.nft_image);
+        setHasLoadedImage(true);
+      } catch (error: any) {
+        console.error('Error fetching initial reward image:', error);
+        showNotification({
+          variant: 'error',
+          title: 'Error',
+          description: error.message || 'Failed to fetch initial reward image',
+          hideDuration: 5000
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadImage();
+  }, [rewardPending, hasLoadedImage]);
 
   // Update contract calls when image data changes
   useEffect(() => {
