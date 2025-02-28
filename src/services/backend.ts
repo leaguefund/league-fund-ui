@@ -41,6 +41,10 @@ interface RewardReadData extends SessionData {
     winner_wallet: string;
 }
 
+interface LeagueReadData extends SessionData {
+    league_address: string;
+}
+
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
         const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
@@ -93,8 +97,13 @@ class ApiService {
         return this.fetchData<EmailData>("backendApiValidateEmail", { email });
     }
 
-    static readLeague() {
-        return this.fetchData<SessionData>("backendApiLeagueRead", {});
+    static readLeague(leagueAddress: string) {
+        console.log('Reading league data...');
+        const data = {
+            session_id: sessionStorage.getItem('sessionID'),
+            league_address: leagueAddress
+        };
+        return this.fetchData<LeagueReadData>("backendApiLeagueRead", data);
     }
 
     static sendLeagueInvite(data: LeagueInviteData) {
