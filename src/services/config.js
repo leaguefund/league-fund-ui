@@ -12,6 +12,8 @@ const config = {
       backendApiWalletRead: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiLeagueRead: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiCreateLeague: "/v1/api/league/created",
+      backendApiRewardImage: "/v1/api/reward/image",
+      backendApiRewardRead: "/v1/api/reward/read",
     },
     mainnet: {
       backendHost: "https://league-fund-76860069ad93.herokuapp.com",
@@ -22,6 +24,8 @@ const config = {
       backendApiWalletRead: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiLeagueRead: "/v3/f9064b97-804c-481a-90a1-de58d912f561",
       backendApiCreateLeague: "/v1/api/league/created",
+      backendApiRewardImage: "/v1/api/reward/image",
+      backendApiRewardRead: "/v1/api/reward/read",
     },
   };
 

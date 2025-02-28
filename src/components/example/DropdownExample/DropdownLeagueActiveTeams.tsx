@@ -27,6 +27,9 @@ export default function DropdownLeagueActiveTeams({
           console.log(state.selectedLeagueAddress)
           console.log(activeTeams)
           setActiveTeams([...activeTeams]);
+          if (activeTeams.length > 0 && !selectedTeam) {
+            setSelectedTeam(activeTeams[0]);
+          }
         } catch (error) {
           console.error('Error fetching leagues:', error);
         }
@@ -35,7 +38,7 @@ export default function DropdownLeagueActiveTeams({
       }
     };
     fetchActiveTeams();
-  }, [state.selectedLeagueAddress]);
+  }, [state.selectedLeagueAddress, selectedTeam, setSelectedTeam]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -51,11 +54,11 @@ export default function DropdownLeagueActiveTeams({
   }
   
   return (
-    <div className="w-full max-w-[280px]">
+    <div className="w-full">
       <div className="relative w-full">
         <button
           onClick={toggleDropdown}
-          className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 transition-colors duration-200"
+          className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-colors duration-200"
         >
           <div className="truncate">
             {selectedTeam ? `${selectedTeam.name}` : 'Select Winner'}
