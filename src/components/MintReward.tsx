@@ -9,6 +9,7 @@ import { useNotification } from '@/context/NotificationContext';
 const MintReward: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [imageData, setImageData] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState('Pengiun');
   const router = useRouter();
   
   const { state } = useGlobalState();
@@ -59,30 +60,43 @@ const MintReward: React.FC = () => {
 
         <div className="space-y-8">
           {/* Reward Image Section */}
-          <div className="space-y-2">
+          <div className="space-y-4">
             <label className="text-xl text-gray-300">Reward Artwork</label>
-            <div className="relative w-full aspect-square bg-gray-800 rounded-lg overflow-hidden">
-              {isLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/30 border-t-white" />
-                </div>
-              ) : (
-                imageData && (
-                  <img
-                    src={`data:image/png;base64,${imageData}`}
-                    alt="Reward Artwork"
-                    className="w-full h-full object-cover"
-                  />
-                )
-              )}
+            <div className="flex flex-col items-center">
+              <div className="relative w-full max-w-[400px] aspect-square bg-gray-800 rounded-lg overflow-hidden">
+                {isLoading ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/30 border-t-white" />
+                  </div>
+                ) : (
+                  imageData && (
+                    <img
+                      src={`data:image/png;base64,${imageData}`}
+                      alt="Reward Artwork"
+                      className="w-full h-full object-cover"
+                    />
+                  )
+                )}
+              </div>
+              
+              {/* Input and Change Button */}
+              <div className="w-full max-w-[400px] mt-4 flex gap-2">
+                <input 
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className="flex-1 px-4 py-2 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
+                  placeholder="Enter text"
+                />
+                <button 
+                  onClick={handleChange}
+                  disabled={isLoading}
+                  className="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Change
+                </button>
+              </div>
             </div>
-            <button 
-              onClick={handleChange}
-              disabled={isLoading}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              Change
-            </button>
           </div>
 
           {/* Claim Reward Button */}
