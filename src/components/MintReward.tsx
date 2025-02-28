@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction";
 import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
@@ -29,7 +29,6 @@ const MintReward: React.FC = () => {
   const [rewardPending, setRewardPending] = useState(false);
   const [currentReward, setCurrentReward] = useState<Reward | null>(null);
   const [calls, setCalls] = useState<ContractCall[]>([]);
-  const router = useRouter();
   
   const { state } = useGlobalState();
   const { showNotification } = useNotification();
@@ -76,50 +75,23 @@ const MintReward: React.FC = () => {
 
   // Load initial image when rewards are available
   useEffect(() => {
-    async function loadImage() {
-      if (!rewardPending || hasLoadedImage) return;
-
-      setIsLoading(true);
-      try {
-        const response = await ApiService.readRewardImage();
-        console.log('Full API Response:', response);
-        console.log('Image response:', {
-          hasNftImage: !!response.reward?.nft_image,
-          nftImageUrl: response.reward?.nft_image,
-          responseKeys: Object.keys(response)
-        });
-        
-        if (!response.reward?.nft_image) {
-          throw new Error('No reward image available');
+    const loadImage = async () => {
+      if (rewardPending && !hasLoadedImage) {
+        try {
+          const response = await ApiService.readRewardImage();
+          setImageData(response.image_data);
+          setHasLoadedImage(true);
+        } catch (error) {
+          console.error('Error fetching initial reward image:', error);
+          showNotification({
+            variant: 'error',
+            title: 'Error loading reward image'
+          });
         }
-        
-        // Fetch the image from the URL and convert to base64
-        const imageResponse = await fetch(response.reward.nft_image);
-        const blob = await imageResponse.blob();
-        const base64data = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(blob);
-        });
-        
-        // Extract the base64 data (remove the data:image/png;base64, prefix)
-        const base64String = (base64data as string).split(',')[1];
-        setImageData(base64String);
-        setHasLoadedImage(true);
-      } catch (error: any) {
-        console.error('Error fetching initial reward image:', error);
-        showNotification({
-          variant: 'error',
-          title: 'Error',
-          description: error.message || 'Failed to fetch initial reward image',
-          hideDuration: 5000
-        });
-      } finally {
-        setIsLoading(false);
       }
-    }
+    };
     loadImage();
-  }, [rewardPending, hasLoadedImage]);
+  }, [rewardPending, hasLoadedImage, showNotification]);
 
   // Update contract calls when image data changes
   useEffect(() => {
@@ -173,7 +145,7 @@ const MintReward: React.FC = () => {
             No Rewards Available
           </h1>
           <p className="text-gray-300">
-            You don't have any claimable rewards at this time.
+            You don&apos;t have any claimable rewards at this time.
           </p>
         </div>
       </main>

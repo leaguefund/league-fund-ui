@@ -125,6 +125,7 @@ class ApiService {
     static getRewardImage(promptText: string) {
         console.log('Fetching reward image...');
         const selectedLeague = sessionStorage.getItem('selectedLeague');
+        console.log(selectedLeague)
         const data = {
             name: sessionStorage.getItem('username') || '',
             receiver_wallet: sessionStorage.getItem('wallet') || '',

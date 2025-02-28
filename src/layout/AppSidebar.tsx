@@ -232,7 +232,7 @@ const AppSidebar: React.FC = () => {
       }
     };
     fetchLeagueInfo();
-  }, [state.selectedLeagueAddress]);
+  }, [state.selectedLeagueAddress, state.wallet]);
 
   // Add window function to toggle developer section
   useEffect(() => {
