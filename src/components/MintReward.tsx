@@ -82,7 +82,29 @@ const MintReward: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await ApiService.readRewardImage();
-        setImageData(response.reward.nft_image);
+        console.log('Full API Response:', response);
+        console.log('Image response:', {
+          hasNftImage: !!response.reward?.nft_image,
+          nftImageUrl: response.reward?.nft_image,
+          responseKeys: Object.keys(response)
+        });
+        
+        if (!response.reward?.nft_image) {
+          throw new Error('No reward image available');
+        }
+        
+        // Fetch the image from the URL and convert to base64
+        const imageResponse = await fetch(response.reward.nft_image);
+        const blob = await imageResponse.blob();
+        const base64data = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+        
+        // Extract the base64 data (remove the data:image/png;base64, prefix)
+        const base64String = (base64data as string).split(',')[1];
+        setImageData(base64String);
         setHasLoadedImage(true);
       } catch (error: any) {
         console.error('Error fetching initial reward image:', error);
@@ -190,7 +212,7 @@ const MintReward: React.FC = () => {
                     <img
                       src={`data:image/png;base64,${imageData}`}
                       alt="Reward Artwork"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   )
                 )}
