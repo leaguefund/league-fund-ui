@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
+import CopyInput from './form/form-elements/CopyInput';
 
 const LeagueCreated: React.FC = () => {
   const router = useRouter();
@@ -11,7 +12,7 @@ const LeagueCreated: React.FC = () => {
 
   const handleInviteTeams = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    router.push('/invite-teams');
+    router.push('/league');
   };
 
   return (
@@ -38,16 +39,9 @@ const LeagueCreated: React.FC = () => {
             onClick={handleInviteTeams}
             className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors"
           >
-            <span className="text-xl">Invite Teams</span>
+            <span className="text-xl">League Dashboard</span>
           </Link>
-
-          {/* League Dashboard Link */}
-          <Link 
-            href="/" 
-            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
-          >
-            League Dashboard
-          </Link>
+          <CopyInput />
         </div>
       </div>
     </main>
