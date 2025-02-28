@@ -35,6 +35,11 @@ interface RewardImageData extends SessionData {
     league_address: string;
 }
 
+interface RewardReadData extends SessionData {
+    league_address: string;
+    winner_wallet: string;
+}
+
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
         const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
@@ -125,6 +130,15 @@ class ApiService {
             league_address: sessionStorage.getItem('leagueAddress') || ''
         }
         return this.fetchData<RewardImageData>("backendApiRewardImage", data);
+    }
+
+    static readRewardImage() {
+        console.log('Reading reward image...');
+        const data = {
+            league_address: sessionStorage.getItem('leagueAddress') || '',
+            winner_wallet: sessionStorage.getItem('wallet') || ''
+        }
+        return this.fetchData<RewardReadData>("backendApiRewardRead", data);
     }
 }
 

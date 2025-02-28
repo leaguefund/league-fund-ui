@@ -83,17 +83,17 @@ const MintReward: React.FC = () => {
     fetchCalls();
   }, [state.selectedLeagueAddress, imageData]);
 
-  const fetchRewardImage = async () => {
+  const fetchInitialImage = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.getRewardImage();
+      const response = await ApiService.readRewardImage();
       setImageData(response.image_data);
     } catch (error: any) {
-      console.error('Error fetching reward image:', error);
+      console.error('Error fetching initial reward image:', error);
       showNotification({
         variant: 'error',
         title: 'Error',
-        description: error.message || 'Failed to fetch reward image',
+        description: error.message || 'Failed to fetch initial reward image',
         hideDuration: 5000
       });
     } finally {
@@ -101,12 +101,31 @@ const MintReward: React.FC = () => {
     }
   };
 
+  const fetchNewImage = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiService.getRewardImage();
+      setImageData(response.image_data);
+    } catch (error: any) {
+      console.error('Error generating new reward image:', error);
+      showNotification({
+        variant: 'error',
+        title: 'Error',
+        description: error.message || 'Failed to generate new reward image',
+        hideDuration: 5000
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial image load
   useEffect(() => {
-    fetchRewardImage();
+    fetchInitialImage();
   }, []);
 
   const handleChange = () => {
-    fetchRewardImage();
+    fetchNewImage();
   };
 
   if (isInitialLoading) {
