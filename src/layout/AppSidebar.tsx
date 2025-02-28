@@ -106,7 +106,7 @@ const navItems: NavItem[] = [
       { name: "Page 18: Reward Choose Team", path: "/"},
       { name: "Page 19: Reward Define Reward", path: "/allocate-reward"},
       { name: "Page 20: Reward Sent", path: "/"},
-      { name: "Page 21: Mint Reward", path: "/claim-reward"},
+      { name: "Page 21: Mint Reward", path: "/mint-reward"},
       { name: "Page 22: Reward Minted", path: "/"},
       { name: "Page 23: Supply Liquidty", path: "/"},
       { name: "Page 24: Remove Liquidty", path: "/"},
@@ -232,7 +232,7 @@ const AppSidebar: React.FC = () => {
       }
     };
     fetchLeagueInfo();
-  }, [state.selectedLeagueAddress]);
+  }, [state.selectedLeagueAddress, state.wallet]);
 
   // Add window function to toggle developer section
   useEffect(() => {
@@ -619,18 +619,18 @@ const AppSidebar: React.FC = () => {
               <ul className="flex flex-col gap-4">
                 <li key="allocate">
                 {isCommissioner && (
-                      <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+                      <Link href="/allocate-reward" className="menu-item group menu-item-inactive">
                       <span className="menu-item-text">💸 Send</span>
-                      </a>
+                      </Link>
                     )}
                     {!isCommissioner && (
                       <span className="menu-item-text">💸 Send <Badge variant="light" color="primary">Commissioner Only</Badge></span>
                   )}
                 </li>
                 <li key="claim">
-                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+                  <Link href="/mint-reward" className="menu-item group menu-item-inactive">
                   <span className="menu-item-text">🏆 Claim</span>
-                  </a>
+                  </Link>
                 </li>
             </ul>
             </div>
