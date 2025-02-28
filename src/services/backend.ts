@@ -29,13 +29,30 @@ interface CreateLeagueData extends SessionData {
     league_dues_usdc: string;
 }
 
+interface RewardImageData extends SessionData {
+    name: string;
+    receiver_wallet: string;
+    league_address: string;
+    prompt_text: string;
+}
+
+interface RewardReadData extends SessionData {
+    league_address: string;
+    winner_wallet: string;
+}
+
+interface LeagueReadData extends SessionData {
+    league_address: string;
+}
+
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
         const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
         
         console.log('=== ApiService.fetchData ===');
         console.log('URL:', url);
-        console.log('Body:', body);
+        console.log('Raw body:', body);
+        console.log('Stringified body:', JSON.stringify(body));
 
         const options: RequestInit = {
             method: 'POST',
@@ -45,7 +62,7 @@ class ApiService {
             body: JSON.stringify(body)
         };
 
-        console.log('Options before fetchWithSession:', options);
+        console.log('Final request options:', options);
 
         try {
             const response = await fetchWithSession(url, options);
@@ -80,8 +97,13 @@ class ApiService {
         return this.fetchData<EmailData>("backendApiValidateEmail", { email });
     }
 
-    static readLeague() {
-        return this.fetchData<SessionData>("backendApiLeagueRead", {});
+    static readLeague(leagueAddress: string) {
+        console.log('Reading league data...');
+        const data = {
+            session_id: sessionStorage.getItem('sessionID'),
+            league_address: leagueAddress
+        };
+        return this.fetchData<LeagueReadData>("backendApiLeagueRead", data);
     }
 
     static sendLeagueInvite(data: LeagueInviteData) {
@@ -97,18 +119,48 @@ class ApiService {
         // return this.fetchData<SessionData>("backendApiConnectWallet", {});
     }
 
-    static createLeague() {
+    static createLeague(wallet_address: string) {
         console.log('Creating league...');
-        const selectedLeague = sessionStorage.getItem('selectedLeague')
+        const selectedLeague = sessionStorage.getItem('selectedLeague');
         const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).id : '';
         const data = {
             session_id: sessionStorage.getItem('sessionID'),
             league_id: selectedLeagueId || '',
+            wallet_address: wallet_address || '',
             league_address: sessionStorage.getItem('leagueAddress') || '',
             league_dues_usdc: sessionStorage.getItem('leagueDues') || ''
-        }
+        };
+        console.log("Creating league data", data);
         return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
+    }
+
+    static getRewardImage(promptText: string) {
+        console.log('Fetching reward image...');
+        const selectedLeague = sessionStorage.getItem('selectedLeague');
+        console.log(selectedLeague)
+        const data = {
+            name: sessionStorage.getItem('username') || '',
+            receiver_wallet: sessionStorage.getItem('wallet') || '',
+            league_address: sessionStorage.getItem('leagueAddress') || '',
+            prompt_text: promptText
+        }
+        return this.fetchData<RewardImageData>("backendApiRewardImage", data);
+    }
+
+    static readRewardImage() {
+        console.log('Reading reward image...');
+        const storedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
+        console.log('Value from sessionStorage (selectedLeagueAddress):', storedLeagueAddress);
+        
+        const data = {
+            league_address: storedLeagueAddress || '',
+            winner_wallet: sessionStorage.getItem('wallet') || ''
+        };
+        console.log('Data object created:', data);
+        console.log('Data object stringified:', JSON.stringify(data));
+        
+        return this.fetchData<RewardReadData>("backendApiRewardRead", data);
     }
 }
 
-export default ApiService; 
+export default ApiService;

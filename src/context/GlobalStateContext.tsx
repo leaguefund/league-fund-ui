@@ -74,6 +74,10 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, leagueAddress: action.payload };
       if (action.payload) sessionStorage.setItem('leagueAddress', action.payload);
       break;
+    case 'SET_SELECTED_WALLET_LEAGUE':
+      nextState = { ...state, selectedWalletLeague: action.payload };
+      if (action.payload) sessionStorage.setItem('selectedWalletLeague', action.payload);
+      break;
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
       
@@ -84,8 +88,8 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       const phone = sessionStorage.getItem('phone');
       const verified = sessionStorage.getItem('verified');
       const inviteEmails = sessionStorage.getItem('inviteEmails');
-      // const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress') as `0x${string}` | null;
       const leagueAddress = sessionStorage.getItem('leagueAddress') as `0x${string}` | null;
+      const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague') as `0x${string}` | null;
       
       if (sessionId) nextState.sessionId = sessionId;
       if (username) nextState.username = username;
@@ -93,6 +97,7 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       if (phone) nextState.phone = phone;
       if (verified) nextState.verified = verified === 'true';
       if (leagueAddress?.startsWith('0x')) nextState.leagueAddress = leagueAddress as `0x${string}`;
+      if (selectedWalletLeague?.startsWith('0x')) nextState.selectedWalletLeague = selectedWalletLeague as `0x${string}`;
       if (inviteEmails) {
         try {
           nextState.inviteEmails = JSON.parse(inviteEmails);
@@ -155,6 +160,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       const sessionId = sessionStorage.getItem('sessionId');
       const selectedLeagueName = sessionStorage.getItem('selectedLeagueName');
       const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
+      const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
 
       const hydratedState = {
         ...initialState,
@@ -169,6 +175,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         wallet: address || null,
         selectedLeagueName: selectedLeagueName || null,
         selectedLeagueAddress: (selectedLeagueAddress?.startsWith('0x') ? selectedLeagueAddress as `0x${string}` : null),
+        selectedWalletLeague: (selectedWalletLeague?.startsWith('0x') ? selectedWalletLeague as `0x${string}` : null),
       };
 
       try {
@@ -196,6 +203,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (address && isConnected) sessionStorage.setItem('wallet', address);
       if (state.selectedLeagueName) sessionStorage.setItem('selectedLeagueName', state.selectedLeagueName);
       if (state.selectedLeagueAddress) sessionStorage.setItem('selectedLeagueAddress', state.selectedLeagueAddress);
+      if (state.selectedWalletLeague) sessionStorage.setItem('selectedWalletLeague', state.selectedWalletLeague);
     }
   }, [state, address, isConnected]);
 
