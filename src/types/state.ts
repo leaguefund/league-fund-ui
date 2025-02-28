@@ -22,6 +22,15 @@ export interface WalletLeague {
 export interface TeamInfo {
     name: string;
     wallet: `0x${string}`;
+    owner?: boolean;
+}
+
+export interface RewardInfo {
+    leagueName: string;
+    teamName: string;
+    rewardName: string;
+    usdcAmount: bigint;
+    imageData: string;
 }
 
 export interface ContractCall {

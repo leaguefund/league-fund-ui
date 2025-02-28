@@ -1,33 +1,58 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import { getClaimRewardCall } from '../utils/createCallUtils';
+import { getUserRewards } from '../utils/onChainReadUtils';
+import { useGlobalState } from '@/context/GlobalStateContext';
+import { ContractCall } from '@/types/state';
 
 const ClaimReward: React.FC = () => {
-  const [leagueAddress, setLeagueAddress] = useState<`0x${string}`>('0x');
   const [imageURL, setImageURL] = useState('');
+  const [rewardPending, setRewardPending] = useState(false);
+  const [calls, setCalls] = useState<ContractCall[]>([]);
 
-  const [shouldSubmit, setShouldSubmit] = useState(false);
+  const { state } = useGlobalState();
 
-  const handleSubmit = () => {
-    setShouldSubmit(true);
-    console.log([
-      getClaimRewardCall(leagueAddress, [imageURL]),
-    ])
-  };
+  useEffect(() => {
+    async function fetchUserRewards() {
+      if (state.selectedLeagueAddress && state.wallet) {
+        const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet);
+        console.log('User Rewards:', teamRewards);
+        if (teamRewards.length > 0) {
+          setRewardPending(true);
+        } else {
+          setRewardPending(false);
+        }
+      } else {
+        setRewardPending(false);
+      }
+    }
+    fetchUserRewards();
+  }, [state.wallet, state.selectedLeagueAddress]);
+
+  useEffect(() => {
+    async function fetchCalls() {
+      if (state.selectedLeagueAddress && imageURL) {
+        setCalls([
+          getClaimRewardCall(state.selectedLeagueAddress, imageURL),
+        ])
+      } else {
+        setCalls([]);
+      }
+    }
+    fetchCalls();
+  }, [state.selectedLeagueAddress, imageURL]);
+  
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
-      <div>
-        <h2>League Address</h2>
-        <input
-          type="text"
-          value={leagueAddress}
-          onChange={(e) => setLeagueAddress(e.target.value as `0x${string}`)}
-          placeholder="League Address"
-        />
-      </div>
+      { !rewardPending && (
+        <div>
+          <h1>You have no claimable rewards</h1>
+        </div>
+      )}
+      { rewardPending && (
       <div>
         <h2>Image URL</h2>
         <input
@@ -36,15 +61,12 @@ const ClaimReward: React.FC = () => {
           onChange={(e) => setImageURL(e.target.value)}
           placeholder="Image URL"
         />
-      </div>
-      <button onClick={handleSubmit}>Join League</button>
+      </div>)}
 
-    {shouldSubmit && (
+    {calls.length > 0 && rewardPending && (
       <TransactionDefault
         isSponsored={true}
-        calls={[
-          getClaimRewardCall(leagueAddress, [imageURL]),
-        ]}
+        calls={calls}
       />
     )}
   </main>
