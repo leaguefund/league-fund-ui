@@ -26,6 +26,7 @@ import {
   // TaskIcon,
   // UserCircleIcon,
 } from "../icons/index";
+import SidebarWidget from "./SidebarWidget";
 import DropdownLeagues from "@/components/example/DropdownExample/DropdownLeagues";
 type NavItem = {
   name: string;
@@ -698,6 +699,7 @@ const AppSidebar: React.FC = () => {
             )}
           </div>
         </nav>
+        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
     </aside>
   );
