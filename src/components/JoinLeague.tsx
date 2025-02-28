@@ -5,7 +5,8 @@ import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import { getApproveCall, getJoinLeagueCall } from '../utils/createCallUtils';
 import { getLeagueDues } from '../utils/onChainReadUtils';
 import { ContractCall } from '@/types/state';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useGlobalState } from '@/context/GlobalStateContext';
 
 const JoinLeague: React.FC = () => {
   const [leagueAddress, setLeagueAddress] = useState<`0x${string}` | null>(null);
@@ -13,9 +14,23 @@ const JoinLeague: React.FC = () => {
   const [dues, setDues] = useState(0);
   const [calls, setCalls] = useState<ContractCall[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFromUrl, setIsFromUrl] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { dispatch } = useGlobalState();
   const teamNameInputRef = useRef<HTMLInputElement>(null);
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
+
+  useEffect(() => {
+    // Get league_address from URL params
+    const urlLeagueAddress = searchParams.get('league_address');
+    if (urlLeagueAddress?.startsWith('0x')) {
+      const address = urlLeagueAddress as `0x${string}`;
+      setLeagueAddress(address);
+      setIsFromUrl(true);
+      dispatch({ type: 'SET_SELECTED_WALLET_LEAGUE', payload: address });
+    }
+  }, [searchParams, dispatch]);
 
   useEffect(() => {
     teamNameInputRef.current?.focus();
@@ -86,10 +101,11 @@ const JoinLeague: React.FC = () => {
             <input
               type="text"
               value={leagueAddress ? leagueAddress : ''}
-              onChange={(e) => setLeagueAddress(e.target.value as `0x${string}`)}
+              onChange={(e) => !isFromUrl && setLeagueAddress(e.target.value as `0x${string}`)}
               placeholder="Enter league address"
-              className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
+              className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               required
+              disabled={isFromUrl}
             />
           </div>
 

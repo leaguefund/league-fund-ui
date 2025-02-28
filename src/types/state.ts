@@ -55,6 +55,7 @@ export interface GlobalState {
     selectedLeagueAddress: `0x${string}` | null;
     selectedLeagueName: string | null;
     leagueAddress: `0x${string}` | null;
+    selectedWalletLeague: `0x${string}` | null;
 }
 
 export type ActionMap = {
@@ -88,6 +89,7 @@ export type Action =
   | { type: 'SET_SELECTED_LEAGUE_ADDRESS'; payload: `0x${string}` | null }
   | { type: 'SET_SELECTED_LEAGUE_NAME'; payload: string | null }
   | { type: 'SET_LEAGUE_ADDRESS'; payload: `0x${string}` | null }
+  | { type: 'SET_SELECTED_WALLET_LEAGUE'; payload: `0x${string}` | null }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: Partial<GlobalState> };
 
 export const initialState: GlobalState = {
@@ -105,4 +107,5 @@ export const initialState: GlobalState = {
     selectedLeagueAddress: null,
     selectedLeagueName: null,
     leagueAddress: null,
+    selectedWalletLeague: null,
 }; 
