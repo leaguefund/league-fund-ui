@@ -16,7 +16,7 @@ const Landing: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await ApiService.readLeague();
+      const response = await ApiService.readLeague('');
       if (response.leagues) {
         dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
       }

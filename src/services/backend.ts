@@ -41,6 +41,10 @@ interface RewardReadData extends SessionData {
     winner_wallet: string;
 }
 
+interface LeagueReadData extends SessionData {
+    league_address: string;
+}
+
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
         const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
@@ -93,8 +97,13 @@ class ApiService {
         return this.fetchData<EmailData>("backendApiValidateEmail", { email });
     }
 
-    static readLeague() {
-        return this.fetchData<SessionData>("backendApiLeagueRead", {});
+    static readLeague(leagueAddress: string) {
+        console.log('Reading league data...');
+        const data = {
+            session_id: sessionStorage.getItem('sessionID'),
+            league_address: leagueAddress
+        };
+        return this.fetchData<LeagueReadData>("backendApiLeagueRead", data);
     }
 
     static sendLeagueInvite(data: LeagueInviteData) {
@@ -110,16 +119,18 @@ class ApiService {
         // return this.fetchData<SessionData>("backendApiConnectWallet", {});
     }
 
-    static createLeague() {
+    static createLeague(wallet_address: string) {
         console.log('Creating league...');
-        const selectedLeague = sessionStorage.getItem('selectedLeague')
+        const selectedLeague = sessionStorage.getItem('selectedLeague');
         const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).id : '';
         const data = {
             session_id: sessionStorage.getItem('sessionID'),
             league_id: selectedLeagueId || '',
+            wallet_address: wallet_address || '',
             league_address: sessionStorage.getItem('leagueAddress') || '',
             league_dues_usdc: sessionStorage.getItem('leagueDues') || ''
-        }
+        };
+        console.log("Creating league data", data);
         return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
     }
 
@@ -152,4 +163,4 @@ class ApiService {
     }
 }
 
-export default ApiService; 
+export default ApiService;

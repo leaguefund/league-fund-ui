@@ -27,7 +27,7 @@ import {
   // TaskIcon,
   // UserCircleIcon,
 } from "../icons/index";
-import SidebarWidget from "./SidebarWidget";
+// import SidebarWidget from "./SidebarWidget";
 import DropdownLeagues from "@/components/example/DropdownExample/DropdownLeagues";
 type NavItem = {
   name: string;
@@ -86,28 +86,28 @@ const navItems: NavItem[] = [
     name: "Pages",
     icon: <PageIcon />,
     subItems: [
-      { name: "Page 1: Landing", path: "/"},
-      { name: "Page 2: Sleeper Username", path: "/sleeper-username"},
-      { name: "Page 3: Confirm League", path: "/confirm-league"},
-      { name: "Page 4: Request Email Verification", path: "/request-verification"},
-      { name: "Page 5: Email Verification", path: "/verification"},
-      { name: "Page 6: Connect Wallet (Commissioner)", path: "/connect-wallet"},
-      { name: "Page 7: Create League (Commissioner)", path: "/create-league"},
-      { name: "Page 8: League Created", path: "/league-created"},
-      { name: "Page 9: Invite Teams", path: "/invite-teams"},
-      { name: "Page 10: Invitations Sent", path: "/invites-sent"},
-      { name: "Page 11: Join Sleeper League (Joiner)", path: "/join-league-sleeper"},
-      { name: "Page 12: Connect Wallet (Joiner)", path: "/join-connect-wallet"},
-      { name: "Page 13: Top Up USDC (Joiner)", path: "/join-top-up"},
-      { name: "Page 14: Join League (Joiner)", path: "/join-league"},
-      { name: "Page 15: League Welcome (Joiner)", path: "/league-welcome"},
-      { name: "Page 16: League", path: "/league"},
-      { name: "Page 17: League Rewards", path: "/"},
-      { name: "Page 18: Reward Choose Team", path: "/"},
-      { name: "Page 19: Reward Define Reward", path: "/allocate-reward"},
-      { name: "Page 20: Reward Sent", path: "/"},
-      { name: "Page 21: Mint Reward", path: "/mint-reward"},
-      { name: "Page 22: Reward Minted", path: "/"},
+      { name: "❌ Page 1: Landing", path: "/"},
+      { name: "✅ Page 2: Sleeper Username", path: "/sleeper-username"},
+      { name: "✅ Page 3: Confirm League", path: "/confirm-league"},
+      { name: "❌ Page 4: Request Email Verification", path: "/request-verification"},
+      { name: "❌ Page 5: Email Verification", path: "/verification"},
+      { name: "✅ Page 6: Connect Wallet (Commissioner)", path: "/connect-wallet"},
+      { name: "✅ Page 7: Create League (Commissioner)", path: "/create-league"},
+      { name: "✅ Page 8: League Created", path: "/league-created"},
+      { name: "🟡 Page 9: Invite Teams", path: "/invite-teams"},
+      { name: "❌ Page 10: Invitations Sent", path: "/invites-sent"},
+      { name: "✅ Page 11: Join Sleeper League (Joiner)", path: "/join-league-sleeper"},
+      { name: "✅ Page 12: Connect Wallet (Joiner)", path: "/join-connect-wallet"},
+      { name: "✅ Page 13: Top Up USDC (Joiner)", path: "/join-top-up"},
+      { name: "✅ Page 14: Join League (Joiner)", path: "/join-league"},
+      { name: "✅ Page 15: League Welcome (Joiner)", path: "/league-welcome"},
+      { name: "✅ Page 16: League", path: "/league"},
+      { name: "✅ Page 17: League Rewards", path: "/"},
+      { name: "✅ Page 18: Reward Choose Team", path: "/"},
+      { name: "✅ Page 19: Reward Define Reward", path: "/allocate-reward"},
+      { name: "✅ Page 20: Reward Sent", path: "/"},
+      { name: "✅ Page 21: Mint Reward", path: "/mint-reward"},
+      { name: "✅ Page 22: Reward Minted", path: "/"},
       { name: "Page 23: Supply Liquidty", path: "/"},
       { name: "Page 24: Remove Liquidty", path: "/"},
       { name: "File Manager", path: "/file-manager", pro: true },
@@ -705,7 +705,7 @@ const AppSidebar: React.FC = () => {
             )}
           </div>
         </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
+        {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
     </aside>
   );
