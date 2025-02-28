@@ -51,21 +51,9 @@ const JoinLeague: React.FC = () => {
     if (e) {
       e.preventDefault();
     }
-    if (!leagueAddress || !teamName) return;
-    
-    setIsLoading(true);
-    try {
-      // For now, just simulate an API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      router.push('/league');
-    } catch (error) {
-      console.error('Error joining league:', error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
-  const isFormValid = Boolean(leagueAddress && teamName && !isLoading);
+  const isFormValid = Boolean(leagueAddress && teamName);
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
@@ -105,27 +93,14 @@ const JoinLeague: React.FC = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={!isFormValid}
-            className="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <div className="animate-spin rounded-full h-6 w-6 border-4 border-white/30 border-t-white" />
-            ) : (
-              <span className="text-xl">Join League</span>
-            )}
-          </button>
-        </form>
-
-        {calls.length > 0 && (
           <div className="mt-8">
             <TransactionDefault
               isSponsored={true}
               calls={calls}
+              disabled={!isFormValid}
             />
           </div>
-        )}
+        </form>
       </div>
     </main>
   );
