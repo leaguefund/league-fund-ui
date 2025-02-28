@@ -22,6 +22,7 @@ const JoinLeague: React.FC = () => {
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
 
   useEffect(() => {
+    console.log(setIsLoading)
     // Get league_address from URL params
     const urlLeagueAddress = searchParams.get('league_address');
     if (urlLeagueAddress?.startsWith('0x')) {
@@ -61,6 +62,11 @@ const JoinLeague: React.FC = () => {
     }
     fetchCalls();
   }, [leagueAddress, teamName, dues]);
+
+  React.useEffect(() => {
+    console.log('Loading state:', isLoading);
+    console.log('Router ready for navigation:', router);
+  }, [isLoading, router]);
 
   const handleJoinLeague = async (e?: React.FormEvent) => {
     if (e) {
