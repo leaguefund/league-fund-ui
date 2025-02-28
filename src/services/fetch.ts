@@ -31,7 +31,8 @@ export const fetchWithSession = async (url: string, options: RequestInit = {}): 
         ...options,      // Spread original options
         headers: {
             ...options.headers,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
         body: JSON.stringify(finalBody)
     };
