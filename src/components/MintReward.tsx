@@ -20,13 +20,34 @@ interface OnChainReward {
   amount: bigint;
 }
 
+interface RewardResponse {
+  status: string;
+  message: string;
+  reward: {
+    web_2_id: number;
+    name: string;
+    amount_ucsd: string;
+    season: string;
+    nft_image: string;
+    nft_image_history: string[];
+    league_name: string;
+    league_avatar: string;
+    winner_username: string | null;
+    winner_wallet: string;
+    winner_avatar: string | null;
+  };
+  other_wallet_rewards: any[];
+}
+
 const MintReward: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [rewardPending, setRewardPending] = useState(false);
   const [currentReward, setCurrentReward] = useState<Reward | null>(null);
+  const [rewardWeb2Id, setRewardWeb2Id] = useState<number | null>(null);
   const [calls, setCalls] = useState<ContractCall[]>([]);
   
   const { state } = useGlobalState();
@@ -69,9 +90,13 @@ const MintReward: React.FC = () => {
 
           // Load initial reward image
           try {
-            const response = await ApiService.readRewardImage();
-            if (response.image_data) {
-              setImageData(response.image_data);
+            const response = await ApiService.readRewardImage() as RewardResponse;
+            console.log('API Response reward:', response.reward);
+            console.log('NFT Image URL from API:', response.reward.nft_image);
+            if (response.reward.nft_image) {
+              setImageUrl(response.reward.nft_image);
+              setRewardWeb2Id(response.reward.web_2_id);
+              console.log('Setting image URL in state:', response.reward.nft_image);
               setHasLoadedImage(true);
             }
           } catch (error) {
@@ -94,6 +119,11 @@ const MintReward: React.FC = () => {
     checkRewards();
   }, [state.selectedLeagueAddress, state.wallet]);
 
+  // Add effect to log imageUrl changes
+  useEffect(() => {
+    console.log('Current imageUrl in state:', imageUrl);
+  }, [imageUrl]);
+
   // Update contract calls when image data changes
   useEffect(() => {
     async function fetchCalls() {
@@ -111,7 +141,7 @@ const MintReward: React.FC = () => {
   const fetchNewImage = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.getRewardImage(inputValue);
+      const response = await ApiService.getRewardImage(inputValue, rewardWeb2Id);
       setImageData(response.image_data);
     } catch (error: any) {
       console.error('Error generating new reward image:', error);
@@ -180,15 +210,19 @@ const MintReward: React.FC = () => {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/30 border-t-white" />
                   </div>
-                ) : (
-                  imageData && (
-                    <img
-                      src={`data:image/png;base64,${imageData}`}
-                      alt="Reward Artwork"
-                      className="w-full h-full object-contain"
-                    />
-                  )
-                )}
+                ) : imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt="Reward Artwork"
+                    className="w-full h-full object-contain"
+                  />
+                ) : imageData ? (
+                  <img
+                    src={`data:image/png;base64,${imageData}`}
+                    alt="Reward Artwork"
+                    className="w-full h-full object-contain"
+                  />
+                ) : null}
               </div>
               
               {/* Input and Change Button */}
