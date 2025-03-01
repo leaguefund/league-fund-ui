@@ -20,7 +20,7 @@ const CreateLeague: React.FC = () => {
   const { state, dispatch } = useGlobalState();
   const { showNotification } = useNotification();
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
-  const factoryAddress = "0xde527c61Baa3AbFbcc532625BbD855d56217DB09";
+  const factoryAddress = "0x7ABdd991fd8A466250514DB461a6099490BE4554";
   const duesInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { isConnected, address: wallet_address } = useAccount();
