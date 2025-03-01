@@ -18,7 +18,6 @@ interface Reward {
 interface OnChainReward {
   name: string;
   amount: bigint;
-  nft_image?: string;
 }
 
 const MintReward: React.FC = () => {
@@ -49,6 +48,8 @@ const MintReward: React.FC = () => {
 
       try {
         const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet) as OnChainReward[];
+        console.log('Raw team rewards data:', teamRewards);
+        console.log('First reward full object:', teamRewards[0]);
         console.log('User Rewards Response:', {
           rewards: teamRewards,
           hasRewards: teamRewards.length > 0,
@@ -57,11 +58,31 @@ const MintReward: React.FC = () => {
         
         setRewardPending(teamRewards.length > 0);
         if (teamRewards.length > 0) {
+          console.log('Setting current reward:', {
+            name: teamRewards[0].name,
+            amount: teamRewards[0].amount.toString()
+          });
           setCurrentReward({
             name: teamRewards[0].name,
             amount: teamRewards[0].amount.toString()
           });
-          setHasLoadedImage(false); // Reset flag when rewards change
+
+          // Load initial reward image
+          try {
+            const response = await ApiService.readRewardImage();
+            if (response.image_data) {
+              setImageData(response.image_data);
+              setHasLoadedImage(true);
+            }
+          } catch (error) {
+            console.error('Error reading initial reward image:', error);
+            showNotification({
+              variant: 'error',
+              title: 'Error',
+              description: 'Failed to load reward image',
+              hideDuration: 5000
+            });
+          }
         }
       } catch (error) {
         console.error('Error fetching user rewards:', error);
@@ -71,27 +92,7 @@ const MintReward: React.FC = () => {
       }
     }
     checkRewards();
-  }, [state.wallet, state.selectedLeagueAddress]);
-
-  // Load initial image when rewards are available
-  useEffect(() => {
-    const loadImage = async () => {
-      if (!hasLoadedImage && rewardPending) {
-        try {
-          const response = await ApiService.readRewardImage();
-          setImageData(response.image_data);
-          setHasLoadedImage(true);
-        } catch (error) {
-          console.error('Error fetching initial reward image:', error);
-          showNotification({
-            variant: 'error',
-            title: 'Error loading reward image'
-          });
-        }
-      }
-    };
-    loadImage();
-  }, [rewardPending, hasLoadedImage]);
+  }, [state.selectedLeagueAddress, state.wallet]);
 
   // Update contract calls when image data changes
   useEffect(() => {
