@@ -62,6 +62,7 @@ const CreateLeague: React.FC = () => {
         // Save the league address from the specific path in the response
         const leagueAddress = status.statusData.transactionReceipts[0].logs[2].address;
         console.log('League address:', leagueAddress);
+        dispatch({ type: 'SET_LEAGUE_ADDRESS', payload: leagueAddress });
         sessionStorage.setItem('leagueAddress', leagueAddress);
         setHasCreatedLeague(true);
         
@@ -100,7 +101,7 @@ const CreateLeague: React.FC = () => {
   // Calculate current calls based on dues
   const currentCalls = Number(dues) > 0 && createLeague ? [
     getApproveCall(usdcAddress, factoryAddress, Number(dues) * 1e6),
-    getCreateLeagueCall(createLeague, Number(dues) * 1e6, createLeague)
+    getCreateLeagueCall(createLeague, Number(dues) * 1e6, state.username || sessionStorage.getItem('username') || '')
   ] : [];
 
   return (
