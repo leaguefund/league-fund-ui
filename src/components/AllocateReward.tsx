@@ -6,6 +6,7 @@ import { getAllocateRewardCall } from '../utils/createCallUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import DropdownLeagueActiveTeams from "@/components/example/DropdownExample/DropdownLeagueActiveTeams";
 import { TeamInfo, ContractCall } from '@/types/state';
+import ApiService from '@/services/backend';
 
 const AllocateReward: React.FC = () => {
   const [teamAddress, setTeamAddress] = useState<`0x${string}` | null>(null);
@@ -17,6 +18,15 @@ const AllocateReward: React.FC = () => {
   const rewardNameInputRef = useRef<HTMLInputElement>(null);
 
   const { state } = useGlobalState();
+
+  const handleTransactionSuccess = async () => {
+    try {
+      const response = await ApiService.createReward(amount, rewardName);
+      console.log('Reward created successfully:', response);
+    } catch (error) {
+      console.error('Error creating reward:', error);
+    }
+  };
 
   useEffect(() => {
     async function checkCommissioner() {
@@ -37,7 +47,7 @@ const AllocateReward: React.FC = () => {
       if (state.selectedLeagueAddress && teamAddress && rewardName) {
         setCalls([
           getAllocateRewardCall(state.selectedLeagueAddress, teamAddress, rewardName, amount * 1e6),
-        ])
+        ]);
       } else {
         setCalls([]);
       }
@@ -120,6 +130,7 @@ const AllocateReward: React.FC = () => {
                   isSponsored={true}
                   calls={calls}
                   disabled={!teamAddress || !rewardName || amount <= 0}
+                  onSuccess={handleTransactionSuccess}
                 />
               </div>
             </form>

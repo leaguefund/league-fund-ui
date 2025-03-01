@@ -31,7 +31,7 @@ interface CreateLeagueData extends SessionData {
 
 interface RewardImageData extends SessionData {
     name: string;
-    receiver_wallet: string;
+    winner_wallet: string;
     league_address: string;
     prompt_text: string;
     reward_web_2_id?: number;
@@ -43,6 +43,13 @@ interface RewardReadData extends SessionData {
 }
 
 interface LeagueReadData extends SessionData {
+    league_address: string;
+}
+
+interface RewardCreateData extends SessionData {
+    reward_name: string;
+    amount_ucsd: string;
+    winner_wallet: string;
     league_address: string;
 }
 
@@ -141,7 +148,7 @@ class ApiService {
         console.log(selectedLeague)
         const data = {
             name: sessionStorage.getItem('username') || '',
-            receiver_wallet: sessionStorage.getItem('wallet') || '',
+            winner_wallet: sessionStorage.getItem('wallet') || '',
             league_address: sessionStorage.getItem('leagueAddress') || '',
             prompt_text: promptText,
             ...(rewardWeb2Id !== null && { reward_web_2_id: rewardWeb2Id })
@@ -162,6 +169,18 @@ class ApiService {
         console.log('Data object stringified:', JSON.stringify(data));
         
         return this.fetchData<RewardReadData>("backendApiRewardRead", data);
+    }
+
+    static createReward(amount: number, name: string) {
+        console.log('Creating reward...');
+        const data = {
+            session_id: sessionStorage.getItem('sessionID') || '',
+            reward_name: name,
+            amount_ucsd: amount.toString(),
+            winner_wallet: sessionStorage.getItem('wallet') || '',
+            league_address: sessionStorage.getItem('selectedLeagueAddress') || ''
+        };
+        return this.fetchData<RewardCreateData>("backendApiRewardCreated", data);
     }
 }
 
