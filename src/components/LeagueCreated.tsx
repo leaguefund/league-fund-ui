@@ -27,7 +27,7 @@ const LeagueCreated: React.FC = () => {
             <span className="text-4xl">🎉</span>
           </div>
           <p className="text-xl md:text-2xl text-gray-300">
-            {state.selectedLeague?.name || 'The Champions League'} has been immortalized onchain
+            {state.selectedLeagueName || state.selectedLeague?.name || 'Your League'} has been immortalized onchain
           </p>
         </div>
 
