@@ -17,7 +17,6 @@ import { GlobalStateProvider } from "@/context/GlobalStateContext";
 import ClientInitializer from "@/components/ClientInitializer";
 import { WagmiProvider } from 'wagmi';
 import { config } from "@/config/wagmi";
-import { Providers } from "../../providers";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { NotificationProvider } from '@/context/NotificationContext';
 
@@ -44,7 +43,6 @@ export default function RootLayout({
       <body className={`${outfit.variable} ${montserrat.variable} dark:bg-gray-900`}>
         <QueryClientProvider client={queryClient}>
           <WagmiProvider config={config}>
-            <Providers> 
             <ThemeProvider>
               <SidebarProvider>
                 <GlobalStateProvider>
@@ -55,7 +53,6 @@ export default function RootLayout({
                 </GlobalStateProvider>
               </SidebarProvider>
             </ThemeProvider>
-            </Providers>
           </WagmiProvider>
         </QueryClientProvider>
       </body>

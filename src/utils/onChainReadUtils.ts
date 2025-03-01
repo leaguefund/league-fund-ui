@@ -20,6 +20,19 @@ export async function getTokenBalance(tokenAddress: `0x${string}`, account: `0x$
     return (decimalBalance)
 }
 
+export async function getTokenAllowance(tokenAddress: `0x${string}`, account: `0x${string}`, spender: `0x${string}`) {
+    const contract = getContract({
+        address: tokenAddress,
+        abi: tokenContract.abi,
+        client: { public: publicClient, wallet: walletClient }
+    })
+
+    const tokenAllowance = await contract.read.allowance([account, spender])
+    const decimalAllowance = Number(tokenAllowance) / 1e6
+    console.log("User USDC allowance:", decimalAllowance)
+    return (decimalAllowance)
+}
+
 export async function getLeagueNActiveTeams(leagueAddress: `0x${string}`) {
     const activeTeams = await getLeagueActiveTeams(leagueAddress)
     console.log("Active teams for League:", activeTeams)
@@ -48,7 +61,6 @@ export async function getCommissioner(leagueAddress: `0x${string}`, userAddress:
     const isCommissioner = await contract.read.hasRole(["0xf40a29943eea2d5a1b57ac2700eb4e82e89f06c5825e85a2046bfcfb4eea28a7" ,userAddress])
     return (isCommissioner)
 }
-
 
 export async function getUserLeagues(userAddress: `0x${string}`) {
     const contract = getContract({

@@ -2,7 +2,9 @@
 import { useSidebar } from "@/context/SidebarContext";
 import React, { useEffect, useRef } from "react";
 import Logo from "@/components/logo/logo";
-import { WalletDefault } from '@coinbase/onchainkit/wallet';
+import { Account } from './account'
+import { WalletOptions } from './wallet-options'
+import { useAccount } from 'wagmi'
 
 const AppHeader: React.FC = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -14,6 +16,12 @@ const AppHeader: React.FC = () => {
       toggleMobileSidebar();
     }
   };
+
+  function ConnectWallet() {
+    const { isConnected } = useAccount()
+    if (isConnected) return <Account />
+    return <WalletOptions />
+  }
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -54,7 +62,7 @@ const AppHeader: React.FC = () => {
         <div className="flex-grow hidden lg:block"></div>
         <div className="flex items-center gap-4">
         
-          <WalletDefault />
+          <ConnectWallet />
         </div>
       </div>
     </header>
