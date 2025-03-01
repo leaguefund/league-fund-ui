@@ -11,6 +11,8 @@
   "dependencies": {
     "@coinbase/onchainkit": "^0.37.4",
     "@coinbase/wallet-sdk": "^4.3.0",
+    "@farcaster/frame-sdk": "^0.0.29",
+    "@farcaster/frame-wagmi-connector": "^0.0.17",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",

@@ -10,6 +10,7 @@ import { useNotification } from '@/context/NotificationContext';
 import { getClaimRewardCall } from '../utils/createCallUtils';
 import { getUserRewards } from '../utils/onChainReadUtils';
 import { ContractCall } from '@/types/state';
+import sdk from "@farcaster/frame-sdk";
 
 interface Reward {
   amount: string;
@@ -54,6 +55,10 @@ const MintReward: React.FC = () => {
   
   const { state } = useGlobalState();
   const { showNotification } = useNotification();
+
+  useEffect(() => {
+    sdk.actions.ready({});
+  }, []);
 
   // Check if user has claimable rewards
   useEffect(() => {
