@@ -136,6 +136,7 @@ class ApiService {
         const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).sleeper_id : '';
         const data = {
             session_id: sessionStorage.getItem('sessionID'),
+            league_id: selectedLeagueId || '',
             league_sleeper_id: selectedLeagueId || '',
             wallet_address: wallet_address || '',
             league_address: sessionStorage.getItem('leagueAddress') || '',
