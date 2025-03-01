@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from 'react';
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { getLeagueDues, getTokenAllowance } from '../utils/onChainReadUtils';
-import { tokenContract } from '@/contracts/token';
-import { leagueContract } from '@/contracts/league';
-import sdk from "@farcaster/frame-sdk";
-import { useGlobalState } from '@/context/GlobalStateContext';
+import { TransactionDefault } from "@coinbase/onchainkit/transaction"
+import { getApproveCall, getJoinLeagueCall } from '../utils/createCallUtils';
+import { getLeagueDues } from '../utils/onChainReadUtils';
+import { ContractCall } from '@/types/state';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
 
@@ -14,9 +12,7 @@ const JoinLeague: React.FC = () => {
   const [leagueAddress, setLeagueAddress] = useState<`0x${string}` | null>(null);
   const [teamName, setTeamName] = useState('');
   const [dues, setDues] = useState(0);
-  const [allowance, setAllowance] = useState(0);
-  const [txHashApprove, setTxHashApprove] = useState<`0x${string}` | undefined>(undefined);
-  const [txHashJoin, setTxHashJoin] = useState<`0x${string}` | undefined>(undefined);
+  const [calls, setCalls] = useState<ContractCall[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFromUrl, setIsFromUrl] = useState(false);
   const router = useRouter();
@@ -41,12 +37,6 @@ const JoinLeague: React.FC = () => {
     teamNameInputRef.current?.focus();
   }, []);
 
-  const { state } = useGlobalState();
-
-  useEffect(() => {
-    sdk.actions.ready({});
-  }, []);
-
   useEffect(() => {
     async function fetchDues() {
       if (leagueAddress) {
@@ -59,73 +49,19 @@ const JoinLeague: React.FC = () => {
     fetchDues();
   }, [leagueAddress]);
 
-  const { writeContract, isPending } = useWriteContract();
-
-  const handleApprove = async () => {
-    if (leagueAddress) {
-      if (allowance >= dues) {
-        console.log("User has sufficient allowance. Proceeding to join league...");
-        handleJoinLeague();
-        return;
-      }
-      try {
-        const hash = await writeContract({
-          address: usdcAddress,
-          abi: tokenContract.abi,
-          functionName: "approve",
-          args: [leagueAddress, BigInt(dues * 1e6)],
-        });
-        setTxHashApprove(hash); // ✅ Now updates state correctly
-        console.log("Approval Transaction Hash:", hash);
-      } catch (error) {
-        console.error("Approval failed:", error);
-      }
-    }
-  };
-
-  const handleJoinLeague = async () => {
-    if (leagueAddress) {
-      try {
-        const hash = await writeContract({
-          address: leagueAddress,
-          abi: leagueContract.abi,
-          functionName: "joinSeason",
-          args: [teamName],
-        });
-        setTxHashJoin(hash); // ✅ Now updates state correctly
-        console.log("Join League Transaction Hash:", hash);
-      } catch (error) {
-        console.error("Join League failed:", error);
-      }
-    }
-  };
-
-  const { isLoading: isApproveLoading, isSuccess: isApproveSuccess } = useWaitForTransactionReceipt({
-    hash: txHashApprove,
-  });
-
-  const { isLoading: isJoinLeagueLoading, isSuccess: isJoinLeagueSuccess } = useWaitForTransactionReceipt({
-    hash: txHashJoin,
-  });
-
   useEffect(() => {
-    async function fetchAllowance() {
-      if (leagueAddress && state.wallet) {
-        const allowance = await getTokenAllowance(usdcAddress, state.wallet, leagueAddress);
-        setAllowance(allowance);
+    async function fetchCalls() {
+      if (leagueAddress && teamName) {
+        setCalls([
+          getApproveCall(usdcAddress, leagueAddress, dues * 1e6),
+          getJoinLeagueCall(leagueAddress, teamName)
+        ])
       } else {
-        setAllowance(0);
+        setCalls([]);
       }
     }
-    fetchAllowance();
-  }, [leagueAddress, state.wallet, isApproveSuccess]);
-
-  useEffect(() => {
-    if (isApproveSuccess && !txHashJoin) {
-      console.log("Approval confirmed. Proceeding to join league...");
-      handleJoinLeague();
-    }
-  }, [isApproveSuccess, txHashJoin]);
+    fetchCalls();
+  }, [leagueAddress, teamName, dues]);
 
   React.useEffect(() => {
     console.log('Loading state:', isLoading);
@@ -192,4 +128,4 @@ const JoinLeague: React.FC = () => {
   );
 };
 
-export default JoinLeague;
+export default JoinLeague; 
