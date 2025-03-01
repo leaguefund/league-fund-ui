@@ -12,6 +12,7 @@ import ApiService from '@/services/backend';
 import { useRouter } from 'next/navigation';
 import { WalletDefault } from '@coinbase/onchainkit/wallet';
 import { useAccount } from 'wagmi';
+import sdk from "@farcaster/frame-sdk";
 
 const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
@@ -26,6 +27,10 @@ const CreateLeague: React.FC = () => {
   const { isConnected, address: wallet_address } = useAccount();
 
   console.log(wallet_address)
+
+  useEffect(() => {
+    sdk.actions.ready({});
+  }, []);
 
   // Auto-focus the dues input and set createLeague
   useEffect(() => {

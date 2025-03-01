@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { useNotification } from '@/context/NotificationContext';
+import sdk from "@farcaster/frame-sdk";
 
 const SleeperUsername: React.FC = () => {
   // Local state for form input
@@ -19,6 +20,10 @@ const SleeperUsername: React.FC = () => {
   // Get both state and dispatch from global state
   const { state, dispatch } = useGlobalState();
   const { showNotification } = useNotification();
+
+  useEffect(() => {
+    sdk.actions.ready({});
+  }, []);
 
   // If we already have a username in global state, use it
   useEffect(() => {
