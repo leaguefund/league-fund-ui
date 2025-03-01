@@ -25,6 +25,8 @@ const CreateLeague: React.FC = () => {
   const router = useRouter();
   const { isConnected, address: wallet_address } = useAccount();
 
+  console.log(wallet_address)
+
   // Auto-focus the dues input and set createLeague
   useEffect(() => {
     duesInputRef.current?.focus();
