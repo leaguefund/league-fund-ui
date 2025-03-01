@@ -130,10 +130,13 @@ class ApiService {
     static createLeague(wallet_address: string) {
         console.log('Creating league...');
         const selectedLeague = sessionStorage.getItem('selectedLeague');
-        const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).id : '';
+        console.log("________!!!!!");
+        console.log(selectedLeague);
+        console.log("________!!!!!");
+        const selectedLeagueId = selectedLeague ? JSON.parse(selectedLeague).sleeper_id : '';
         const data = {
             session_id: sessionStorage.getItem('sessionID'),
-            league_id: selectedLeagueId || '',
+            league_sleeper_id: selectedLeagueId || '',
             wallet_address: wallet_address || '',
             league_address: sessionStorage.getItem('leagueAddress') || '',
             league_dues_usdc: sessionStorage.getItem('leagueDues') || ''
