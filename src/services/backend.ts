@@ -175,13 +175,13 @@ class ApiService {
         return this.fetchData<RewardReadData>("backendApiRewardRead", data);
     }
 
-    static createReward(amount: number, name: string) {
+    static createReward(amount: number, name: string, winner_wallet: string) {
         console.log('Creating reward...');
         const data = {
             session_id: sessionStorage.getItem('sessionID') || '',
             reward_name: name,
             amount_ucsd: amount.toString(),
-            winner_wallet: sessionStorage.getItem('wallet') || '',
+            winner_wallet: winner_wallet || '',
             league_address: sessionStorage.getItem('selectedLeagueAddress') || ''
         };
         return this.fetchData<RewardCreateData>("backendApiRewardCreated", data);
