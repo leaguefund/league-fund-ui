@@ -127,16 +127,16 @@ const MintReward: React.FC = () => {
   // Update contract calls when image data changes
   useEffect(() => {
     async function fetchCalls() {
-      if (state.selectedLeagueAddress && imageData) {
+      if (state.selectedLeagueAddress && (imageData || imageUrl)) {
         setCalls([
-          getClaimRewardCall(state.selectedLeagueAddress, `data:image/png;base64,${imageData}`),
+          getClaimRewardCall(state.selectedLeagueAddress, imageData ? `data:image/png;base64,${imageData}` : imageUrl!),
         ]);
       } else {
         setCalls([]);
       }
     }
     fetchCalls();
-  }, [state.selectedLeagueAddress, imageData]);
+  }, [state.selectedLeagueAddress, imageData, imageUrl]);
 
   const fetchNewImage = async () => {
     setIsLoading(true);
@@ -223,12 +223,18 @@ const MintReward: React.FC = () => {
                     src={imageUrl}
                     alt="Reward Artwork"
                     className="w-full h-full object-contain"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
                   />
                 ) : imageData ? (
                   <img
                     src={`data:image/png;base64,${imageData}`}
                     alt="Reward Artwork"
                     className="w-full h-full object-contain"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
                   />
                 ) : null}
               </div>
@@ -255,7 +261,7 @@ const MintReward: React.FC = () => {
 
           {/* Claim Reward Button/Transaction */}
           <div className="w-full max-w-[320px]">
-            {calls.length > 0 ? (
+            {(imageUrl || imageData) ? (
               <div className="w-[140%] -mx-[20%]">
                 <TransactionDefault
                   isSponsored={true}
@@ -267,7 +273,7 @@ const MintReward: React.FC = () => {
                 disabled={true}
                 className="w-[140%] -mx-[20%] flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="text-xl">Generate Image First</span>
+                <span className="text-xl">Loading Image...</span>
               </button>
             )}
           </div>
