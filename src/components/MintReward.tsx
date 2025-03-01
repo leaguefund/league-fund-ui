@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction";
+import { useRouter } from 'next/navigation';
 import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { useNotification } from '@/context/NotificationContext';
@@ -40,6 +41,7 @@ interface RewardResponse {
 }
 
 const MintReward: React.FC = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -168,6 +170,11 @@ const MintReward: React.FC = () => {
     }
   };
 
+  const handleTransactionSuccess = () => {
+    localStorage.setItem('selectedTab', 'rewards');
+    router.push('/league');
+  };
+
   if (isInitialLoading) {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center px-4">
@@ -266,6 +273,7 @@ const MintReward: React.FC = () => {
                 <TransactionDefault
                   isSponsored={true}
                   calls={calls}
+                  onSuccess={handleTransactionSuccess}
                 />
               </div>
             ) : (
