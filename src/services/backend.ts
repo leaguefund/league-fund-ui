@@ -46,6 +46,13 @@ interface LeagueReadData extends SessionData {
     league_address: string;
 }
 
+interface RewardCreateData extends SessionData {
+    reward_name: string;
+    amount_ucsd: string;
+    receiver_wallet: string;
+    league_address: string;
+}
+
 class ApiService {
     static async fetchData<T extends SessionData>(apiEndpoint: ConfigKey, body: T) {
         const url = `${envConfig.backendHost}${envConfig[apiEndpoint]}`;
@@ -162,6 +169,18 @@ class ApiService {
         console.log('Data object stringified:', JSON.stringify(data));
         
         return this.fetchData<RewardReadData>("backendApiRewardRead", data);
+    }
+
+    static createReward(amount: number, name: string) {
+        console.log('Creating reward...');
+        const data = {
+            session_id: sessionStorage.getItem('sessionID') || '',
+            reward_name: name,
+            amount_ucsd: amount.toString(),
+            receiver_wallet: sessionStorage.getItem('wallet') || '',
+            league_address: sessionStorage.getItem('selectedLeagueAddress') || ''
+        };
+        return this.fetchData<RewardCreateData>("backendApiRewardCreated", data);
     }
 }
 

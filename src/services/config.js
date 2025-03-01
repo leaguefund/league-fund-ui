@@ -14,6 +14,7 @@ const config = {
       backendApiCreateLeague: "/v1/api/league/created",
       backendApiRewardImage: "/v1/api/reward/image",
       backendApiRewardRead: "/v1/api/reward/read",
+      backendApiRewardCreated: "/v1/api/reward/created",
     },
     mainnet: {
       backendHost: "https://league-fund-76860069ad93.herokuapp.com",
@@ -26,6 +27,7 @@ const config = {
       backendApiCreateLeague: "/v1/api/league/created",
       backendApiRewardImage: "/v1/api/reward/image",
       backendApiRewardRead: "/v1/api/reward/read",
+      backendApiRewardCreated: "/v1/api/reward/created",
     },
   };
 
