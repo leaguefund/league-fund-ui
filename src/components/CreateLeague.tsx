@@ -17,7 +17,7 @@ const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
   const [createLeague, setCreateLeague] = useState<string>('');
   const [hasCreatedLeague, setHasCreatedLeague] = useState(false);
-  const { state } = useGlobalState();
+  const { state, dispatch } = useGlobalState();
   const { showNotification } = useNotification();
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
   const factoryAddress = "0xde527c61Baa3AbFbcc532625BbD855d56217DB09";
@@ -139,6 +139,19 @@ const CreateLeague: React.FC = () => {
                 type="text"
                 value={createLeague}
                 onChange={(e) => setCreateLeague(e.target.value)}
+                onBlur={(e) => {
+                  const newName = e.target.value;
+                  dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: newName });
+                  if (state.selectedLeague) {
+                    dispatch({ 
+                      type: 'SET_SELECTED_LEAGUE', 
+                      payload: {
+                        ...state.selectedLeague,
+                        name: newName
+                      }
+                    });
+                  }
+                }}
                 className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white"
               />
             </div>

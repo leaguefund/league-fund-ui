@@ -16,7 +16,7 @@ const LeagueRewards: React.FC = () => {
       if (state.selectedLeagueAddress) {
         const leagueRewards = await getLeagueRewards(state.selectedLeagueAddress);
         console.log('League Rewards:', leagueRewards);
-        setLeagueRewards([...leagueRewards]);
+        setLeagueRewards([...leagueRewards].reverse());
       } else {
         setLeagueRewards([]);
       }
