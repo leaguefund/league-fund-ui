@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction";
+import { useRouter } from 'next/navigation';
 import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { useNotification } from '@/context/NotificationContext';
@@ -18,21 +19,41 @@ interface Reward {
 interface OnChainReward {
   name: string;
   amount: bigint;
-  nft_image?: string;
+}
+
+interface RewardResponse {
+  status: string;
+  message: string;
+  reward: {
+    web_2_id: number;
+    name: string;
+    amount_ucsd: string;
+    season: string;
+    nft_image: string;
+    nft_image_history: string[];
+    league_name: string;
+    league_avatar: string;
+    winner_username: string | null;
+    winner_wallet: string;
+    winner_avatar: string | null;
+  };
+  other_wallet_rewards: any[];
 }
 
 const MintReward: React.FC = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [rewardPending, setRewardPending] = useState(false);
   const [currentReward, setCurrentReward] = useState<Reward | null>(null);
+  const [rewardWeb2Id, setRewardWeb2Id] = useState<number | null>(null);
   const [calls, setCalls] = useState<ContractCall[]>([]);
   
   const { state } = useGlobalState();
   const { showNotification } = useNotification();
-  const [hasLoadedImage, setHasLoadedImage] = useState(false);
 
   // Check if user has claimable rewards
   useEffect(() => {
@@ -49,6 +70,8 @@ const MintReward: React.FC = () => {
 
       try {
         const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet) as OnChainReward[];
+        console.log('Raw team rewards data:', teamRewards);
+        console.log('First reward full object:', teamRewards[0]);
         console.log('User Rewards Response:', {
           rewards: teamRewards,
           hasRewards: teamRewards.length > 0,
@@ -57,11 +80,34 @@ const MintReward: React.FC = () => {
         
         setRewardPending(teamRewards.length > 0);
         if (teamRewards.length > 0) {
+          console.log('Setting current reward:', {
+            name: teamRewards[0].name,
+            amount: teamRewards[0].amount.toString()
+          });
           setCurrentReward({
             name: teamRewards[0].name,
             amount: teamRewards[0].amount.toString()
           });
-          setHasLoadedImage(false); // Reset flag when rewards change
+
+          // Load initial reward image
+          try {
+            const response = await ApiService.readRewardImage() as RewardResponse;
+            console.log('API Response reward:', response.reward);
+            console.log('NFT Image URL from API:', response.reward.nft_image);
+            if (response.reward.nft_image) {
+              setImageUrl(response.reward.nft_image);
+              setRewardWeb2Id(response.reward.web_2_id);
+              console.log('Setting image URL in state:', response.reward.nft_image);
+            }
+          } catch (error) {
+            console.error('Error reading initial reward image:', error);
+            showNotification({
+              variant: 'error',
+              title: 'Error',
+              description: 'Failed to load reward image',
+              hideDuration: 5000
+            });
+          }
         }
       } catch (error) {
         console.error('Error fetching user rewards:', error);
@@ -71,47 +117,28 @@ const MintReward: React.FC = () => {
       }
     }
     checkRewards();
-  }, [state.wallet, state.selectedLeagueAddress]);
-
-  // Load initial image when rewards are available
-  useEffect(() => {
-    const loadImage = async () => {
-      if (!hasLoadedImage && rewardPending) {
-        try {
-          const response = await ApiService.readRewardImage();
-          setImageData(response.image_data);
-          setHasLoadedImage(true);
-        } catch (error) {
-          console.error('Error fetching initial reward image:', error);
-          showNotification({
-            variant: 'error',
-            title: 'Error loading reward image'
-          });
-        }
-      }
-    };
-    loadImage();
-  }, [rewardPending, hasLoadedImage]);
+  }, [state.selectedLeagueAddress, state.wallet]);
 
   // Update contract calls when image data changes
   useEffect(() => {
     async function fetchCalls() {
-      if (state.selectedLeagueAddress && imageData) {
+      if (state.selectedLeagueAddress && (imageData || imageUrl)) {
         setCalls([
-          getClaimRewardCall(state.selectedLeagueAddress, `data:image/png;base64,${imageData}`),
+          getClaimRewardCall(state.selectedLeagueAddress, imageData ? `data:image/png;base64,${imageData}` : imageUrl!),
         ]);
       } else {
         setCalls([]);
       }
     }
     fetchCalls();
-  }, [state.selectedLeagueAddress, imageData]);
+  }, [state.selectedLeagueAddress, imageData, imageUrl]);
 
   const fetchNewImage = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.getRewardImage(inputValue);
-      setImageData(response.image_data);
+      const response = await ApiService.getRewardImage(inputValue, rewardWeb2Id) as RewardResponse;
+      setImageUrl(response.reward.nft_image);
+      setImageData(null);
     } catch (error: any) {
       console.error('Error generating new reward image:', error);
       showNotification({
@@ -125,8 +152,16 @@ const MintReward: React.FC = () => {
     }
   };
 
-  const handleChange = () => {
-    fetchNewImage();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isLoading && inputValue.trim()) {
+      fetchNewImage();
+    }
+  };
+
+  const handleTransactionSuccess = () => {
+    localStorage.setItem('selectedTab', 'rewards');
+    router.push('/league');
   };
 
   if (isInitialLoading) {
@@ -179,19 +214,29 @@ const MintReward: React.FC = () => {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/30 border-t-white" />
                   </div>
-                ) : (
-                  imageData && (
-                    <img
-                      src={`data:image/png;base64,${imageData}`}
-                      alt="Reward Artwork"
-                      className="w-full h-full object-contain"
-                    />
-                  )
-                )}
+                ) : imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt="Reward Artwork"
+                    className="w-full h-full object-contain"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                  />
+                ) : imageData ? (
+                  <img
+                    src={`data:image/png;base64,${imageData}`}
+                    alt="Reward Artwork"
+                    className="w-full h-full object-contain"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                  />
+                ) : null}
               </div>
               
               {/* Input and Change Button */}
-              <div className="w-[140%] -mx-[20%] mt-4 flex gap-2">
+              <form onSubmit={handleSubmit} className="w-[140%] -mx-[20%] mt-4 flex gap-2">
                 <input 
                   type="text"
                   value={inputValue}
@@ -200,23 +245,24 @@ const MintReward: React.FC = () => {
                   placeholder="Enter text"
                 />
                 <button 
-                  onClick={handleChange}
+                  type="submit"
                   disabled={isLoading || !inputValue.trim()}
                   className="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Change
                 </button>
-              </div>
+              </form>
             </div>
           </div>
 
           {/* Claim Reward Button/Transaction */}
           <div className="w-full max-w-[320px]">
-            {calls.length > 0 ? (
+            {(imageUrl || imageData) ? (
               <div className="w-[140%] -mx-[20%]">
                 <TransactionDefault
                   isSponsored={true}
                   calls={calls}
+                  onSuccess={handleTransactionSuccess}
                 />
               </div>
             ) : (
@@ -224,7 +270,7 @@ const MintReward: React.FC = () => {
                 disabled={true}
                 className="w-[140%] -mx-[20%] flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white py-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="text-xl">Generate Image First</span>
+                <span className="text-xl">Loading Image...</span>
               </button>
             )}
           </div>
