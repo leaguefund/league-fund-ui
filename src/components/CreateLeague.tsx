@@ -62,7 +62,7 @@ const CreateLeague: React.FC = () => {
         // Save the league address from the specific path in the response
         const leagueAddress = status.statusData.transactionReceipts[0].logs[2].address;
         console.log('League address:', leagueAddress);
-        dispatch({ type: 'SET_LEAGUE_ADDRESS', payload: leagueAddress });
+        dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: leagueAddress });
         sessionStorage.setItem('leagueAddress', leagueAddress);
         setHasCreatedLeague(true);
         
