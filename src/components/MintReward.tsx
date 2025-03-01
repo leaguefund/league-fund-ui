@@ -141,8 +141,9 @@ const MintReward: React.FC = () => {
   const fetchNewImage = async () => {
     setIsLoading(true);
     try {
-      const response = await ApiService.getRewardImage(inputValue, rewardWeb2Id);
-      setImageData(response.image_data);
+      const response = await ApiService.getRewardImage(inputValue, rewardWeb2Id) as RewardResponse;
+      setImageUrl(response.reward.nft_image);
+      setImageData(null);
     } catch (error: any) {
       console.error('Error generating new reward image:', error);
       showNotification({
@@ -158,6 +159,13 @@ const MintReward: React.FC = () => {
 
   const handleChange = () => {
     fetchNewImage();
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isLoading && inputValue.trim()) {
+      fetchNewImage();
+    }
   };
 
   if (isInitialLoading) {
@@ -226,7 +234,7 @@ const MintReward: React.FC = () => {
               </div>
               
               {/* Input and Change Button */}
-              <div className="w-[140%] -mx-[20%] mt-4 flex gap-2">
+              <form onSubmit={handleSubmit} className="w-[140%] -mx-[20%] mt-4 flex gap-2">
                 <input 
                   type="text"
                   value={inputValue}
@@ -235,13 +243,13 @@ const MintReward: React.FC = () => {
                   placeholder="Enter text"
                 />
                 <button 
-                  onClick={handleChange}
+                  type="submit"
                   disabled={isLoading || !inputValue.trim()}
                   className="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Change
                 </button>
-              </div>
+              </form>
             </div>
           </div>
 
