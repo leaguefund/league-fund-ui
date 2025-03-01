@@ -54,7 +54,6 @@ const MintReward: React.FC = () => {
   
   const { state } = useGlobalState();
   const { showNotification } = useNotification();
-  const [hasLoadedImage, setHasLoadedImage] = useState(false);
 
   // Check if user has claimable rewards
   useEffect(() => {
@@ -99,7 +98,6 @@ const MintReward: React.FC = () => {
               setImageUrl(response.reward.nft_image);
               setRewardWeb2Id(response.reward.web_2_id);
               console.log('Setting image URL in state:', response.reward.nft_image);
-              setHasLoadedImage(true);
             }
           } catch (error) {
             console.error('Error reading initial reward image:', error);
@@ -120,11 +118,6 @@ const MintReward: React.FC = () => {
     }
     checkRewards();
   }, [state.selectedLeagueAddress, state.wallet]);
-
-  // Add effect to log imageUrl changes
-  useEffect(() => {
-    console.log('Current imageUrl in state:', imageUrl);
-  }, [imageUrl]);
 
   // Update contract calls when image data changes
   useEffect(() => {
@@ -157,10 +150,6 @@ const MintReward: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleChange = () => {
-    fetchNewImage();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
