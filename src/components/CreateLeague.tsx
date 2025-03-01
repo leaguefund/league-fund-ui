@@ -87,10 +87,10 @@ const CreateLeague: React.FC = () => {
 
   const handleCreateLeague = async () => {
     try {
-        if (wallet_address) {
-          await ApiService.createLeague(wallet_address);
+        if (state.selectedLeagueAddress) {
+          await ApiService.createLeague(state.selectedLeagueAddress || sessionStorage.getItem('selectedLeagueAddress') || '');
         } else {
-          console.error('Wallet address is undefined');
+          console.error('League address is undefined');
         }
         console.log('League created successfully');
     } catch (error) {
