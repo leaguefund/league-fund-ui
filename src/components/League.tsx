@@ -14,6 +14,15 @@ const League: React.FC = () => {
 
   const { state } = useGlobalState();
 
+  // Check for selectedTab in localStorage
+  useEffect(() => {
+    const selectedTab = localStorage.getItem('selectedTab');
+    if (selectedTab === 'rewards') {
+      setActiveTab('rewards');
+      localStorage.removeItem('selectedTab');
+    }
+  }, []);
+
   useEffect(() => {
     async function fetchLeagueActiveTeams() {
       if (state.selectedLeagueAddress) {

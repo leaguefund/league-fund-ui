@@ -34,6 +34,7 @@ interface RewardImageData extends SessionData {
     receiver_wallet: string;
     league_address: string;
     prompt_text: string;
+    reward_web_2_id?: number;
 }
 
 interface RewardReadData extends SessionData {
@@ -134,7 +135,7 @@ class ApiService {
         return this.fetchData<CreateLeagueData>("backendApiCreateLeague", data);
     }
 
-    static getRewardImage(promptText: string) {
+    static getRewardImage(promptText: string, rewardWeb2Id: number | null) {
         console.log('Fetching reward image...');
         const selectedLeague = sessionStorage.getItem('selectedLeague');
         console.log(selectedLeague)
@@ -142,7 +143,8 @@ class ApiService {
             name: sessionStorage.getItem('username') || '',
             receiver_wallet: sessionStorage.getItem('wallet') || '',
             league_address: sessionStorage.getItem('leagueAddress') || '',
-            prompt_text: promptText
+            prompt_text: promptText,
+            ...(rewardWeb2Id !== null && { reward_web_2_id: rewardWeb2Id })
         }
         return this.fetchData<RewardImageData>("backendApiRewardImage", data);
     }
