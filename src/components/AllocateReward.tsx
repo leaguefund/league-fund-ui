@@ -20,8 +20,10 @@ const AllocateReward: React.FC = () => {
   const { state } = useGlobalState();
 
   const handleTransactionSuccess = async () => {
+    let winnersWallet = selectedTeam?.wallet;
+    console.log('winnersWallet', winnersWallet);
     try {
-      const response = await ApiService.createReward(amount, rewardName);
+      const response = await ApiService.createReward(amount, rewardName, winnersWallet || '');
       console.log('Reward created successfully:', response);
     } catch (error) {
       console.error('Error creating reward:', error);
