@@ -523,9 +523,9 @@ const AppSidebar: React.FC = () => {
               </h2>
 
               <DropdownLeagues />
-              <h2 className={`mb-4 text-xs truncate flex leading-[20px] text-gray-500`}>
+              {/* <h2 className={`mb-4 text-xs truncate flex leading-[20px] text-gray-500`}>
                   📜 {state.selectedLeagueAddress}
-              </h2>
+              </h2> */}
             </div>
             <div>
               <h2
@@ -536,13 +536,18 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Treasury"
+                  "League"
                 ) : (
                   <HorizontaLDots />
                 )}
               </h2>
               {/* {renderMenuItems(navItems, "main")} */}
               <ul className="flex flex-col gap-4">
+                <li key="league">
+                <Link href="/league" className="menu-item group menu-item-inactive">
+                      <span className="menu-item-text truncate">📜 {state.selectedLeagueAddress}</span>
+                      </Link>
+                </li>
                 <li key="balance">
                   <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                   <span className="menu-item-text">💰 ${leagueBalance}</span>
