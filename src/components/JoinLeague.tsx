@@ -7,6 +7,7 @@ import { getLeagueDues } from '../utils/onChainReadUtils';
 import { ContractCall } from '@/types/state';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
+import sdk from "@farcaster/frame-sdk";
 
 const JoinLeague: React.FC = () => {
   const [leagueAddress, setLeagueAddress] = useState<`0x${string}` | null>(null);
@@ -20,6 +21,10 @@ const JoinLeague: React.FC = () => {
   const { dispatch } = useGlobalState();
   const teamNameInputRef = useRef<HTMLInputElement>(null);
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
+
+  useEffect(() => {
+    sdk.actions.ready({});
+  }, []);
 
   useEffect(() => {
     console.log(setIsLoading)
