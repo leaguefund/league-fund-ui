@@ -47,6 +47,7 @@ const SleeperUsername: React.FC = () => {
       // Update leagues if they come back in the response
       if (response.leagues) {
         dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
+        dispatch({ type: 'SET_SLEEPER_LEAGUES', payload: response.leagues }); // Set sleeperLeagues
         // Set the first league as the selected league
         if (response.leagues.length > 0) {
           dispatch({ type: 'SET_SELECTED_LEAGUE', payload: response.leagues[0] });
@@ -137,4 +138,4 @@ const SleeperUsername: React.FC = () => {
   );
 };
 
-export default SleeperUsername; 
+export default SleeperUsername;
