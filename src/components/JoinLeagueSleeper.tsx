@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import ApiService from '@/services/backend';
+import sdk from "@farcaster/frame-sdk";
 
 interface TeamMember {
   username: string;
@@ -36,6 +37,10 @@ const JoinLeagueSleeper: React.FC = () => {
   const { dispatch } = useGlobalState();
   const [isLoading, setIsLoading] = useState(true);
   const [leagueData, setLeagueData] = useState<LeagueResponse | null>(null);
+
+  useEffect(() => {
+    sdk.actions.ready({});
+  }, []);
 
   useEffect(() => {
     async function initializeWithLeagueAddress() {

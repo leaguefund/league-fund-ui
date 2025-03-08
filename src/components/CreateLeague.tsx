@@ -12,6 +12,9 @@ import ApiService from '@/services/backend';
 import { useRouter } from 'next/navigation';
 import { WalletDefault } from '@coinbase/onchainkit/wallet';
 import { useAccount } from 'wagmi';
+import sdk from "@farcaster/frame-sdk";
+import LeagueDetails from '@/components/LeagueDetails';
+import { League } from '@/types/state';
 
 const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
@@ -24,8 +27,13 @@ const CreateLeague: React.FC = () => {
   const duesInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { isConnected, address: wallet_address } = useAccount();
+  const selectedLeague = state.selectedLeague;
 
   console.log(wallet_address)
+
+  useEffect(() => {
+    sdk.actions.ready({});
+  }, []);
 
   // Auto-focus the dues input and set createLeague
   useEffect(() => {
@@ -108,30 +116,11 @@ const CreateLeague: React.FC = () => {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
-      <div className="max-w-4xl w-full mt-16 space-y-12">
-        {/* Title Section */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white">
-            Create League
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300">
-            Set up your league details and handle dues.
-          </p>
-        </div>
 
-        {/* League Display */}
-        <div className="flex flex-col items-center space-y-4">
-          <Image 
-            src={state.selectedLeague?.avatar || "/images/placeholder.png"}
-            alt="League Avatar" 
-            width={120} 
-            height={120}
-            className="rounded-full"
-          />
-          <h2 className="text-2xl font-bold text-white">
-            {state.selectedLeague?.name || 'New League'}
-          </h2>
-        </div>
+    <LeagueDetails selectedLeague={selectedLeague as League} />
+
+      <div className="max-w-4xl w-full mt-16 space-y-12">
+
 
         {/* Main Actions */}
         <div className="space-y-8">
@@ -192,7 +181,6 @@ const CreateLeague: React.FC = () => {
                 className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white cursor-not-allowed"
               />
             </div>
-            
             {/* Transaction Button */}
             { isConnected && (
                 <div className="w-full [&_button]:w-full [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:space-x-3 [&_button]:bg-gray-700 [&_button:hover]:bg-gray-600 [&_button]:text-white [&_button]:py-6 [&_button]:rounded-lg [&_button]:transition-colors [&_button:disabled]:opacity-50 [&_button:disabled]:cursor-not-allowed [&_button_span]:text-xl">
@@ -213,7 +201,14 @@ const CreateLeague: React.FC = () => {
 
           {/* Start Over Link */}
           <Link 
-            href="/" 
+            href="/confirm-league" 
+            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
+          >
+            Choose Different League
+          </Link>
+          {/* Start Over Link */}
+          <Link 
+            href="/sleeper-username" 
             className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
           >
             Start Over
