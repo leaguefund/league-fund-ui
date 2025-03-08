@@ -9,6 +9,7 @@ import ApiService from '@/services/backend';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { useNotification } from '@/context/NotificationContext';
 import sdk from "@farcaster/frame-sdk";
+import { League } from '@/types/state';
 
 const SleeperUsername: React.FC = () => {
   // Local state for form input
@@ -22,8 +23,13 @@ const SleeperUsername: React.FC = () => {
   const { showNotification } = useNotification();
 
   useEffect(() => {
+    // Clear Leagues
+    dispatch({ type: 'SET_LEAGUES', payload: [] });
+    dispatch({ type: 'SET_SLEEPER_LEAGUES', payload: [] }); // Set sleeperLeagues
+    dispatch({ type: 'SET_SELECTED_LEAGUE', payload: {} as League });
+    // Prepare SDK
     sdk.actions.ready({});
-  }, []);
+  }, [dispatch]);
 
   // If we already have a username in global state, use it
   useEffect(() => {
@@ -40,13 +46,14 @@ const SleeperUsername: React.FC = () => {
     
     setIsLoading(true);
     try {
-      const response = await ApiService.getSleeperUser(username);
       // Update global state with username
       dispatch({ type: 'SET_USERNAME', payload: username });
-      
+      // Fetch Sleeper API
+      const response = await ApiService.getSleeperUser(username);
       // Update leagues if they come back in the response
       if (response.leagues) {
         dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
+        dispatch({ type: 'SET_SLEEPER_LEAGUES', payload: response.leagues }); // Set sleeperLeagues
         // Set the first league as the selected league
         if (response.leagues.length > 0) {
           dispatch({ type: 'SET_SELECTED_LEAGUE', payload: response.leagues[0] });
@@ -68,13 +75,16 @@ const SleeperUsername: React.FC = () => {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
-      <div className="max-w-4xl w-full mt-16 space-y-12">
+      <div className="max-w-4xl w-full mt-20 space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
-            What is your Sleeper Username?
+            Sleeper Username
           </h1>
+          <p className="text-xl md:text-2xl text-gray-300">
+            Import your Sleeper League
+          </p>
           {/* Show leagues count if we have them and selectedLeague exists */}
-          {state.leagues && state.selectedLeague && (
+          {state.leagues && state.sleeperLeagues && state.sleeperLeagues.length > 0 && (
             <p className="text-gray-300">
               Found {state.leagues.length} leagues for this account
             </p>
@@ -93,12 +103,7 @@ const SleeperUsername: React.FC = () => {
               className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
               placeholder="Enter your username"
             />
-            <Link 
-              href="/find-username" 
-              className="text-gray-400 hover:text-white block"
-            >
-              Where can I find my username?
-            </Link>
+
           </div>
 
           {/* Find League Button */}
@@ -137,4 +142,4 @@ const SleeperUsername: React.FC = () => {
   );
 };
 
-export default SleeperUsername; 
+export default SleeperUsername;

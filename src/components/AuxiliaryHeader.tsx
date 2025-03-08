@@ -26,6 +26,10 @@ const AuxiliaryHeader: React.FC = () => {
     fetchLeagueInfo();
   }, [state.selectedLeagueAddress]);
 
+  if (!state.selectedLeagueName) {
+    return null;
+  }
+
   return (
     <header className="sticky top-[62px] flex w-full !bg-gray-800 border-gray-200 z-99998 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
       <div className={`flex items-center justify-between w-full px-5 py-3 lg:px-6`}>
@@ -42,4 +46,4 @@ const AuxiliaryHeader: React.FC = () => {
   );
 };
 
-export default AuxiliaryHeader; 
+export default AuxiliaryHeader;

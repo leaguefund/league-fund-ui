@@ -38,6 +38,10 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, leagues: action.payload };
       if (action.payload) sessionStorage.setItem('leagues', JSON.stringify(action.payload));
       break;
+    case 'SET_SLEEPER_LEAGUES':
+      nextState = { ...state, sleeperLeagues: action.payload };
+      if (action.payload) sessionStorage.setItem('sleeperLeagues', JSON.stringify(action.payload));
+      break;
     case 'SET_EMAIL':
       nextState = { ...state, email: action.payload };
       if (action.payload) sessionStorage.setItem('email', action.payload);
@@ -111,6 +115,9 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       try {
         const leagues = sessionStorage.getItem('leagues');
         if (leagues) nextState.leagues = JSON.parse(leagues);
+
+        const sleeperLeagues = sessionStorage.getItem('sleeperLeagues');
+        if (sleeperLeagues) nextState.leagues = JSON.parse(sleeperLeagues);
         
         const selectedLeague = sessionStorage.getItem('selectedLeague');
         if (selectedLeague) nextState.selectedLeague = JSON.parse(selectedLeague);
@@ -153,6 +160,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       // Hydrate from individual storage items
       const username = sessionStorage.getItem('username');
       const leagues = sessionStorage.getItem('leagues');
+      const sleeperLeagues = sessionStorage.getItem('sleeperLeagues');
       const email = sessionStorage.getItem('email');
       const phone = sessionStorage.getItem('phone');
       const verified = sessionStorage.getItem('verified');
@@ -171,6 +179,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         verified: verified === 'true',
         sessionId: sessionId || null,
         leagues: [],
+        sleeperLeagues: [],
         selectedLeague: null,
         wallet: address || null,
         selectedLeagueName: selectedLeagueName || null,
@@ -180,6 +189,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
 
       try {
         if (leagues) hydratedState.leagues = JSON.parse(leagues);
+        if (sleeperLeagues) hydratedState.sleeperLeagues = JSON.parse(sleeperLeagues);
         if (selectedLeague) hydratedState.selectedLeague = JSON.parse(selectedLeague);
       } catch (error) {
         console.error('Error parsing stored JSON:', error);
@@ -229,4 +239,4 @@ export function useGlobalState() {
     throw new Error('useGlobalState must be used within a GlobalStateProvider');
   }
   return context;
-} 
+}

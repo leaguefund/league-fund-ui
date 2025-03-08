@@ -60,12 +60,14 @@ export interface GlobalState {
         username: string;
         avatar: string | null;
     } | null;
+    sleeperLeagues: League[] | null;
 }
 
 export type ActionMap = {
     'SET_SESSION_ID': string;
     'SET_USERNAME': string;
     'SET_LEAGUES': League[];
+    'SET_SLEEPER_LEAGUES': League[];
     'SET_EMAIL': string;
     'SET_PHONE': string;
     'SET_VERIFIED': boolean;
@@ -81,6 +83,7 @@ export type Action =
   | { type: 'SET_SESSION_ID'; payload: string }
   | { type: 'SET_USERNAME'; payload: string }
   | { type: 'SET_LEAGUES'; payload: League[] }
+  | { type: 'SET_SLEEPER_LEAGUES'; payload: League[] }
   | { type: 'SET_EMAIL'; payload: string }
   | { type: 'SET_PHONE'; payload: string }
   | { type: 'SET_VERIFIED'; payload: boolean }
@@ -114,4 +117,5 @@ export const initialState: GlobalState = {
     leagueAddress: null,
     selectedWalletLeague: null,
     selectedSleeperUser: null,
-}; 
+    sleeperLeagues: null,
+};
