@@ -8,14 +8,15 @@ import { League } from '@/types/state';
 const LeagueConfirmDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { state, dispatch } = useGlobalState();
-  const [selectedLeague, setSelectedLeague] = useState<League | null>(null);
+  const [selectedSleeperLeague, setSelectedSleeperLeague] = useState<League | null>(null);
+  // const [selectedLeague, setSelectedLeague] = useState<League | null>(null);
 
   // If no leagues in state, go back to sleeper username page
   useEffect(() => {
 
     console.log("Sleeper Leagues Found 1");
     console.log(state);
-    console.log(selectedLeague);
+    console.log(selectedSleeperLeague);
     console.log("Sleeper Leagues Found 2");
 
     if (!state.sleeperLeagues || state.sleeperLeagues.length === 0) {
@@ -24,14 +25,16 @@ const LeagueConfirmDropdown: React.FC = () => {
       return;
     }
 
-    // Set selected League
-    if (!selectedLeague && state.selectedLeague) {
-      handleLeagueChange(state.selectedLeague);
-    } else if (!selectedLeague && state.sleeperLeagues.length > 0) {
+    // Handle League Change
+    if (!selectedSleeperLeague && state.selectedSleeperLeague) {
+      console.log("Sleeper League Change (already set)");
+      handleLeagueChange(state.selectedSleeperLeague);
+    } else if (!selectedSleeperLeague && state.sleeperLeagues.length > 0) {
+      console.log("Sleeper League Change (first sleeper league)");
       handleLeagueChange(state.sleeperLeagues[0]);
     }
 
-  }, [state.sleeperLeagues, selectedLeague, dispatch]);
+  }, [state.sleeperLeagues, selectedSleeperLeague, dispatch]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -41,13 +44,15 @@ const LeagueConfirmDropdown: React.FC = () => {
     setIsOpen(false);
   }
 
+  // Handle Sleeper League Change
   const handleLeagueChange = (league: League) => {
-    setSelectedLeague(league);
+    setSelectedSleeperLeague(league);
     // Update global state and sessionStorage with the new selection
-    dispatch({ type: 'SET_SELECTED_LEAGUE', payload: league });
+    dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: league });
   };
+
   // Return Early if no selected League 
-  if (!selectedLeague) return null;
+  if (!selectedSleeperLeague) return null;
   
   return (
     <div className="relative xxw-full">
@@ -56,7 +61,7 @@ const LeagueConfirmDropdown: React.FC = () => {
         onClick={toggleDropdown}
         className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg inline-flex justify-between dropdown-toggle gap-2 text-sm font-medium text-white focus:outline-none"
       >
-        {selectedLeague.name}
+        {selectedSleeperLeague.name}
         <svg
           className={`duration-200 ease-in-out stroke-current ${
             isOpen ? "rotate-180" : ""

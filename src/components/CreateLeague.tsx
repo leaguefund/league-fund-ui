@@ -15,10 +15,13 @@ import { useAccount } from 'wagmi';
 import sdk from "@farcaster/frame-sdk";
 import LeagueDetails from '@/components/LeagueDetails';
 import { League } from '@/types/state';
+import { WalletLeague } from '@/types/state';
 
 const CreateLeague: React.FC = () => {
   const [dues, setDues] = useState<string>('');
-  const [createLeague, setCreateLeague] = useState<string>('');
+  // const [createLeague, setCreateLeague] = useState<string>('');
+  const [leagueName, setLeagueName] = useState<string>('');
+
   const [hasCreatedLeague, setHasCreatedLeague] = useState(false);
   const { state, dispatch } = useGlobalState();
   const { showNotification } = useNotification();
@@ -27,7 +30,8 @@ const CreateLeague: React.FC = () => {
   const duesInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { isConnected, address: wallet_address } = useAccount();
-  const selectedLeague = state.selectedLeague;
+  // const selectedLeague = state.selectedLeague;
+  const selectedSleeperLeague = state.selectedSleeperLeague;
 
   console.log(wallet_address)
 
@@ -38,11 +42,11 @@ const CreateLeague: React.FC = () => {
   // Auto-focus the dues input and set createLeague
   useEffect(() => {
     duesInputRef.current?.focus();
-    if (state.selectedLeague) {
-      setCreateLeague(state.selectedLeague.name); // Using 6 characters for the random string
+    if (state.selectedSleeperLeague) {
+      setLeagueName(state.selectedSleeperLeague.name); // Using 6 characters for the random string
     }
-    // setCreateLeague(Math.random().toString(36).substring(2, 8)); // Using 6 characters for the random string
-  }, [state.selectedLeague]);
+    // setLeagueName(Math.random().toString(36).substring(2, 8)); // Using 6 characters for the random string
+  }, [state.selectedSleeperLeague]);
 
   // Save dues to global state and storage
   useEffect(() => {
@@ -72,7 +76,24 @@ const CreateLeague: React.FC = () => {
         // Save the league address from the specific path in the response
         const leagueAddress = status.statusData.transactionReceipts[0].logs[2].address;
         console.log('League address:', leagueAddress);
-        dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: leagueAddress });
+
+        if (state.selectedSleeperLeague) {
+          const leagueWithAddress = { ...state.selectedSleeperLeague, address: leagueAddress };
+          dispatch({ type: 'SET_SELECTED_LEAGUE', payload: leagueWithAddress });
+
+          // Push object to SET_SELECTED_WALLET_LEAGUE
+          const walletLeague: WalletLeague = {
+            leagueName: state.selectedSleeperLeague.name,
+            leagueAddress: leagueAddress,
+            joined: true,
+            currentlyActive: true,
+            commissioner: true,
+            treasurer: false,
+            avatar: state.selectedSleeperLeague.avatar
+          };
+          dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: walletLeague });
+        }
+
         sessionStorage.setItem('leagueAddress', leagueAddress);
         setHasCreatedLeague(true);
         
@@ -109,15 +130,15 @@ const CreateLeague: React.FC = () => {
   };
 
   // Calculate current calls based on dues
-  const currentCalls = Number(dues) > 0 && createLeague ? [
+  const currentCalls = Number(dues) > 0 && leagueName ? [
     getApproveCall(usdcAddress, factoryAddress, Number(dues) * 1e6),
-    getCreateLeagueCall(createLeague, Number(dues) * 1e6, state.username || sessionStorage.getItem('username') || '')
+    getCreateLeagueCall(leagueName, Number(dues) * 1e6, state.username || sessionStorage.getItem('username') || '')
   ] : [];
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
 
-    <LeagueDetails selectedLeague={selectedLeague as League} />
+    <LeagueDetails selectedLeague={selectedSleeperLeague as League} />
 
       <div className="max-w-4xl w-full mt-16 space-y-12">
 
@@ -129,21 +150,9 @@ const CreateLeague: React.FC = () => {
               <label className="text-xl text-gray-300">League Name</label>
               <input
                 type="text"
-                value={createLeague}
-                onChange={(e) => setCreateLeague(e.target.value)}
-                onBlur={(e) => {
-                  const newName = e.target.value;
-                  dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: newName });
-                  if (state.selectedLeague) {
-                    dispatch({ 
-                      type: 'SET_SELECTED_LEAGUE', 
-                      payload: {
-                        ...state.selectedLeague,
-                        name: newName
-                      }
-                    });
-                  }
-                }}
+                value={leagueName}
+                onChange={(e) => setLeagueName(e.target.value)}
+                // onBlur={(e) => {const newName = e.target.value;}}
                 className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white"
               />
             </div>
