@@ -5,6 +5,7 @@ import LeagueRewards from './LeagueRewards';
 import { getLeagueActiveTeams, getCommissioner } from '../utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { TeamInfo } from '@/types/state';
+import { useSearchParams } from 'next/navigation';
 
 type Tab = 'teams' | 'rewards';
 
@@ -13,15 +14,18 @@ const League: React.FC = () => {
   const [activeTeams, setActiveTeams] = useState<TeamInfo[]>([]);
 
   const { state } = useGlobalState();
+  const searchParams = useSearchParams();
 
-  // Check for selectedTab in localStorage
+  // Check for selectedTab in localStorage or URL params
   useEffect(() => {
+    setActiveTab('teams');
     const selectedTab = localStorage.getItem('selectedTab');
-    if (selectedTab === 'rewards') {
+    const rewardsParam = searchParams?.get('rewards') || '';
+    if (selectedTab === 'rewards' || rewardsParam === 'true') {
       setActiveTab('rewards');
       localStorage.removeItem('selectedTab');
     }
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchLeagueActiveTeams() {
@@ -119,4 +123,4 @@ const League: React.FC = () => {
   );
 };
 
-export default League; 
+export default League;

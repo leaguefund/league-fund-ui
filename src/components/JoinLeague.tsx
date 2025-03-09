@@ -29,7 +29,7 @@ const JoinLeague: React.FC = () => {
   useEffect(() => {
     console.log(setIsLoading)
     // Get league_address from URL params
-    const urlLeagueAddress = searchParams.get('league_address');
+    const urlLeagueAddress = searchParams?.get('league_address') || '';
     if (urlLeagueAddress?.startsWith('0x')) {
       const address = urlLeagueAddress as `0x${string}`;
       setLeagueAddress(address);

@@ -58,6 +58,18 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, selectedLeague: action.payload };
       if (action.payload) sessionStorage.setItem('selectedLeague', JSON.stringify(action.payload));
       break;
+    case 'SET_SELECTED_SLEEPER_LEAGUE':
+      nextState = { ...state, selectedSleeperLeague: action.payload };
+      if (action.payload) sessionStorage.setItem('selectedSleeperLeague', JSON.stringify(action.payload));
+      break;
+    case 'SET_SELECTED_CONTRACT_LEAGUE':
+      nextState = { ...state, selectedContractLeague: action.payload };
+      if (action.payload) sessionStorage.setItem('selectedContractLeague', JSON.stringify(action.payload));
+      break;
+    case 'SET_SELECTED_WALLET_LEAGUE':
+      nextState = { ...state, selectedWalletLeague: action.payload };
+      if (action.payload) sessionStorage.setItem('selectedWalletLeague', JSON.stringify(action.payload));
+      break;
     case 'SET_INVITE_EMAILS':
       nextState = { ...state, inviteEmails: action.payload };
       sessionStorage.setItem('inviteEmails', JSON.stringify(action.payload));
@@ -119,6 +131,15 @@ function reducer(state: GlobalState, action: Action): GlobalState {
         const sleeperLeagues = sessionStorage.getItem('sleeperLeagues');
         if (sleeperLeagues) nextState.leagues = JSON.parse(sleeperLeagues);
         
+        const selectedSleeperLeague = sessionStorage.getItem('selectedSleeperLeague');
+        if (selectedSleeperLeague) nextState.selectedSleeperLeague = JSON.parse(selectedSleeperLeague);
+        
+        const selectedContractLeague = sessionStorage.getItem('selectedContractLeague');
+        if (selectedContractLeague) nextState.selectedContractLeague = JSON.parse(selectedContractLeague);
+        
+        // const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
+        // if (selectedSleeperLeague) nextState.selectedWalletLeague = JSON.parse(selectedWalletLeague);
+        
         const selectedLeague = sessionStorage.getItem('selectedLeague');
         if (selectedLeague) nextState.selectedLeague = JSON.parse(selectedLeague);
       } catch (error) {
@@ -165,10 +186,12 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       const phone = sessionStorage.getItem('phone');
       const verified = sessionStorage.getItem('verified');
       const selectedLeague = sessionStorage.getItem('selectedLeague');
+      const selectedSleeperLeague = sessionStorage.getItem('selectedSleeperLeague');
+      const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
       const sessionId = sessionStorage.getItem('sessionId');
       const selectedLeagueName = sessionStorage.getItem('selectedLeagueName');
       const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
-      const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
+      // const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
 
       const hydratedState = {
         ...initialState,
@@ -181,6 +204,8 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         leagues: [],
         sleeperLeagues: [],
         selectedLeague: null,
+        selectedSleeperLeague: null,
+        // selectedWalletLeague: null,
         wallet: address || null,
         selectedLeagueName: selectedLeagueName || null,
         selectedLeagueAddress: (selectedLeagueAddress?.startsWith('0x') ? selectedLeagueAddress as `0x${string}` : null),
@@ -191,6 +216,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         if (leagues) hydratedState.leagues = JSON.parse(leagues);
         if (sleeperLeagues) hydratedState.sleeperLeagues = JSON.parse(sleeperLeagues);
         if (selectedLeague) hydratedState.selectedLeague = JSON.parse(selectedLeague);
+        if (selectedSleeperLeague) hydratedState.selectedSleeperLeague = JSON.parse(selectedSleeperLeague);
       } catch (error) {
         console.error('Error parsing stored JSON:', error);
       }
@@ -209,6 +235,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.phone) sessionStorage.setItem('phone', state.phone);
       if (state.verified !== undefined) sessionStorage.setItem('verified', String(state.verified));
       if (state.selectedLeague) sessionStorage.setItem('selectedLeague', JSON.stringify(state.selectedLeague));
+      if (state.selectedSleeperLeague) sessionStorage.setItem('selectedSleeperLeague', JSON.stringify(state.selectedSleeperLeague));
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
       if (address && isConnected) sessionStorage.setItem('wallet', address);
       if (state.selectedLeagueName) sessionStorage.setItem('selectedLeagueName', state.selectedLeagueName);

@@ -200,7 +200,7 @@ const supportItems: NavItem[] = [
 ];
 
 const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isExpanded, isMobileOpen, isHovered, setIsHovered, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const pathname = usePathname();
   const { state } = useGlobalState();
   const [activeTeams, setActiveTeams] = useState<TeamInfo[]>([]);
@@ -232,6 +232,7 @@ const AppSidebar: React.FC = () => {
       }
     };
     fetchLeagueInfo();
+    handleLinkClick(); // Toggle sidebar on league change
   }, [state.selectedLeagueAddress, state.wallet]);
 
   // Add window function to toggle developer section
@@ -253,11 +254,19 @@ const AppSidebar: React.FC = () => {
     };
   }, [showDeveloperSection]);
 
+  const handleLinkClick = () => {
+    if (window.innerWidth < 991) {
+      toggleMobileSidebar();
+    } else {
+      toggleSidebar();
+    }
+  };
+
   const renderMenuItems = (
     navItems: NavItem[],
     menuType: "main" | "support" | "others"
   ) => (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-2">
       {navItems.map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
@@ -303,6 +312,7 @@ const AppSidebar: React.FC = () => {
                 className={`menu-item group ${
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                 }`}
+                onClick={handleLinkClick}
               >
                 <span
                   className={`${
@@ -342,6 +352,7 @@ const AppSidebar: React.FC = () => {
                           ? "menu-dropdown-item-active"
                           : "menu-dropdown-item-inactive"
                       }`}
+                      onClick={handleLinkClick}
                     >
                       {subItem.name}
                       <span className="flex items-center gap-1 ml-auto">
@@ -376,6 +387,11 @@ const AppSidebar: React.FC = () => {
           )}
         </li>
       ))}
+      <li key="league">
+        <Link href="/league" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
+          <span className="menu-item-text">League</span>
+        </Link>
+      </li>
     </ul>
   );
 
@@ -506,7 +522,7 @@ const AppSidebar: React.FC = () => {
       </div>
       <div className="flex flex-col overflow-y-auto  duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             <div>
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
@@ -528,86 +544,68 @@ const AppSidebar: React.FC = () => {
               </h2> */}
             </div>
             <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "League"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
               {/* {renderMenuItems(navItems, "main")} */}
-              <ul className="flex flex-col gap-4">
-                <li key="league">
-                <Link href="/league" className="menu-item group menu-item-inactive">
-                      <span className="menu-item-text truncate">📜 {state.selectedLeagueAddress}</span>
-                      </Link>
-                </li>
-                <li key="balance">
-                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
-                  <span className="menu-item-text">💰 ${leagueBalance}</span>
-                  </a>
-                </li>
-                <li key="yield">
-                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
-                  <span className="menu-item-text text-gray-400">📈 Yield <Badge variant="light" color="primary">Coming Soon</Badge></span>
-                  </a>
-                </li>
-            </ul>
-            </div>
-
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Season"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {/* {renderMenuItems(navItems, "main")} */}
-              <ul className="flex flex-col gap-4">
-                <li key="teams">
-                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+              <ul className="flex flex-col gap-2">
+              <li key="teams">
+                <Link href="/league?rewards=false" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
+                      {/* <span className="menu-item-text">💌 Distribute</span> */}
+                      
+                  {/* <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}> */}
                   <span className="menu-item-text">
-                      👏 
+                      👥 Dashboard 
+                      <span className="ml-2 text-xs text-gray-500 inline">
                       {activeTeams.length > 1 ? (
                         ` ${activeTeams.length} Teams`
                       ) : (
                         ` ${activeTeams.length} Team`
                       )}
+                      </span>
                     </span>
-                  </a>
+                    </Link>
+                  {/* </a> */}
                 </li>
-                <li key="invite">
-                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+              <li key="trophies">
+                  {/* <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}> */}
+                  <Link href="/league?rewards=true" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
                   <span className="menu-item-text">
-                      🔗 Invite Link 
+                      🏆 Trophies
+                      <span className="ml-2 text-xs text-gray-500 inline">
+                      {activeTeams.length > 1 ? (
+                        ` ${activeTeams.length} Rewards`
+                      ) : (
+                        ` ${activeTeams.length} Reward`
+                      )}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+                <li key="treasury">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+                  <span className="menu-item-text">💰 Treasury 
+                    <span className="ml-2 text-xs text-gray-500 inline">
+                      ${leagueBalance}
+                      </span>
                     </span>
                   </a>
                 </li>
                 <li key="settings">
-                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
-                  
-                    <span className="menu-item-text text-gray-400">
-                      🎚️ Season Settings 
-                    </span>
-                  </a>
+                    <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+                      <span className="menu-item-text truncate">📜 Settings 
+                        <span className="ml-2 text-xs text-gray-500 inline truncate">
+                          {state.selectedLeagueAddress}
+                        </span>
+                      </span>
+                    </a>
                 </li>
+                {/* <li key="league">
+                <Link href="/league" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
+                      <span className="menu-item-text truncate">📜 {state.selectedLeagueAddress}</span>
+                      </Link>
+                </li> */}
             </ul>
             </div>
-            <div>
-              {state.selectedLeagueAddress}xx
+
+            <div className={`mt-6`}>
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered
@@ -621,11 +619,11 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-              <ul className="flex flex-col gap-4">
+              <ul className="flex flex-col gap-2">
                 <li key="allocate">
                 {isCommissioner && (
-                      <Link href="/allocate-reward" className="menu-item group menu-item-inactive">
-                      <span className="menu-item-text">💸 Send</span>
+                      <Link href="/allocate-reward" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
+                      <span className="menu-item-text">💌 Distribute</span>
                       </Link>
                     )}
                     {!isCommissioner && (
@@ -633,11 +631,53 @@ const AppSidebar: React.FC = () => {
                   )}
                 </li>
                 <li key="claim">
-                  <Link href="/mint-reward" className="menu-item group menu-item-inactive">
-                  <span className="menu-item-text">🏆 Claim</span>
+                  <Link href="/mint-reward" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
+                  <span className="menu-item-text">✨ Mint Trophy</span>
                   </Link>
                 </li>
-            </ul>
+              </ul>
+            </div>
+            <div className={`mt-6`}>
+              <h2
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                  !isExpanded && !isHovered
+                    ? "lg:justify-center"
+                    : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Utilities"
+                ) : (
+                  <HorizontaLDots />
+                )}
+              </h2>
+              <ul className="flex flex-col gap-2">
+                <li key="invite">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+                  <span className="menu-item-text">
+                      🔗 Invite Link 
+                    </span>
+                  </a>
+                </li>
+                <li key="new-league">
+                  <Link href="/" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
+                  <span className="menu-item-text">🌱 New League</span>
+                  </Link>
+                </li>
+                <li key="settings">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+                  
+                    <span className="menu-item-text text-gray-400">
+                      🎚️ Season Settings 
+                    </span>
+                  </a>
+                </li>
+                <li key="yield">
+                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
+                  <span className="menu-item-text text-gray-400">📈 Yield <Badge variant="light" color="primary">Coming Soon</Badge></span>
+                  </a>
+                </li>
+              </ul>
             </div>
             
             {showDeveloperSection && (

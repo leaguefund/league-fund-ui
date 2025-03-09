@@ -5,12 +5,14 @@ import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { getUserLeagues, getLeagueTotalBalance, getLeagueNActiveTeams } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { WalletLeague } from '@/types/state';
+// import Image from 'next/image';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
   // const [leagueBalance, setLeagueBalance] = useState<number | null>(null);
   // const [activeTeams, setActiveTeams] = useState<number | null>(null);
   const { state, dispatch } = useGlobalState();
+  // const selectedLeague = state.selectedLeague;
 
   useEffect(() => {
     const fetchLeagues = async () => {
@@ -81,9 +83,16 @@ export default function DropdownLeagues() {
       <div className="relative w-full">
         <button
           onClick={toggleDropdown}
-          className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 transition-colors duration-200"
+          className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-transparent hover:bg-xxbrand-600 transition-colors duration-200"
         >
           <div className="truncate">
+                      {/* <Image 
+                        src={selectedLeague?.avatar || "/images/placeholder.png"}
+                        alt="League Avatar" 
+                        width={20} 
+                        height={20}
+                        className="rounded-full mt-4"
+                      /> */}
             {state.selectedLeagueName ? `${state.selectedLeagueName}` : 'Select League'}
           </div>
           <svg
@@ -105,7 +114,7 @@ export default function DropdownLeagues() {
         </button>
 
         <Dropdown
-          className="absolute left-0 top-full z-40 mt-2 w-full rounded-xl border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700/50 dark:bg-gray-800"
+          className="absolute left-0 top-full z-40 mt-2 w-full bg-transparent rounded-xl border border-gray-200 bg-whitexxx p-2 shadow-lg dark:xxxborder-gray-700/50 dark:xxxbg-gray-800"
           isOpen={isOpen}
           onClose={closeDropdown}
         >
@@ -124,18 +133,6 @@ export default function DropdownLeagues() {
           </ul>
         </Dropdown>
       </div>
-      {/* <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
-        Selected League: {state.selectedLeagueName ? state.selectedLeagueName : ''}
-      </p>
-      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
-        League Address: {state.selectedLeagueAddress ? <span className="truncate">{state.selectedLeagueAddress.slice(0, 6)}...{state.selectedLeagueAddress.slice(-4)}</span> : ''}
-      </p>
-      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
-        League USDC balance: {leagueBalance ? leagueBalance : ''}
-      </p>
-      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 truncate">
-        Active teams: {activeTeams ? activeTeams : ''}
-      </p> */}
     </div>
   );
 }

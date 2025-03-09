@@ -11,7 +11,7 @@ const ConfirmLeague: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { state, dispatch } = useGlobalState();
-  const selectedLeague = state.selectedLeague;
+  const selectedSleeperLeague = state.selectedSleeperLeague;
 
   // If no leagues in state, go back to sleeper username page
   useEffect(() => {
@@ -21,20 +21,20 @@ const ConfirmLeague: React.FC = () => {
     }
 
     // Set initial selected league
-    if (!selectedLeague && state.sleeperLeagues.length > 0) {
-      dispatch({ type: 'SET_SELECTED_LEAGUE', payload: state.sleeperLeagues[0] });
+    if (!selectedSleeperLeague && state.sleeperLeagues.length > 0) {
+      dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: state.sleeperLeagues[0] });
     }
-  }, [state.sleeperLeagues, selectedLeague, router, dispatch]);
+  }, [state.sleeperLeagues, selectedSleeperLeague, router, dispatch]);
 
   const handleConfirmLeague = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      if (selectedLeague) {
-        console.log('Saving selectedLeague to state:', selectedLeague);
-        dispatch({ type: 'SET_SELECTED_LEAGUE', payload: selectedLeague });
+      if (selectedSleeperLeague) {
+        console.log('Saving selectedSleeperLeague to state:', selectedSleeperLeague);
+        dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: selectedSleeperLeague });
         // Verify it was saved to sessionStorage
-        const stored = sessionStorage.getItem('selectedLeague');
+        const stored = sessionStorage.getItem('selectedSleeperLeague');
         console.log('Stored in sessionStorage:', stored);
       }
       router.push('/create-league');
@@ -45,12 +45,12 @@ const ConfirmLeague: React.FC = () => {
     }
   };
 
-  if (!selectedLeague) return null;
+  if (!selectedSleeperLeague) return null;
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       {/* League Details */}
-      <LeagueDetails selectedLeague={selectedLeague} />
+      <LeagueDetails selectedLeague={selectedSleeperLeague} />
       {/* Confirm League */}
       <div className="max-w-4xl w-full mt-16 space-y-12">
 
