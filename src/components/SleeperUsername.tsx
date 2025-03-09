@@ -26,7 +26,7 @@ const SleeperUsername: React.FC = () => {
     // Clear Leagues
     dispatch({ type: 'SET_LEAGUES', payload: [] });
     dispatch({ type: 'SET_SLEEPER_LEAGUES', payload: [] }); // Set sleeperLeagues
-    dispatch({ type: 'SET_SELECTED_LEAGUE', payload: {} as League });
+    dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: {} as League });
     // Prepare SDK
     sdk.actions.ready({});
   }, [dispatch]);
@@ -56,7 +56,7 @@ const SleeperUsername: React.FC = () => {
         dispatch({ type: 'SET_SLEEPER_LEAGUES', payload: response.leagues }); // Set sleeperLeagues
         // Set the first league as the selected league
         if (response.leagues.length > 0) {
-          dispatch({ type: 'SET_SELECTED_LEAGUE', payload: response.leagues[0] });
+          dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: response.leagues[0] });
         }
       }
       router.push('/confirm-league');
