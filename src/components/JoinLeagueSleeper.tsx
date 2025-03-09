@@ -44,7 +44,7 @@ const JoinLeagueSleeper: React.FC = () => {
 
   useEffect(() => {
     async function initializeWithLeagueAddress() {
-      const urlLeagueAddress = searchParams.get('league_address');
+      const urlLeagueAddress = searchParams?.get('league_address') || '';
       if (urlLeagueAddress?.startsWith('0x')) {
         const address = urlLeagueAddress as `0x${string}`;
         dispatch({ type: 'SET_SELECTED_WALLET_LEAGUE', payload: address });

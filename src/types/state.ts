@@ -13,6 +13,7 @@ export interface League {
 export interface WalletLeague {
     leagueName: string;
     leagueAddress: `0x${string}`;
+    leagueBalance: number;
     joined: boolean;
     currentlyActive: boolean;
     commissioner: boolean;

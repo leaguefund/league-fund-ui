@@ -85,6 +85,7 @@ const CreateLeague: React.FC = () => {
           const walletLeague: WalletLeague = {
             leagueName: state.selectedSleeperLeague.name,
             leagueAddress: leagueAddress,
+            leagueBalance: 0, // Add appropriate value for leagueBalance
             joined: true,
             currentlyActive: true,
             commissioner: true,

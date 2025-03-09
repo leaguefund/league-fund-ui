@@ -12,8 +12,8 @@ const JoinTopUp: React.FC = () => {
   const { state } = useGlobalState();
   
   // Try to get user data from URL params first, fall back to global state
-  const urlUsername = searchParams.get('username');
-  const urlAvatar = searchParams.get('avatar');
+  const urlUsername = searchParams?.get('username') || '';
+  const urlAvatar = searchParams?.get('avatar') || '';
   const user = urlUsername ? {
     username: urlUsername,
     avatar: urlAvatar
