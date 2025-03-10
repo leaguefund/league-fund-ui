@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import ApiService from '@/services/backend';
 import sdk from "@farcaster/frame-sdk";
+import { WalletLeague } from '@/types/state';
+import { getLeagueName, getLeagueTotalBalance } from '@/utils/onChainReadUtils';
 
 interface TeamMember {
   username: string;
@@ -34,42 +36,63 @@ interface LeagueResponse {
 const JoinLeagueSleeper: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { dispatch } = useGlobalState();
   const [isLoading, setIsLoading] = useState(true);
   const [leagueData, setLeagueData] = useState<LeagueResponse | null>(null);
+  const { state, dispatch } = useGlobalState();
+  const selectedContractLeague = state.selectedContractLeague as WalletLeague
+
+  const [leagueName, setLeagueName] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [sleeperTeams, setSleeperTeams] = useState<TeamMember[]>([]);
 
   useEffect(() => {
     sdk.actions.ready({});
   }, []);
 
   useEffect(() => {
-    async function initializeWithLeagueAddress() {
+    async function initializeContractLeague() {
+      console.log("🔗 Updating SET_SELECTED_CONTRACT_LEAGUE_ADDRESS");
       const urlLeagueAddress = searchParams?.get('league_address') || '';
       if (urlLeagueAddress?.startsWith('0x')) {
-        const address = urlLeagueAddress as `0x${string}`;
-        dispatch({ type: 'SET_SELECTED_WALLET_LEAGUE', payload: address });
+        const contractAddress = urlLeagueAddress as `0x${string}`;
+
+        dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: contractAddress });
+        console.log("🔗 Updating SET_SELECTED_CONTRACT_LEAGUE_ADDRESS Updated", contractAddress);
         
-        try {
-          const response = await ApiService.readLeague(address);
-          console.log('League data:', response);
-          setLeagueData(response);
-          setIsLoading(false);
-        } catch (error) {
-          console.error('Error fetching league data:', error);
-          setIsLoading(false);
-        }
       } else {
+        console.log("🤝 error 2");
         setIsLoading(false);
       }
     }
+    console.log("selectedContractLeague", selectedContractLeague)
+    initializeContractLeague();
+  }, [searchParams, dispatch, selectedContractLeague]);
 
-    initializeWithLeagueAddress();
-  }, [searchParams, dispatch]);
+  // useEffect(() => {
+  //   async function initializeWithLeagueAddress() {
+  //     const urlLeagueAddress = searchParams?.get('league_address') || '';
+  //     if (urlLeagueAddress?.startsWith('0x')) {
+  //       const address = urlLeagueAddress as `0x${string}`;
+  //       dispatch({ type: 'SET_SELECTED_WALLET_LEAGUE', payload: address });
+  //       try {
+  //         const response = await ApiService.readLeague(address);
+  //         console.log('League data:', response);
+  //         setLeagueData(response);
+  //         setIsLoading(false);
+  //       } catch (error) {
+  //         console.error('Error fetching league data:', error);
+  //         setIsLoading(false);
+  //       }
+  //     } else {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  //   initializeWithLeagueAddress();
+  // }, [searchParams, dispatch]);
 
   const handleSelectUser = async (user: TeamMember) => {
     setIsLoading(true);
     try {
-      // Set the selected user in global state (as fallback for page refreshes)
       dispatch({
         type: 'SET_SELECTED_SLEEPER_USER',
         payload: {
@@ -77,8 +100,6 @@ const JoinLeagueSleeper: React.FC = () => {
           avatar: user.avatar
         }
       });
-      
-      // Navigate with user data as props
       router.push(`/join-connect-wallet?username=${encodeURIComponent(user.username)}&avatar=${encodeURIComponent(user.avatar || '')}`);
     } catch (error) {
       console.error('Error selecting user:', error);
@@ -95,6 +116,7 @@ const JoinLeagueSleeper: React.FC = () => {
     );
   }
 
+
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
@@ -108,9 +130,14 @@ const JoinLeagueSleeper: React.FC = () => {
             Let&apos;s start with your Sleeper account
           </p>
         </div>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-white">Hello</h2>
+          <h2 className="text-2xl font-bold text-white">{leagueName}</h2>
+          <p className="text-gray-300">Balance: {selectedContractLeague.leagueBalance}</p>
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {leagueData?.teams.teams.map((user, index) => (
+          {sleeperTeams && sleeperTeams.map((user, index) => (
             <button
               key={index}
               onClick={() => handleSelectUser(user)}
@@ -133,4 +160,4 @@ const JoinLeagueSleeper: React.FC = () => {
   );
 };
 
-export default JoinLeagueSleeper; 
+export default JoinLeagueSleeper;

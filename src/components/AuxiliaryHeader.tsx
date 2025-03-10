@@ -10,7 +10,7 @@ const AuxiliaryHeader: React.FC = () => {
   const [leagueName, setLeagueName] = React.useState<string>('');
   const [leagueBalance, setLeagueBalance] = React.useState<number>(0);
   const { toggleSidebar, toggleMobileSidebar } = useSidebar();
-  const { state } = useGlobalState();
+  const { state, dispatch } = useGlobalState();
   const selectedContractLeague = state.selectedContractLeague as WalletLeague
 
   const handleToggle = () => {
@@ -23,7 +23,6 @@ const AuxiliaryHeader: React.FC = () => {
 
   React.useEffect(() => {
     const fetchLeagueInfo = async () => {
-      // const contractAddress = state.selectedLeagueAddress;
       const contractAddress = selectedContractLeague?.leagueAddress;
       if (selectedContractLeague && contractAddress) {
         try {
@@ -31,13 +30,21 @@ const AuxiliaryHeader: React.FC = () => {
           const balance = await getLeagueTotalBalance(contractAddress);
           setLeagueName(name);
           setLeagueBalance(balance);
+          dispatch({
+            type: 'SET_SELECTED_CONTRACT_LEAGUE',
+            payload: {
+              ...selectedContractLeague,
+              leagueName: name,
+              leagueBalance: balance,
+            },
+          });
         } catch (error) {
           console.error('Error fetching league info:', error);
         }
       }
     };
     fetchLeagueInfo();
-  }, [selectedContractLeague?.leagueAddress]);
+  }, [selectedContractLeague?.leagueAddress, dispatch]);
 
   if (!selectedContractLeague) {
     return null;
@@ -51,7 +58,7 @@ const AuxiliaryHeader: React.FC = () => {
         </h2>
         <div className="bg-gray-50 rounded-lg dark:bg-gray-800 px-2 py-1">
           <span className="text-base font-medium text-gray-800 dark:text-white">
-            ${leagueBalance}
+            ${selectedContractLeague.leagueBalance || leagueBalance}
           </span>
         </div>
       </div>

@@ -8,6 +8,7 @@ export interface League {
     teams: number;
     started: string;
     logo?: string;
+    sleeper_id: string; // Add this line
 }
 
 export interface WalletLeague {
@@ -19,6 +20,7 @@ export interface WalletLeague {
     commissioner: boolean;
     treasurer: boolean;
     avatar?: string;
+    sleeperTeams: any[];
 }
 
 export interface TeamInfo {
@@ -43,12 +45,13 @@ export interface ContractCall {
 }
 
 export interface GlobalState {
+    selectedContractLeagueAddress?: `0x${string}` | null;
+    selectedContractLeague: WalletLeague | null;
     sessionId: string | null;
     username: string | null;
     leagues: League[] | null;
     selectedLeague: League | null;
-    selectedSleeperLeague: League | null;
-    selectedContractLeague: WalletLeague | null;
+    selectedSleeperLeague: League | null;    
     email: string | null;
     phone: string | null;
     verified: boolean;
@@ -79,6 +82,7 @@ export type ActionMap = {
     'SET_SELECTED_LEAGUE': League;
     'SET_SELECTED_SLEEPER_LEAGUE': League;
     'SET_SELECTED_CONTRACT_LEAGUE': WalletLeague;
+    'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS': string;
     'SET_SELECTED_WALLET_LEAGUE': League;
     'SET_INVITE_EMAILS': string[];
     'HYDRATE_FROM_STORAGE': GlobalState;
@@ -95,8 +99,9 @@ export type Action =
   | { type: 'SET_PHONE'; payload: string }
   | { type: 'SET_VERIFIED'; payload: boolean }
   | { type: 'SET_LEAGUE_SELECTED' | 'SET_SELECTED_LEAGUE'; payload: League }
-  | { type: 'SET_LEAGUE_SLEEPER_SELECTED' | 'SET_SELECTED_SLEEPER_LEAGUE'; payload: League }
-  | { type: 'SET_LEAGUE_CONTRACT_SELECTED' | 'SET_SELECTED_CONTRACT_LEAGUE'; payload: WalletLeague }
+  | { type: 'SET_SELECTED_SLEEPER_LEAGUE'; payload: League }
+  | { type: 'SET_SELECTED_CONTRACT_LEAGUE'; payload: WalletLeague }
+  | { type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS'; payload: string }
   | { type: 'CONNECT_WALLET'; payload: boolean }
   | { type: 'CREATE_LEAGUE'; payload: boolean }
   | { type: 'SET_INVITE_EMAILS'; payload: string[] }
