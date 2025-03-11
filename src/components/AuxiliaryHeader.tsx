@@ -21,31 +21,6 @@ const AuxiliaryHeader: React.FC = () => {
     }
   };
 
-  React.useEffect(() => {
-    const fetchLeagueInfo = async () => {
-      const contractAddress = selectedContractLeague?.leagueAddress;
-      if (selectedContractLeague && contractAddress) {
-        try {
-          const name = await getLeagueName(contractAddress);
-          const balance = await getLeagueTotalBalance(contractAddress);
-          setLeagueName(name);
-          setLeagueBalance(balance);
-          dispatch({
-            type: 'SET_SELECTED_CONTRACT_LEAGUE',
-            payload: {
-              ...selectedContractLeague,
-              leagueName: name,
-              leagueBalance: balance,
-            },
-          });
-        } catch (error) {
-          console.error('Error fetching league info:', error);
-        }
-      }
-    };
-    fetchLeagueInfo();
-  }, [selectedContractLeague?.leagueAddress, dispatch]);
-
   if (!selectedContractLeague) {
     return null;
   }
@@ -54,11 +29,11 @@ const AuxiliaryHeader: React.FC = () => {
     <header onClick={handleToggle} className="sticky top-[62px] flex w-full !bg-gray-800 border-gray-200 z-99998 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
       <div className={`flex items-center justify-between w-full px-5 py-3 lg:px-6`}>
         <h2 className="text-base font-medium text-gray-800 dark:text-white truncate">
-          {selectedContractLeague.leagueName || leagueName || 'Loading...'}
+          {selectedContractLeague.leagueName || 'Loading...'}
         </h2>
         <div className="bg-gray-50 rounded-lg dark:bg-gray-800 px-2 py-1">
           <span className="text-base font-medium text-gray-800 dark:text-white">
-            ${selectedContractLeague.leagueBalance || leagueBalance}
+            ${selectedContractLeague.leagueBalance }
           </span>
         </div>
       </div>

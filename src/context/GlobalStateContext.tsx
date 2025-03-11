@@ -168,6 +168,8 @@ function reducer(state: GlobalState, action: Action): GlobalState {
 export function GlobalStateProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { address, isConnected } = useAccount();
+  const [leagueName, setLeagueName] = React.useState<string>('');
+  const [leagueBalance, setLeagueBalance] = React.useState<number>(0);
 
   // Watch for wallet address changes
   useEffect(() => {
@@ -267,46 +269,60 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
   }, [state, address, isConnected]);
 
   useEffect(() => {
+    const initializeAndFetchContractLeague = async (address: `0x${string}`) => {
+      console.log("🌱 initializeAndFetchContractLeague", address);
+      let initialContractLeague: WalletLeague = {
+        leagueAddress: address,
+        leagueName: '',
+        leagueBalance: 0,
+        joined: false,
+        currentlyActive: false,
+        commissioner: false,
+        treasurer: false,
+        sleeperTeams: []
+      };
 
-    const initializeContractLeague = async (address: `0x${string}`) => {
-      console.log("🌱 initializeContractLeague", address)
-      if (address != state.selectedContractLeague?.leagueAddress) {
-        console.log("🌱 address mismatch", state.selectedContractLeague?.leagueAddress)
-        const initialContractLeague: WalletLeague = {
-          leagueAddress: address,
-          leagueName: '',
-          leagueBalance: 0,
-          joined: false,
-          currentlyActive: false,
-          commissioner: false,
-          treasurer: false,
-          sleeperTeams: []
-        };
-        console.log("🌱 dispatch SET_SELECTED_CONTRACT_LEAGUE", initialContractLeague)
+      // Initialize Selected Contract League
+      if (address !== state.selectedContractLeague?.leagueAddress) {
+        console.log("🌱 address mismatch", state.selectedContractLeague?.leagueAddress);
         dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
       }
-    };
 
-    const fetchLeagueApiData = async (address: `0x${string}`) => {
-      console.log("📞 fetchLeagueApiData", address)
+      // Fetch Backend Data
       try {
         const leagueData = await ApiService.readLeague(address);
-        console.log("📞 leagueData", leagueData)
-        const walletLeague: WalletLeague = {
-          ...state.selectedContractLeague,
+        console.log("📞 leagueData", leagueData);
+        initialContractLeague = {
+          ...initialContractLeague,
           avatar: leagueData.league.avatar,
           sleeperTeams: leagueData.league.sleeper_teams
         };
-        console.log("📞 Dispatch Contract League API Data", walletLeague)
-        dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: walletLeague });
+        console.log("📞 Dispatch avatar & sleeper_teams", initialContractLeague);
+        dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
       } catch (error) {
-        console.error('Error fetching league data:', error);
+        console.error('📞 Error fetching league data:', error);
+      }
+
+      // Fetch Onchain Data
+      try {
+        const name = await getLeagueName(address);
+        const balance = await getLeagueTotalBalance(address);
+        setLeagueName(name);
+        setLeagueBalance(balance);
+        initialContractLeague = {
+          ...initialContractLeague,
+          leagueName: name,
+          leagueBalance: balance
+        };
+        console.log("⛓️ Dispatch name & balance", initialContractLeague);
+        dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
+      } catch (error) {
+        console.error('⛓️ Error fetching league info:', error);
       }
     };
 
     if (state.selectedContractLeagueAddress) {
-      initializeContractLeague(state.selectedContractLeagueAddress);
-      fetchLeagueApiData(state.selectedContractLeagueAddress);
+      initializeAndFetchContractLeague(state.selectedContractLeagueAddress);
     }
 
   }, [state.selectedContractLeagueAddress]);

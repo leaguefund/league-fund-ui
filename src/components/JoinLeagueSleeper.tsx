@@ -51,13 +51,12 @@ const JoinLeagueSleeper: React.FC = () => {
 
   useEffect(() => {
     async function initializeContractLeague() {
-      console.log("🔗 Updating SET_SELECTED_CONTRACT_LEAGUE_ADDRESS");
       const urlLeagueAddress = searchParams?.get('league_address') || '';
       if (urlLeagueAddress?.startsWith('0x')) {
         const contractAddress = urlLeagueAddress as `0x${string}`;
 
         dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: contractAddress });
-        console.log("🔗 Updating SET_SELECTED_CONTRACT_LEAGUE_ADDRESS Updated", contractAddress);
+        console.log("🔗 SELECTED_CONTRACT_LEAGUE_ADDRESS Updated", contractAddress);
         
       } else {
         console.log("🤝 error 2");
@@ -66,29 +65,14 @@ const JoinLeagueSleeper: React.FC = () => {
     }
     console.log("selectedContractLeague", selectedContractLeague)
     initializeContractLeague();
-  }, [searchParams, dispatch, selectedContractLeague]);
 
-  // useEffect(() => {
-  //   async function initializeWithLeagueAddress() {
-  //     const urlLeagueAddress = searchParams?.get('league_address') || '';
-  //     if (urlLeagueAddress?.startsWith('0x')) {
-  //       const address = urlLeagueAddress as `0x${string}`;
-  //       dispatch({ type: 'SET_SELECTED_WALLET_LEAGUE', payload: address });
-  //       try {
-  //         const response = await ApiService.readLeague(address);
-  //         console.log('League data:', response);
-  //         setLeagueData(response);
-  //         setIsLoading(false);
-  //       } catch (error) {
-  //         console.error('Error fetching league data:', error);
-  //         setIsLoading(false);
-  //       }
-  //     } else {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  //   initializeWithLeagueAddress();
-  // }, [searchParams, dispatch]);
+    // Stop loading if sleeperTeams has 1 or more elements
+    if (selectedContractLeague?.sleeperTeams?.length > 0) {
+      setSleeperTeams(selectedContractLeague.sleeperTeams);
+      setIsLoading(false);
+    }
+
+  }, [searchParams, dispatch, selectedContractLeague]);
 
   const handleSelectUser = async (user: TeamMember) => {
     setIsLoading(true);
@@ -115,7 +99,6 @@ const JoinLeagueSleeper: React.FC = () => {
       </div>
     );
   }
-
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
