@@ -66,11 +66,11 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       if (action.payload) sessionStorage.setItem('selectedSleeperLeague', JSON.stringify(action.payload));
       break;
     case 'SET_SELECTED_CONTRACT_LEAGUE':
-      nextState = { ...state, selectedContractLeague: action.payload };
+      nextState = { ...state, selectedContractLeague: action.payload as WalletLeague | null };
       if (action.payload) sessionStorage.setItem('selectedContractLeague', JSON.stringify(action.payload));
       break; // Add this break statement
     case 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS':
-      nextState = { ...state, selectedContractLeagueAddress: action.payload };
+      nextState = { ...state, selectedContractLeagueAddress: action.payload as `0x${string}` };
       if (action.payload) sessionStorage.setItem('selectedContractLeagueAddress', action.payload as string);
       break;
     case 'SET_SELECTED_WALLET_LEAGUE':
@@ -115,6 +115,7 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       const selectedContractLeagueAddress = sessionStorage.getItem('selectedContractLeagueAddress') as `0x${string}` | null;
 
       const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague') as `0x${string}` | null;
+      const selectedContractLeague = sessionStorage.getItem('selectedContractLeague');
       
       if (sessionId) nextState.sessionId = sessionId;
       if (username) nextState.username = username;
@@ -144,8 +145,7 @@ function reducer(state: GlobalState, action: Action): GlobalState {
         const selectedSleeperLeague = sessionStorage.getItem('selectedSleeperLeague');
         if (selectedSleeperLeague) nextState.selectedSleeperLeague = JSON.parse(selectedSleeperLeague);
         
-        const selectedContractLeague = sessionStorage.getItem('selectedContractLeague');
-        if (selectedContractLeague) nextState.selectedContractLeague = JSON.parse(selectedContractLeague);
+        if (selectedContractLeague) nextState.selectedContractLeague = JSON.parse(selectedContractLeague) as WalletLeague;
         
         // const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
         // if (selectedSleeperLeague) nextState.selectedWalletLeague = JSON.parse(selectedWalletLeague);
@@ -168,8 +168,6 @@ function reducer(state: GlobalState, action: Action): GlobalState {
 export function GlobalStateProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { address, isConnected } = useAccount();
-  const [leagueName, setLeagueName] = React.useState<string>('');
-  const [leagueBalance, setLeagueBalance] = React.useState<number>(0);
 
   // Watch for wallet address changes
   useEffect(() => {
@@ -214,7 +212,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         ...initialState,
         hydrated: true,
         selectedContractLeagueAddress: (selectedContractLeagueAddress?.startsWith('0x') ? selectedContractLeagueAddress as `0x${string}` : null),
-        selectedContractLeague: selectedContractLeague || {},
+        selectedContractLeague: selectedContractLeague ? JSON.parse(selectedContractLeague) as WalletLeague : null,
         username: username || null,
         email: email || null,
         phone: phone || null,
@@ -307,8 +305,6 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       try {
         const name = await getLeagueName(address);
         const balance = await getLeagueTotalBalance(address);
-        setLeagueName(name);
-        setLeagueBalance(balance);
         initialContractLeague = {
           ...initialContractLeague,
           leagueName: name,

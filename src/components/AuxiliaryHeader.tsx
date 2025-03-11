@@ -3,14 +3,11 @@
 import React from 'react';
 import { useSidebar } from "@/context/SidebarContext";
 import { useGlobalState } from '@/context/GlobalStateContext';
-import { getLeagueName, getLeagueTotalBalance } from '@/utils/onChainReadUtils';
 import { WalletLeague } from '@/types/state';
 
 const AuxiliaryHeader: React.FC = () => {
-  const [leagueName, setLeagueName] = React.useState<string>('');
-  const [leagueBalance, setLeagueBalance] = React.useState<number>(0);
   const { toggleSidebar, toggleMobileSidebar } = useSidebar();
-  const { state, dispatch } = useGlobalState();
+  const { state } = useGlobalState();
   const selectedContractLeague = state.selectedContractLeague as WalletLeague
 
   const handleToggle = () => {

@@ -5,7 +5,7 @@ import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { getUserLeagues, getLeagueTotalBalance, getLeagueNActiveTeams } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { WalletLeague } from '@/types/state';
-// import Image from 'next/image';
+import SleeperLogo from '@/components/SleeperLogo';
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
@@ -86,13 +86,9 @@ export default function DropdownLeagues() {
           className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-transparent hover:bg-xxbrand-600 transition-colors duration-200"
         >
           <div className="truncate">
-                      {/* <Image 
-                        src={selectedLeague?.avatar || "/images/placeholder.png"}
-                        alt="League Avatar" 
-                        width={20} 
-                        height={20}
-                        className="rounded-full mt-4"
-                      /> */}
+            <SleeperLogo width={100} />
+             {/* src={selectedLeague?.avatar */}
+
             {state.selectedLeagueName ? `${state.selectedLeagueName}` : 'Select League'}
           </div>
           <svg
