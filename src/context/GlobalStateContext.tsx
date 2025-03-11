@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { GlobalState, Action, initialState } from '@/types/state';
 import { useAccount } from 'wagmi';
 import ApiService from '@/services/backend';
-import { getLeagueName, getLeagueTotalBalance } from '@/utils/onChainReadUtils';
+import { getLeagueName, getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner, getLeagueRewards } from '@/utils/onChainReadUtils';
 import { WalletLeague } from '@/types/state';
 
 const GlobalStateContext = createContext<{
@@ -65,10 +65,6 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, selectedSleeperLeague: action.payload };
       if (action.payload) sessionStorage.setItem('selectedSleeperLeague', JSON.stringify(action.payload));
       break;
-    case 'SET_SELECTED_CONTRACT_LEAGUE':
-      nextState = { ...state, selectedContractLeague: action.payload as WalletLeague | null };
-      if (action.payload) sessionStorage.setItem('selectedContractLeague', JSON.stringify(action.payload));
-      break; // Add this break statement
     case 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS':
       nextState = { ...state, selectedContractLeagueAddress: action.payload as `0x${string}` };
       if (action.payload) sessionStorage.setItem('selectedContractLeagueAddress', action.payload as string);
@@ -87,9 +83,6 @@ function reducer(state: GlobalState, action: Action): GlobalState {
     case 'SET_WALLET_LEAGUES':
       nextState = { ...state, walletLeagues: action.payload };
       break;
-    case 'SET_SELECTED_LEAGUE_ADDRESS':
-      nextState = { ...state, selectedLeagueAddress: action.payload };
-      break;  
     case 'SET_LEAGUE_ADDRESS':
       nextState = { ...state, leagueAddress: action.payload };
       if (action.payload) sessionStorage.setItem('leagueAddress', action.payload);
@@ -177,6 +170,13 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
     }
   }, [address, dispatch]);
 
+  // Function to check and initialize contract league
+  const checkAndInitializeContractLeague = async () => {
+    if (state.selectedContractLeagueAddress && !state.selectedContractLeague) {
+      await initializeAndFetchContractLeague(state.selectedContractLeagueAddress);
+    }
+  };
+
   // Handle state hydration and storage
   useEffect(() => {
     // On mount only - log initial state and hydrate from storage
@@ -200,7 +200,6 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       const selectedSleeperLeague = sessionStorage.getItem('selectedSleeperLeague');
       const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
       const sessionId = sessionStorage.getItem('sessionId');
-      const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
       
       // const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
 
@@ -220,7 +219,6 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         selectedSleeperLeague: null,
         // selectedWalletLeague: null,
         wallet: address || null,
-        selectedLeagueAddress: (selectedLeagueAddress?.startsWith('0x') ? selectedLeagueAddress as `0x${string}` : null),
         selectedWalletLeague: (selectedWalletLeague?.startsWith('0x') ? selectedWalletLeague as `0x${string}` : null),
       };
 
@@ -235,6 +233,9 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       
       dispatch({ type: 'HYDRATE_FROM_STORAGE', payload: hydratedState });
 
+      // Check and initialize contract league on mount
+      checkAndInitializeContractLeague();
+
     } else {
       // After any state change - log and save to storage
       console.group('♻️ Updated App State:');
@@ -243,7 +244,7 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       
       // Save selected League
       if (state.selectedContractLeagueAddress) sessionStorage.setItem('selectedContractLeagueAddress', state.selectedContractLeagueAddress);
-      if (state.selectedContractLeague) sessionStorage.setItem('selectedContractLeague', JSON.stringify(state.selectedContractLeague));
+      // if (state.selectedContractLeague) sessionStorage.setItem('selectedContractLeague', JSON.stringify(state.selectedContractLeague));
 
       // Save individual items to storage
       if (state.username) sessionStorage.setItem('username', state.username);
@@ -255,67 +256,73 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.selectedSleeperLeague) sessionStorage.setItem('selectedSleeperLeague', JSON.stringify(state.selectedSleeperLeague));
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
       if (address && isConnected) sessionStorage.setItem('wallet', address);
-      if (state.selectedLeagueAddress) sessionStorage.setItem('selectedLeagueAddress', state.selectedLeagueAddress);
       if (state.selectedWalletLeague) sessionStorage.setItem('selectedWalletLeague', state.selectedWalletLeague);
     }
   }, [state, address, isConnected]);
 
   useEffect(() => {
-    const initializeAndFetchContractLeague = async (address: `0x${string}`) => {
-      console.log("🌱 initializeAndFetchContractLeague", address);
-      let initialContractLeague: WalletLeague = {
-        leagueAddress: address,
-        leagueName: '',
-        leagueBalance: 0,
-        joined: false,
-        currentlyActive: false,
-        commissioner: false,
-        treasurer: false,
-        sleeperTeams: []
-      };
-
-      // Initialize Selected Contract League
-      if (address !== state.selectedContractLeague?.leagueAddress) {
-        console.log("🌱 address mismatch", state.selectedContractLeague?.leagueAddress);
-        dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
-      }
-
-      // Fetch Backend Data
-      try {
-        const leagueData = await ApiService.readLeague(address);
-        console.log("📞 leagueData", leagueData);
-        initialContractLeague = {
-          ...initialContractLeague,
-          avatar: leagueData.league.avatar,
-          sleeperTeams: leagueData.league.sleeper_teams
-        };
-        console.log("📞 Dispatch avatar & sleeper_teams", initialContractLeague);
-        dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
-      } catch (error) {
-        console.error('📞 Error fetching league data:', error);
-      }
-
-      // Fetch Onchain Data
-      try {
-        const name = await getLeagueName(address);
-        const balance = await getLeagueTotalBalance(address);
-        initialContractLeague = {
-          ...initialContractLeague,
-          leagueName: name,
-          leagueBalance: balance
-        };
-        console.log("⛓️ Dispatch name & balance", initialContractLeague);
-        dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
-      } catch (error) {
-        console.error('⛓️ Error fetching league info:', error);
-      }
-    };
-
     if (state.selectedContractLeagueAddress) {
       initializeAndFetchContractLeague(state.selectedContractLeagueAddress);
     }
-
   }, [state.selectedContractLeagueAddress]);
+
+  const initializeAndFetchContractLeague = async (address: `0x${string}`) => {
+    console.log("🌱 initializeAndFetchContractLeague", address);
+    let initialContractLeague: WalletLeague = {
+      leagueAddress: address,
+      leagueName: '',
+      leagueBalance: 0,
+      joined: false,
+      currentlyActive: false,
+      commissioner: false,
+      treasurer: false,
+      sleeperTeams: [],
+      activeTeams: [],
+      leagueRewards: []
+    };
+
+    // Initialize Selected Contract League
+    if (address !== state.selectedContractLeague?.leagueAddress) {
+      console.log("🌱 address mismatch", state.selectedContractLeague?.leagueAddress);
+      dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
+    }
+
+    // Fetch Backend Data
+    try {
+      const leagueData = await ApiService.readLeague(address);
+      console.log("📞 leagueData", leagueData);
+      initialContractLeague = {
+        ...initialContractLeague,
+        avatar: leagueData.league.avatar,
+        sleeperTeams: leagueData.league.sleeper_teams
+      };
+      console.log("📞 Dispatch avatar & sleeper_teams", initialContractLeague);
+      dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
+    } catch (error) {
+      console.error('📞 Error fetching league data:', error);
+    }
+
+    // Fetch Onchain Data
+    try {
+      const name = await getLeagueName(address);
+      const balance = await getLeagueTotalBalance(address);
+      const isCommissioner = state.wallet ? await getCommissioner(address, state.wallet) : false;
+      const activeTeams = await getLeagueActiveTeams(address);          
+      const leagueRewards = await getLeagueRewards(address);
+      initialContractLeague = {
+        ...initialContractLeague,
+        leagueName: name,
+        leagueBalance: balance, // Convert BigInt to string
+        activeTeams: [...activeTeams],
+        commissioner: isCommissioner,
+        leagueRewards: [...leagueRewards]
+      };
+      console.log("⛓️ Dispatch name & balance", initialContractLeague);
+      dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
+    } catch (error) {
+      console.error('⛓️ Error fetching league info:', error);
+    }
+  };
 
   // Don't render anything until state is hydrated
   if (!state.hydrated) {

@@ -25,12 +25,14 @@ export default function DropdownLeagues() {
           // Filter out undefined values and ensure type safety
           const validLeagues = userLeagues.filter((league): league is WalletLeague => league !== undefined);
           dispatch({ type: 'SET_WALLET_LEAGUES', payload: validLeagues });
-          
-          // Initialize with first league if none selected
-          if (validLeagues.length > 0 && !state.selectedLeagueAddress) {
-            dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: validLeagues[0].leagueName });
-            dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: validLeagues[0].leagueAddress });
-          }
+          // Do this if not already set.
+          console.log("🚨 SET_SELECTED_CONTRACT_LEAGUE_ADDRESS not set with Wallet connection in Sidebar 🚨")
+          // dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: validLeagues[0].leagueAddress }); 
+          // // Initialize with first league if none selected
+          // if (validLeagues.length > 0 && !state.selectedContractLeagueAddress) {
+          //   dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: validLeagues[0].leagueName });
+          //   dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: validLeagues[0].leagueAddress });
+          // }
         } catch (error) {
           console.error('Error fetching leagues:', error);
         }
@@ -42,28 +44,7 @@ export default function DropdownLeagues() {
     };
     fetchLeagues();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.wallet, state.selectedLeagueAddress]);
-
-  useEffect(() => {
-    const fetchLeagueInfo = async () => {
-      if (state.selectedLeagueAddress) {
-        try {
-          const totalBalance = await getLeagueTotalBalance(state.selectedLeagueAddress);
-          const activeTeams = await getLeagueNActiveTeams(state.selectedLeagueAddress);
-          console.log('League Balance:', totalBalance);
-          console.log('League Teams:', activeTeams);
-          // setLeagueBalance(totalBalance);
-          // setActiveTeams(activeTeams);
-        } catch (error) {
-          console.error('Error fetching league info:', error);
-        }
-      } else {
-        // setLeagueBalance(null);
-        // setActiveTeams(null);
-      }
-    };
-    fetchLeagueInfo();
-  }, [state.selectedLeagueAddress]);
+  }, [state.wallet, state.selectedContractLeagueAddress]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);

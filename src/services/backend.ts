@@ -149,8 +149,8 @@ class ApiService {
 
     static readRewardImage() {
         console.log('Reading reward image...');
-        const storedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
-        console.log('Value from sessionStorage (selectedLeagueAddress):', storedLeagueAddress);
+        const storedLeagueAddress = sessionStorage.getItem('selectedContractLeagueAddress');
+        console.log('Value from sessionStorage (selectedContractLeagueAddress):', storedLeagueAddress);
         
         const data = {
             league_address: storedLeagueAddress || '',
@@ -169,7 +169,7 @@ class ApiService {
             reward_name: name,
             amount_ucsd: amount.toString(),
             winner_wallet: winner_wallet || '',
-            league_address: sessionStorage.getItem('selectedLeagueAddress') || ''
+            league_address: sessionStorage.getItem('selectedContractLeagueAddress') || ''
         };
         return this.fetchData<RewardCreateData>("backendApiRewardCreated", data);
     }

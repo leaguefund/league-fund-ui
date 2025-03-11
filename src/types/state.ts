@@ -20,7 +20,9 @@ export interface WalletLeague {
     commissioner: boolean;
     treasurer: boolean;
     avatar?: string;
+    activeTeams: any[];
     sleeperTeams: any[];
+    leagueRewards: any[];
 }
 
 export interface TeamInfo {
@@ -59,7 +61,6 @@ export interface GlobalState {
     inviteEmails: string[];
     wallet: `0x${string}` | null;
     walletLeagues: WalletLeague[] | null;
-    selectedLeagueAddress: `0x${string}` | null;
     leagueAddress: `0x${string}` | null;
     selectedWalletLeague: `0x${string}` | null;
     selectedSleeperUser: {
@@ -127,7 +128,6 @@ export const initialState: GlobalState = {
     inviteEmails: [],
     wallet: null,
     walletLeagues: null,
-    selectedLeagueAddress: null,
     leagueAddress: null,
     selectedWalletLeague: null,
     selectedSleeperUser: null,
