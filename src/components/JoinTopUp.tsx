@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import Image from 'next/image';
+import SleeperLogo from './SleeperLogo';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
 
@@ -57,13 +57,7 @@ const JoinTopUp: React.FC = () => {
 
         <div className="flex justify-center">
           <div className="flex flex-col items-center p-6 bg-gray-800/50 rounded-lg space-y-3">
-            <Image
-              src={user.avatar || '/images/placeholder.png'}
-              alt={user.username}
-              width={80}
-              height={80}
-              className="rounded-full"
-            />
+            <SleeperLogo avatar={user.avatar} username={user.username} width={80} />
             <span className="text-gray-300">{user.username}</span>
           </div>
         </div>

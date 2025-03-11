@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import SleeperLogo from './SleeperLogo';
 import { League } from '@/types/state';
 
 interface LeagueDetailsProps {
@@ -14,13 +14,7 @@ const LeagueDetails: React.FC<LeagueDetailsProps> = ({ selectedLeague }) => {
           {selectedLeague.name}
         </h1>
         <div className="flex flex-col mt-4 items-center space-y-4">
-          <Image 
-            src={selectedLeague.avatar || "/images/placeholder.png"}
-            alt="League Avatar" 
-            width={120} 
-            height={120}
-            className="rounded-full mt-4"
-          />
+          <SleeperLogo avatar={selectedLeague.avatar} username={selectedLeague.name} width={120} />
         </div>
       </div>
     </div>

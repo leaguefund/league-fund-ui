@@ -81,16 +81,22 @@ const CreateLeague: React.FC = () => {
           const leagueWithAddress = { ...state.selectedSleeperLeague, address: leagueAddress };
           dispatch({ type: 'SET_SELECTED_LEAGUE', payload: leagueWithAddress });
 
-          // Push object to SET_SELECTED_WALLET_LEAGUE
+          // Dispatch Contract League Address
+          dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: leagueAddress });
+
+          // Dispatch Contract League Address
           const walletLeague: WalletLeague = {
-            leagueName: state.selectedSleeperLeague.name,
+            avatar: state.selectedSleeperLeague.avatar,
+            leagueName: state.selectedSleeperLeague.name, // Should Pull League Name
             leagueAddress: leagueAddress,
             leagueBalance: 0, // Add appropriate value for leagueBalance
             joined: true,
             currentlyActive: true,
             commissioner: true,
             treasurer: false,
-            avatar: state.selectedSleeperLeague.avatar
+            sleeperTeams: [],
+            activeTeams: [], // Add appropriate value for activeTeams
+            leagueRewards: [] // Add appropriate value for leagueRewards
           };
           dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: walletLeague });
         }
@@ -99,7 +105,7 @@ const CreateLeague: React.FC = () => {
         setHasCreatedLeague(true);
         
         if (leagueAddress) {
-          handleCreateLeague();
+          handleCreateLeague(leagueAddress);
           router.push('/league-created');
           
           showNotification({
@@ -117,16 +123,52 @@ const CreateLeague: React.FC = () => {
     }
   };
 
-  const handleCreateLeague = async () => {
+  const handleCreateLeague = async (leagueAddress: string) => {
+    console.log('🛜 League Created, Backend Call ...');
+    // Log selectedSleeperLeague
+    console.log("🛜 selectedSleeperLeague",selectedSleeperLeague);
+    // Create Payload
+    const leagueCreatedPayload = {
+        session_id: sessionStorage.getItem('sessionID'),
+        league_id: selectedSleeperLeague?.id || '',
+        league_sleeper_id: selectedSleeperLeague?.sleeper_id || '',
+        wallet_address: wallet_address || '',
+        league_address: leagueAddress,
+        league_dues_usdc: sessionStorage.getItem('leagueDues') || ''
+    };
+    // Log leagueCreatedPayload
+    console.log("🛜 leagueCreatedPayload",leagueCreatedPayload);
+    // Hit Backend API
     try {
-        if (state.selectedLeagueAddress) {
-          await ApiService.createLeague(state.selectedLeagueAddress || sessionStorage.getItem('selectedLeagueAddress') || '');
+        if (leagueAddress) {
+          console.log("🛜 request - started");
+          await ApiService.createLeague(leagueCreatedPayload);
+
+
+
+          // const response = await ApiService.readLeague(contractAddress);
+          // console.log("🤝 response", response);
+          // setLeagueData(response);
+          // setIsLoading(false);
+          // dispatch({
+          //   type: 'SET_SELECTED_CONTRACT_LEAGUE',
+          //   payload: {
+          //     ...selectedContractLeague,
+          //     avatar: response.league.avatar,
+          //     sleeperTeams: response.league.sleeperTeams,
+          //   },
+          // });
+
+
+
+
+          console.log("🛜 request - successful");
         } else {
-          console.error('League address is undefined');
+          console.error('🛜 League address is undefined');
         }
-        console.log('League created successfully');
+        console.log('🛜 League created successfully');
     } catch (error) {
-        console.error('Error creating league:', error);
+        console.error('🛜Error creating league:', error);
     }
   };
 

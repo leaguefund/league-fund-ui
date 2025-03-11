@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
+import SleeperLogo from './SleeperLogo';
 
 const JoinConnectWallet: React.FC = () => {
   const router = useRouter();
@@ -54,13 +55,7 @@ const JoinConnectWallet: React.FC = () => {
 
         <div className="flex justify-center">
           <div className="flex flex-col items-center p-6 bg-gray-800/50 rounded-lg space-y-3">
-            <Image
-              src={user.avatar || '/images/placeholder.png'}
-              alt={user.username}
-              width={80}
-              height={80}
-              className="rounded-full"
-            />
+            <SleeperLogo avatar={user.avatar} username={user.username} width={80} />
             <span className="text-gray-300">{user.username}</span>
           </div>
         </div>
@@ -78,11 +73,13 @@ const JoinConnectWallet: React.FC = () => {
             )}
           </button>
 
-          <button
-            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center"
+          {/* Back Button */}
+          <Link 
+            href="/join-league-sleeper" 
+            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
           >
-            What is a Wallet?
-          </button>
+            Choose Different User
+          </Link>
         </div>
       </div>
     </main>

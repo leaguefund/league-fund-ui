@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import SleeperLogo from './SleeperLogo';
 
 const ComponentTemplate: React.FC = () => {
   return (
@@ -18,13 +18,7 @@ const ComponentTemplate: React.FC = () => {
 
           {/* League Image */}
           <div className="flex justify-center">
-            <Image 
-              src="/images/placeholder.png" 
-              alt="League Avatar" 
-              width={100} 
-              height={100}
-              className="rounded-lg"
-            />
+            <SleeperLogo width={100} />
           </div>
 
           {/* League Name */}
