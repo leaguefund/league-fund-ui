@@ -60,7 +60,6 @@ export interface GlobalState {
     wallet: `0x${string}` | null;
     walletLeagues: WalletLeague[] | null;
     selectedLeagueAddress: `0x${string}` | null;
-    selectedLeagueName: string | null;
     leagueAddress: `0x${string}` | null;
     selectedWalletLeague: `0x${string}` | null;
     selectedSleeperUser: {
@@ -129,7 +128,6 @@ export const initialState: GlobalState = {
     wallet: null,
     walletLeagues: null,
     selectedLeagueAddress: null,
-    selectedLeagueName: null,
     leagueAddress: null,
     selectedWalletLeague: null,
     selectedSleeperUser: null,

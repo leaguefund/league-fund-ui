@@ -90,9 +90,6 @@ function reducer(state: GlobalState, action: Action): GlobalState {
     case 'SET_SELECTED_LEAGUE_ADDRESS':
       nextState = { ...state, selectedLeagueAddress: action.payload };
       break;  
-    case 'SET_SELECTED_LEAGUE_NAME':
-      nextState = { ...state, selectedLeagueName: action.payload };
-      break;  
     case 'SET_LEAGUE_ADDRESS':
       nextState = { ...state, leagueAddress: action.payload };
       if (action.payload) sessionStorage.setItem('leagueAddress', action.payload);
@@ -203,7 +200,6 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       const selectedSleeperLeague = sessionStorage.getItem('selectedSleeperLeague');
       const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
       const sessionId = sessionStorage.getItem('sessionId');
-      const selectedLeagueName = sessionStorage.getItem('selectedLeagueName');
       const selectedLeagueAddress = sessionStorage.getItem('selectedLeagueAddress');
       
       // const selectedWalletLeague = sessionStorage.getItem('selectedWalletLeague');
@@ -224,7 +220,6 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         selectedSleeperLeague: null,
         // selectedWalletLeague: null,
         wallet: address || null,
-        selectedLeagueName: selectedLeagueName || null,
         selectedLeagueAddress: (selectedLeagueAddress?.startsWith('0x') ? selectedLeagueAddress as `0x${string}` : null),
         selectedWalletLeague: (selectedWalletLeague?.startsWith('0x') ? selectedWalletLeague as `0x${string}` : null),
       };
@@ -260,7 +255,6 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.selectedSleeperLeague) sessionStorage.setItem('selectedSleeperLeague', JSON.stringify(state.selectedSleeperLeague));
       if (state.sessionId) sessionStorage.setItem('sessionId', state.sessionId);
       if (address && isConnected) sessionStorage.setItem('wallet', address);
-      if (state.selectedLeagueName) sessionStorage.setItem('selectedLeagueName', state.selectedLeagueName);
       if (state.selectedLeagueAddress) sessionStorage.setItem('selectedLeagueAddress', state.selectedLeagueAddress);
       if (state.selectedWalletLeague) sessionStorage.setItem('selectedWalletLeague', state.selectedWalletLeague);
     }

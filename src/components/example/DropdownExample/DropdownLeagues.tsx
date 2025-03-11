@@ -1,18 +1,19 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { getUserLeagues, getLeagueTotalBalance, getLeagueNActiveTeams } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { WalletLeague } from '@/types/state';
 import SleeperLogo from '@/components/SleeperLogo';
+import { useSidebar } from "@/context/SidebarContext";
 
 export default function DropdownLeagues() {
   const [isOpen, setIsOpen] = useState(false);
-  // const [leagueBalance, setLeagueBalance] = useState<number | null>(null);
-  // const [activeTeams, setActiveTeams] = useState<number | null>(null);
   const { state, dispatch } = useGlobalState();
-  // const selectedLeague = state.selectedLeague;
+  const router = useRouter();
+  const { toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   useEffect(() => {
     const fetchLeagues = async () => {
@@ -73,9 +74,14 @@ export default function DropdownLeagues() {
   }
 
   function updateSelectedLeague(league: WalletLeague) {
-    dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: league.leagueName });
-    dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: league.leagueAddress });
+    dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: league.leagueAddress });
     setIsOpen(false);
+    router.push('/league');
+    if (window.innerWidth < 991) {
+      toggleMobileSidebar();
+    } else {
+      toggleSidebar();
+    }
   }
   
   return (
@@ -83,13 +89,14 @@ export default function DropdownLeagues() {
       <div className="relative w-full">
         <button
           onClick={toggleDropdown}
-          className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-transparent hover:bg-xxbrand-600 transition-colors duration-200"
+          className="w-full inline-flex items-center justify-between dropdown-toggle gap-2 px-3 py-3 text-sm font-medium text-white rounded-lg bg-transparent hover:bg-xxbrand-600 transition-colors duration-200"
         >
-          <div className="truncate">
-            <SleeperLogo width={100} />
-             {/* src={selectedLeague?.avatar */}
+          <div className="truncate inline-flex">
+            <SleeperLogo avatar={state.selectedContractLeague?.avatar} width={20} />
 
-            {state.selectedLeagueName ? `${state.selectedLeagueName}` : 'Select League'}
+            <span className="ml-2">
+              {state.selectedContractLeague?.leagueName || 'Select League'}
+            </span>
           </div>
           <svg
             className={`flex-shrink-0 w-5 h-5 duration-200 ease-in-out stroke-current ${

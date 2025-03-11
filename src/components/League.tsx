@@ -57,7 +57,7 @@ const League: React.FC = () => {
       <div className="max-w-4xl w-full mt-16 space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
-            {state.selectedLeagueName}
+            {state.selectedContractLeague?.leagueName || ''}
           </h1>
           <p className="text-xl md:text-2xl text-gray-300">
             Welcome to your league dashboard
