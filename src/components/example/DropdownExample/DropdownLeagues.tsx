@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-import { getUserLeagues, getLeagueTotalBalance, getLeagueNActiveTeams } from '@/utils/onChainReadUtils';
+import { getUserLeagues } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { WalletLeague } from '@/types/state';
 import SleeperLogo from '@/components/SleeperLogo';

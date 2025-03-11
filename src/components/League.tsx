@@ -2,16 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import LeagueRewards from './LeagueRewards';
-import { getLeagueActiveTeams, getCommissioner } from '../utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
-import { TeamInfo } from '@/types/state';
 import { useSearchParams } from 'next/navigation';
 
 type Tab = 'teams' | 'rewards';
 
 const League: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('teams');
-  const [activeTeams, setActiveTeams] = useState<TeamInfo[]>([]);
 
   const { state } = useGlobalState();
   const searchParams = useSearchParams();
@@ -67,9 +64,9 @@ const League: React.FC = () => {
 
         {/* Content */}
         <div className="space-y-4">
-          {activeTab === 'teams' && state.selectedContractLeague?.activeTeams?.length > 0 && (
+          {activeTab === 'teams' && (state.selectedContractLeague?.activeTeams?.length ?? 0) > 0 && (
             <>
-              {state.selectedContractLeague?.activeTeams.map((team, index) => (
+              {state.selectedContractLeague?.activeTeams?.map((team, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg"

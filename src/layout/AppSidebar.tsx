@@ -203,7 +203,6 @@ const AppSidebar: React.FC = () => {
   const pathname = usePathname();
   const { state } = useGlobalState();
   const [activeTeams, setActiveTeams] = useState<TeamInfo[]>([]);
-  const [leagueBalance, setLeagueBalance] = React.useState<number>(0);
   const [showDeveloperSection, setShowDeveloperSection] = useState(false);
 
   // Add window function to toggle developer section

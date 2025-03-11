@@ -1,16 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
 import { useGlobalState } from '@/context/GlobalStateContext';
-import { RewardInfo } from '@/types/state';
 import NFTCard from "@/components/cards/card-with-image/NFTCard";
 
 const LeagueRewards: React.FC = () => {
-  const [leagueRewards, setLeagueRewards] = useState<RewardInfo[]>([]);
 
   const { state } = useGlobalState();
 
-  if (!state.selectedContractLeague?.leagueRewards?.length > 0) {
+  if (!((state.selectedContractLeague?.activeTeams?.length ?? 0) > 0)) {
     return (
       <main className="min-h-screen flex flex-col items-center px-4">
         <div>
@@ -22,7 +19,7 @@ const LeagueRewards: React.FC = () => {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
-      {state.selectedContractLeague?.leagueRewards?.length > 0 && (
+      {(state.selectedContractLeague?.activeTeams?.length ?? 0) > 0 && (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {state.selectedContractLeague?.leagueRewards.map((reward, index) => (

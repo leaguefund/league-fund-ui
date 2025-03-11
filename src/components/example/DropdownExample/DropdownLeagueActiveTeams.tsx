@@ -20,7 +20,7 @@ export default function DropdownLeagueActiveTeams({
   useEffect(() => {
     if (state.selectedContractLeague?.activeTeams) {
       // Set Random selected team
-      let activeTeams = state.selectedContractLeague.activeTeams
+      const activeTeams = state.selectedContractLeague.activeTeams;
       // validate team isn't already selected and there are options.
       if (activeTeams.length > 0 && !selectedTeam) {
         // Pluck Random Initial Selected Team
@@ -28,7 +28,7 @@ export default function DropdownLeagueActiveTeams({
         setSelectedTeam(activeTeams[randomIndex]);
       }
     }
-  }, [state.selectedContractLeague?.activeTeams]);
+  }, [state.selectedContractLeague?.activeTeams, selectedTeam, setSelectedTeam]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
