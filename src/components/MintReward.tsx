@@ -63,9 +63,9 @@ const MintReward: React.FC = () => {
   // Check if user has claimable rewards
   useEffect(() => {
     async function checkRewards() {
-      if (!state.selectedLeagueAddress || !state.wallet) {
+      if (!state.selectedContractLeagueAddress || !state.wallet) {
         console.log('Missing required parameters for fetching rewards:', {
-          hasLeagueAddress: !!state.selectedLeagueAddress,
+          hasLeagueAddress: !!state.selectedContractLeagueAddress,
           hasWallet: !!state.wallet
         });
         setRewardPending(false);
@@ -74,7 +74,7 @@ const MintReward: React.FC = () => {
       }
 
       try {
-        const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet) as OnChainReward[];
+        const teamRewards = await getUserRewards(state.selectedContractLeagueAddress, state.wallet) as OnChainReward[];
         console.log('Raw team rewards data:', teamRewards);
         console.log('First reward full object:', teamRewards[0]);
         console.log('User Rewards Response:', {
@@ -122,21 +122,21 @@ const MintReward: React.FC = () => {
       }
     }
     checkRewards();
-  }, [state.selectedLeagueAddress, state.wallet]);
+  }, [state.selectedContractLeagueAddress, state.wallet]);
 
   // Update contract calls when image data changes
   useEffect(() => {
     async function fetchCalls() {
-      if (state.selectedLeagueAddress && (imageData || imageUrl)) {
+      if (state.selectedContractLeagueAddress && (imageData || imageUrl)) {
         setCalls([
-          getClaimRewardCall(state.selectedLeagueAddress, imageData ? `data:image/png;base64,${imageData}` : imageUrl!),
+          getClaimRewardCall(state.selectedContractLeagueAddress, imageData ? `data:image/png;base64,${imageData}` : imageUrl!),
         ]);
       } else {
         setCalls([]);
       }
     }
     fetchCalls();
-  }, [state.selectedLeagueAddress, imageData, imageUrl]);
+  }, [state.selectedContractLeagueAddress, imageData, imageUrl]);
 
   const fetchNewImage = async () => {
     setIsLoading(true);

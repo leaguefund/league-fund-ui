@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-import { getLeagueActiveTeams } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { TeamInfo } from '@/types/state';
 
@@ -16,29 +15,20 @@ export default function DropdownLeagueActiveTeams({
   setSelectedTeam,
 }: DropdownLeagueActiveTeamsProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTeams, setActiveTeams] = useState<TeamInfo[]>([]);
   const { state } = useGlobalState();
 
   useEffect(() => {
-    const fetchActiveTeams = async () => {
-      if (state.selectedLeagueAddress) {
-        try {
-          const activeTeams = await getLeagueActiveTeams(state.selectedLeagueAddress);
-          console.log(state.selectedLeagueAddress)
-          console.log(activeTeams)
-          setActiveTeams([...activeTeams]);
-          if (activeTeams.length > 0 && !selectedTeam) {
-            setSelectedTeam(activeTeams[0]);
-          }
-        } catch (error) {
-          console.error('Error fetching leagues:', error);
-        }
-      } else {
-        setActiveTeams([]);
+    if (state.selectedContractLeague?.activeTeams) {
+      // Set Random selected team
+      const activeTeams = state.selectedContractLeague.activeTeams;
+      // validate team isn't already selected and there are options.
+      if (activeTeams.length > 0 && !selectedTeam) {
+        // Pluck Random Initial Selected Team
+        const randomIndex = Math.floor(Math.random() * activeTeams.length);
+        setSelectedTeam(activeTeams[randomIndex]);
       }
-    };
-    fetchActiveTeams();
-  }, [state.selectedLeagueAddress, selectedTeam, setSelectedTeam]);
+    }
+  }, [state.selectedContractLeague?.activeTeams, selectedTeam, setSelectedTeam]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -87,7 +77,7 @@ export default function DropdownLeagueActiveTeams({
           onClose={closeDropdown}
         >
           <ul className="flex flex-col gap-1">
-            {activeTeams?.map((data, index) => (
+            {state.selectedContractLeague?.activeTeams?.map((data, index) => (
               <li key={`${data.name}-${index}`}>
                 <DropdownItem
                   onItemClick={() => updateSelectedTeam(data)}

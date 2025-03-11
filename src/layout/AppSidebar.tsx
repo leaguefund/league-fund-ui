@@ -9,7 +9,6 @@ import { useSidebar } from "../context/SidebarContext";
 import { TeamInfo } from '@/types/state';
 import Badge from "@/components/ui/badge/Badge";
 import { useGlobalState } from '@/context/GlobalStateContext';
-import { getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner } from '@/utils/onChainReadUtils';
 import {
   BoxCubeIcon,
   // CalenderIcon,
@@ -204,36 +203,7 @@ const AppSidebar: React.FC = () => {
   const pathname = usePathname();
   const { state } = useGlobalState();
   const [activeTeams, setActiveTeams] = useState<TeamInfo[]>([]);
-  const [leagueBalance, setLeagueBalance] = React.useState<number>(0);
-  const [isCommissioner, setIsCommissioner] = useState(false);
   const [showDeveloperSection, setShowDeveloperSection] = useState(false);
-
-  React.useEffect(() => {
-    const fetchLeagueInfo = async () => {
-      const contractAddress = state.selectedLeagueAddress;
-      if (contractAddress) {
-        try {
-          // const name = await getLeagueName(contractAddress);
-          const balance = await getLeagueTotalBalance(contractAddress);
-          const activeTeams = await getLeagueActiveTeams(contractAddress);
-          // const toStore: TeamInfo[] = [];
-          const isCommissioner = state.wallet ? await getCommissioner(contractAddress, state.wallet) : false;
-          setIsCommissioner(isCommissioner);
-
-          // for (const team of activeTeams) {
-          //   const isCommissioner = await getCommissioner(contractAddress, team.wallet);
-          //   toStore.push({ ...team, owner: isCommissioner });
-          // }
-          setActiveTeams([...activeTeams]);
-          setLeagueBalance(balance);
-        } catch (error) {
-          console.error('Error fetching league info:', error);
-        }
-      }
-    };
-    fetchLeagueInfo();
-    handleLinkClick(); // Toggle sidebar on league change
-  }, [state.selectedLeagueAddress, state.wallet]);
 
   // Add window function to toggle developer section
   useEffect(() => {
@@ -253,6 +223,12 @@ const AppSidebar: React.FC = () => {
       delete (window as any).clearSession;
     };
   }, [showDeveloperSection]);
+
+  useEffect(() => {
+    if (state.selectedContractLeague?.activeTeams) {
+      setActiveTeams(state.selectedContractLeague.activeTeams);
+    }
+  }, [state.selectedContractLeague?.activeTeams]);
 
   const handleLinkClick = () => {
     if (window.innerWidth < 991) {
@@ -537,11 +513,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots />
                 )}
               </h2>
-
               <DropdownLeagues />
-              {/* <h2 className={`mb-4 text-xs truncate flex leading-[20px] text-gray-500`}>
-                  📜 {state.selectedLeagueAddress}
-              </h2> */}
             </div>
             <div>
               {/* {renderMenuItems(navItems, "main")} */}
@@ -583,7 +555,7 @@ const AppSidebar: React.FC = () => {
                   <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                   <span className="menu-item-text">💰 Treasury 
                     <span className="ml-2 text-xs text-gray-500 inline">
-                      ${leagueBalance}
+                      ${state.selectedContractLeague?.leagueBalance}
                       </span>
                     </span>
                   </a>
@@ -592,16 +564,11 @@ const AppSidebar: React.FC = () => {
                     <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
                       <span className="menu-item-text truncate">📜 Settings 
                         <span className="ml-2 text-xs text-gray-500 inline truncate">
-                          {state.selectedLeagueAddress}
+                          {state.selectedContractLeagueAddress}
                         </span>
                       </span>
                     </a>
                 </li>
-                {/* <li key="league">
-                <Link href="/league" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
-                      <span className="menu-item-text truncate">📜 {state.selectedLeagueAddress}</span>
-                      </Link>
-                </li> */}
             </ul>
             </div>
 
@@ -621,13 +588,12 @@ const AppSidebar: React.FC = () => {
               </h2>
               <ul className="flex flex-col gap-2">
                 <li key="allocate">
-                {isCommissioner && (
-                      <Link href="/allocate-reward" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
-                      <span className="menu-item-text">💌 Distribute</span>
-                      </Link>
-                    )}
-                    {!isCommissioner && (
-                      <span className="menu-item-text">💸 Send <Badge variant="light" color="primary">Commissioner Only</Badge></span>
+                  {state.selectedContractLeague?.commissioner ? (
+                    <Link href="/allocate-reward" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
+                    <span className="menu-item-text">💌 Distribute</span>
+                    </Link>
+                  ) : (
+                    <span className="menu-item-text">💸 Send <Badge variant="light" color="primary">Commissioner Only</Badge></span>
                   )}
                 </li>
                 <li key="claim">

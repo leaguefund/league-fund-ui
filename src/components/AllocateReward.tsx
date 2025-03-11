@@ -14,7 +14,6 @@ const AllocateReward: React.FC = () => {
   const [amount, setAmount] = useState(0);
   const [calls, setCalls] = useState<ContractCall[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<TeamInfo | null>(null);
-  const [isCommissioner, setIsCommissioner] = useState(false);
   const rewardNameInputRef = useRef<HTMLInputElement>(null);
 
   const { state } = useGlobalState();
@@ -31,31 +30,20 @@ const AllocateReward: React.FC = () => {
   };
 
   useEffect(() => {
-    async function checkCommissioner() {
-      if (state.walletLeagues?.filter(league => league.leagueAddress === state.selectedLeagueAddress)[0].commissioner) {
-        setIsCommissioner(true);
-        setTimeout(() => {
-          rewardNameInputRef.current?.focus();
-        }, 0);
-      } else {
-        setIsCommissioner(false);
-      }
-    }
-    checkCommissioner();
-  }, [state.walletLeagues, state.selectedLeagueAddress]);
-
-  useEffect(() => {
     async function fetchCalls() {
-      if (state.selectedLeagueAddress && teamAddress && rewardName) {
-        setCalls([
-          getAllocateRewardCall(state.selectedLeagueAddress, teamAddress, rewardName, amount * 1e6),
-        ]);
+      if (state.selectedContractLeagueAddress && teamAddress && rewardName) {
+        if (teamAddress) {
+          const leagueAddress = state.selectedContractLeagueAddress as `0x${string}`;
+          setCalls([
+            getAllocateRewardCall(leagueAddress, teamAddress, rewardName, amount * 1e6),
+          ]);
+        }
       } else {
         setCalls([]);
       }
     }
     fetchCalls();
-  }, [state.selectedLeagueAddress, teamAddress, rewardName, amount]);
+  }, [state.selectedContractLeagueAddress, teamAddress, rewardName, amount]);
 
   useEffect(() => {
     if (selectedTeam) {
@@ -68,7 +56,7 @@ const AllocateReward: React.FC = () => {
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
-        {!isCommissioner ? (
+        {!state.selectedContractLeague?.commissioner ? (
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Commissioner Access Only

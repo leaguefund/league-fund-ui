@@ -10,7 +10,7 @@ const Logo = () => {
   };
 
   return (
-    <button onClick={handleLogoClick} className="flex items-center gap-2">
+    <a onClick={handleLogoClick} className="flex items-center gap-2">
       <Image
         src="/images/logo/LeagueFund.png" // ✅ Ensure the leading slash
         alt="LeagueFund Logo"
@@ -18,7 +18,7 @@ const Logo = () => {
         height={150}
         priority
       />
-    </button>
+    </a>
   );
 };
 

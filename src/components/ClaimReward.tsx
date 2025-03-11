@@ -16,8 +16,8 @@ const ClaimReward: React.FC = () => {
 
   useEffect(() => {
     async function fetchUserRewards() {
-      if (state.selectedLeagueAddress && state.wallet) {
-        const teamRewards = await getUserRewards(state.selectedLeagueAddress, state.wallet);
+      if (state.selectedContractLeagueAddress && state.wallet) {
+        const teamRewards = await getUserRewards(state.selectedContractLeagueAddress, state.wallet);
         console.log('User Rewards:', teamRewards);
         if (teamRewards.length > 0) {
           setRewardPending(true);
@@ -29,20 +29,20 @@ const ClaimReward: React.FC = () => {
       }
     }
     fetchUserRewards();
-  }, [state.wallet, state.selectedLeagueAddress]);
+  }, [state.wallet, state.selectedContractLeagueAddress]);
 
   useEffect(() => {
     async function fetchCalls() {
-      if (state.selectedLeagueAddress && imageURL) {
+      if (state.selectedContractLeagueAddress && imageURL) {
         setCalls([
-          getClaimRewardCall(state.selectedLeagueAddress, imageURL),
+          getClaimRewardCall(state.selectedContractLeagueAddress, imageURL),
         ])
       } else {
         setCalls([]);
       }
     }
     fetchCalls();
-  }, [state.selectedLeagueAddress, imageURL]);
+  }, [state.selectedContractLeagueAddress, imageURL]);
   
 
   return (
