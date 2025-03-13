@@ -37,10 +37,6 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, username: action.payload };
       if (action.payload) sessionStorage.setItem('username', action.payload);
       break;
-    case 'SET_LEAGUES':
-      nextState = { ...state, leagues: action.payload };
-      if (action.payload) sessionStorage.setItem('leagues', JSON.stringify(action.payload));
-      break;
     case 'SET_SLEEPER_LEAGUES':
       nextState = { ...state, sleeperLeagues: action.payload };
       if (action.payload) sessionStorage.setItem('sleeperLeagues', JSON.stringify(action.payload));
@@ -126,11 +122,8 @@ function reducer(state: GlobalState, action: Action): GlobalState {
 
       // Hydrate complex objects
       try {
-        const leagues = sessionStorage.getItem('leagues');
-        if (leagues) nextState.leagues = JSON.parse(leagues);
-
         const sleeperLeagues = sessionStorage.getItem('sleeperLeagues');
-        if (sleeperLeagues) nextState.leagues = JSON.parse(sleeperLeagues);
+        if (sleeperLeagues) nextState.sleeperLeagues = JSON.parse(sleeperLeagues);
         
         const selectedSleeperLeague = sessionStorage.getItem('selectedSleeperLeague');
         if (selectedSleeperLeague) nextState.selectedSleeperLeague = JSON.parse(selectedSleeperLeague);
@@ -191,7 +184,6 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       
       // Hydrate from individual storage items
       const username = sessionStorage.getItem('username');
-      const leagues = sessionStorage.getItem('leagues');
       const sleeperLeagues = sessionStorage.getItem('sleeperLeagues');
       const email = sessionStorage.getItem('email');
       const phone = sessionStorage.getItem('phone');
@@ -213,17 +205,14 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         phone: phone || null,
         verified: verified === 'true',
         sessionId: sessionId || null,
-        leagues: [],
         sleeperLeagues: [],
         selectedLeague: null,
         selectedSleeperLeague: null,
-        // selectedWalletLeague: null,
         wallet: address || null,
         selectedWalletLeague: (selectedWalletLeague?.startsWith('0x') ? selectedWalletLeague as `0x${string}` : null),
       };
 
       try {
-        if (leagues) hydratedState.leagues = JSON.parse(leagues);
         if (sleeperLeagues) hydratedState.sleeperLeagues = JSON.parse(sleeperLeagues);
         if (selectedLeague) hydratedState.selectedLeague = JSON.parse(selectedLeague);
         if (selectedSleeperLeague) hydratedState.selectedSleeperLeague = JSON.parse(selectedSleeperLeague);
@@ -244,11 +233,9 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       
       // Save selected League
       if (state.selectedContractLeagueAddress) sessionStorage.setItem('selectedContractLeagueAddress', state.selectedContractLeagueAddress);
-      // if (state.selectedContractLeague) sessionStorage.setItem('selectedContractLeague', JSON.stringify(state.selectedContractLeague));
 
       // Save individual items to storage
       if (state.username) sessionStorage.setItem('username', state.username);
-      if (state.leagues) sessionStorage.setItem('leagues', JSON.stringify(state.leagues));
       if (state.email) sessionStorage.setItem('email', state.email);
       if (state.phone) sessionStorage.setItem('phone', state.phone);
       if (state.verified !== undefined) sessionStorage.setItem('verified', String(state.verified));
