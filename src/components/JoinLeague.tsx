@@ -7,6 +7,7 @@ import { getLeagueDues } from '../utils/onChainReadUtils';
 import { ContractCall } from '@/types/state';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
+import Link from 'next/link';
 import sdk from "@farcaster/frame-sdk";
 
 const JoinLeague: React.FC = () => {
@@ -21,6 +22,7 @@ const JoinLeague: React.FC = () => {
   const { dispatch } = useGlobalState();
   const teamNameInputRef = useRef<HTMLInputElement>(null);
   const usdcAddress = "0xa2fc8C407E0Ab497ddA623f5E16E320C7c90C83B";
+  const { state } = useGlobalState();
 
   useEffect(() => {
     sdk.actions.ready({});
@@ -111,7 +113,7 @@ const JoinLeague: React.FC = () => {
             <label className="text-xl text-gray-300">League Address</label>
             <input
               type="text"
-              value={leagueAddress ? leagueAddress : ''}
+              value={state.selectedContractLeagueAddress || ''}
               onChange={(e) => !isFromUrl && setLeagueAddress(e.target.value as `0x${string}`)}
               placeholder="Enter league address"
               className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -128,6 +130,13 @@ const JoinLeague: React.FC = () => {
             />
           </div>
         </form>
+                  {/* Back Button */}
+                  <Link 
+            href="/join-league-sleeper" 
+            className="w-full text-gray-300 hover:text-white py-4 text-lg transition-colors text-center block"
+          >
+            Choose Different User
+          </Link>
       </div>
     </main>
   );

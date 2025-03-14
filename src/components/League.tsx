@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import LeagueRewards from './LeagueRewards';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { useSearchParams } from 'next/navigation';
+import CopyInput from './form/form-elements/CopyInput';
 
 type Tab = 'teams' | 'rewards';
 
@@ -27,38 +28,32 @@ const League: React.FC = () => {
   return (
     <main className="min-h-screen flex flex-col items-center px-4">
       <div className="max-w-4xl w-full mt-16 space-y-12">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white">
-            {state.selectedContractLeague?.leagueName || ''}
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300">
-            Welcome to your league dashboard
-            {state.selectedContractLeague?.leagueName}
-            {state.selectedContractLeague?.activeTeams?.length}
-          </p>
-        </div>
-
+        {/* <div className="text-center space-y-4">
+          <CopyInput />
+        </div> */}
         {/* Tabs */}
         <div className="flex space-x-4">
           <button
             onClick={() => setActiveTab('teams')}
-            className={`px-8 py-3 rounded-full text-lg font-medium transition-colors ${
+            className={`px-8 py-3 rounded-full text-md font-medium transition-colors ${
               activeTab === 'teams'
                 ? 'bg-gray-700 text-white'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
             Teams
+            <span className="text-xs ml-1">👥 {state.selectedContractLeague?.activeTeams?.length}</span>
           </button>
           <button
             onClick={() => setActiveTab('rewards')}
-            className={`px-8 py-3 rounded-full text-lg font-medium transition-colors ${
+            className={`px-8 py-3 rounded-full text-md font-medium transition-colors ${
               activeTab === 'rewards'
                 ? 'bg-gray-700 text-white'
                 : 'text-gray-400 hover:text-white'
             }`}
           >
             Rewards
+            <span className="text-xs ml-1">🏆 {state.selectedContractLeague?.leagueRewards?.length}</span>
           </button>
         </div>
 
@@ -71,7 +66,7 @@ const League: React.FC = () => {
                   key={index}
                   className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg"
                 >
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-4 truncate">
                     <div className="space-y-1 truncate">
                       <div className="text-white text-lg">{team.name}</div>
                       <div className="text-gray-400 text-sm truncate">{team.wallet}</div>
@@ -84,6 +79,12 @@ const League: React.FC = () => {
                   )}
                 </div>
               ))}
+              <div className="text-center space-y-4">
+                <h1 className="text-md md:text-md font-bold text-white  mt-12">
+                  Invite Teams 💌
+                </h1>
+                <CopyInput />
+              </div>
             </>
           )}
           {activeTab === 'rewards' && (

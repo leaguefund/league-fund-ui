@@ -572,11 +572,9 @@ const AppSidebar: React.FC = () => {
               </h2>
               <ul className="flex flex-col gap-2">
                 <li key="invite">
-                  <a className="menu-item group menu-item-inactive" href="javascript:void(0)" onClick={(e) => e.preventDefault()}>
-                  <span className="menu-item-text">
-                      🔗 Invite Link 
-                    </span>
-                  </a>
+                  <Link href="/league-created" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
+                    <span className="menu-item-text">🔗 Invite Link </span>
+                  </Link>
                 </li>
                 <li key="new-league">
                   <Link href="/" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
