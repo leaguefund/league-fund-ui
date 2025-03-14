@@ -5,12 +5,16 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import SleeperLogo from './SleeperLogo';
+// import { useAccount } from 'wagmi';
+// import { WalletDefault } from '@coinbase/onchainkit/wallet';
+// import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 
 const JoinConnectWallet: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const { state } = useGlobalState();
+  // const { isConnected, address: wallet_address } = useAccount();
   
   // Try to get user data from URL params first, fall back to global state
   const urlUsername = searchParams?.get('username') || '';
@@ -55,12 +59,14 @@ const JoinConnectWallet: React.FC = () => {
 
         <div className="flex justify-center">
           <div className="flex flex-col items-center p-6 bg-gray-800/50 rounded-lg space-y-3">
+          
             <SleeperLogo avatar={user.avatar} username={user.username} width={80} />
             <span className="text-gray-300">{user.username}</span>
           </div>
         </div>
 
         <div className="space-y-8">
+
           <button
             onClick={handleConnectWallet}
             disabled={isLoading}

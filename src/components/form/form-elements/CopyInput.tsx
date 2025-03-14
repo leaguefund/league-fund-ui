@@ -9,7 +9,7 @@ const CopyInput: React.FC = () => {
 
   useEffect(() => {
     const currentDomain = window.location.origin;
-    const leagueAddress = sessionStorage.getItem('leagueAddress');
+    const leagueAddress = sessionStorage.getItem('selectedContractLeagueAddress');
     setWebsite(`${currentDomain}/join-league-sleeper?league_address=${leagueAddress}`);
   }, []);
 

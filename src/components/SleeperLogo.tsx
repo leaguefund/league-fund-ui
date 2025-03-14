@@ -10,7 +10,7 @@ interface SleeperLogoProps {
 const SleeperLogo: React.FC<SleeperLogoProps> = ({ avatar = '/images/sleeper.png', username = 'User', width }) => {
   return (
     <Image
-      src={avatar ?? '/images/sleeper.png'}
+      src={avatar && avatar !== '' ? avatar : '/images/sleeper.png'}
       alt={username}
       width={width}
       height={width}
