@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TransactionDefault } from "@coinbase/onchainkit/transaction";
 import { useRouter } from 'next/navigation';
 import ApiService from '@/services/backend';
@@ -11,6 +11,7 @@ import { getClaimRewardCall } from '../utils/createCallUtils';
 import { getUserRewards } from '../utils/onChainReadUtils';
 import { ContractCall } from '@/types/state';
 import sdk from "@farcaster/frame-sdk";
+import Image from 'next/image';
 
 interface Reward {
   amount: string;
@@ -55,9 +56,16 @@ const MintReward: React.FC = () => {
   
   const { state } = useGlobalState();
   const { showNotification } = useNotification();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     sdk.actions.ready({});
+  }, []);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   }, []);
 
   // Check if user has claimable rewards
@@ -202,17 +210,50 @@ const MintReward: React.FC = () => {
       <div className="max-w-4xl w-full mt-16 space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white">
-            {currentReward?.name} Wins! 🎉
+            {currentReward?.name} 🎉
           </h1>
+          <h3 className="text-md md:text-2xl font-bolxd text-white">
+            Winnings
+          </h3>
           <p className="text-gray-300">
-            In addition to ${formattedAmount}, you get to generate trophy art.
+            $ {formattedAmount} <Image src="/images/logo/usd-coin-usdc-logo.png" className="inline-flex pl-1 mb-1"
+                            alt="Logo"
+                            width={24}
+                            height={24}
+                            />
+            <div className="block">Trophy 🏆</div>
           </p>
         </div>
 
         <div className="space-y-8 flex flex-col items-center">
           {/* Reward Image Section */}
           <div className="space-y-4 w-full max-w-[320px]">
-            <label className="text-xl text-gray-300 block text-center">Reward Artwork</label>
+          {/* Load New Image */}
+          <div className="space-y-8">
+            <div className="relative">
+              <button
+                onClick={handleSubmit}
+                className={`absolute right-0 top-1/2 inline-flex -translate-y-1/2 cursor-pointer items-center gap-1 border-l border-gray-200 py-3 pl-3.5 pr-3 text-sm font-medium text-gray-700 dark:border-gray-800 dark:text-gray-400 ${isLoading ? 'animate-pulse' : ''}`}
+              >
+                {isLoading ? '🧠' : '✨'}
+              </button>
+              <input
+                ref={inputRef}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSubmit(e);
+                  }
+                }}
+                placeholder="Customize Trophy Artwork"
+                type="url"
+                className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-3 pl-4 pr-[90px] text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+              />
+            </div>
+          </div>
+          {/* End new image load */}
+            {/* <label className="text-xl text-gray-300 block text-center">Customize Trophy Artwork</label> */}
             <div className="flex flex-col items-center">
               <div className="relative w-full aspect-square bg-gray-800 rounded-lg overflow-hidden">
                 {isLoading ? (
@@ -239,31 +280,14 @@ const MintReward: React.FC = () => {
                   />
                 ) : null}
               </div>
-              
-              {/* Input and Change Button */}
-              <form onSubmit={handleSubmit} className="w-[140%] -mx-[20%] mt-4 flex gap-2">
-                <input 
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  className="flex-1 px-4 py-2 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
-                  placeholder="Enter text"
-                />
-                <button 
-                  type="submit"
-                  disabled={isLoading || !inputValue.trim()}
-                  className="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Change
-                </button>
-              </form>
+
             </div>
           </div>
 
           {/* Claim Reward Button/Transaction */}
           <div className="w-full max-w-[320px]">
             {(imageUrl || imageData) ? (
-              <div className="w-[140%] -mx-[20%]">
+              <div className="w-full [&_button]:w-full [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_button]:space-x-3 [&_button]:bg-gray-700 [&_button:hover]:bg-gray-600 [&_button]:text-white [&_button]:py-6 [&_button]:rounded-lg [&_button]:transition-colors [&_button:disabled]:opacity-50 [&_button:disabled]:cursor-not-allowed [&_button_span]:text-xl">
                 <TransactionDefault
                   isSponsored={true}
                   calls={calls}
@@ -285,4 +309,4 @@ const MintReward: React.FC = () => {
   );
 };
 
-export default MintReward; 
+export default MintReward;

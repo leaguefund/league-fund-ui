@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { GlobalState, Action, initialState } from '@/types/state';
 import { useAccount } from 'wagmi';
 import ApiService from '@/services/backend';
-import { getLeagueName, getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner, getLeagueRewards, getUserLeagues } from '@/utils/onChainReadUtils';
+import { getLeagueName, getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner, getLeagueRewards, getUserLeagues, getUserRewards } from '@/utils/onChainReadUtils';
 import { WalletLeague } from '@/types/state';
 
 const GlobalStateContext = createContext<{
@@ -90,10 +90,10 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, leagueAddress: action.payload };
       if (action.payload) sessionStorage.setItem('leagueAddress', action.payload);
       break;
-    case 'SET_SELECTED_WALLET_LEAGUE':
-      nextState = { ...state, selectedWalletLeague: action.payload };
-      if (action.payload) sessionStorage.setItem('selectedWalletLeague', action.payload);
-      break;
+    // case 'SET_SELECTED_WALLET_LEAGUE':
+    //   nextState = { ...state, selectedWalletLeague: action.payload };
+    //   if (action.payload) sessionStorage.setItem('selectedWalletLeague', action.payload);
+    //   break;
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
       
@@ -265,12 +265,16 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
           dispatch({ type: 'SET_WALLET_LEAGUES', payload: validLeagues });
           // Check if selectedContractLeagueAddress exists in validLeagues
           const selectedLeague = validLeagues.find(league => league.leagueAddress === state.selectedContractLeagueAddress);
-          // Validate if selectedContractLeagueAddress is valid for wallet
-          if (!validLeagues.find(league => league.leagueAddress === state.selectedContractLeagueAddress)) {
-            // Fetch random contract league
-            const randomSelectedContractLeague = validLeagues[Math.floor(Math.random() * validLeagues.length)];
-            console.log("👛 Random League Selected", randomSelectedContractLeague);
-            dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: randomSelectedContractLeague.leagueAddress });
+          // If Selected League already
+          if (selectedLeague) {
+            // Set previously selected league as selected league address
+            console.log("👛 Previously Selected League", selectedLeague);
+            dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: selectedLeague.leagueAddress });
+          } else {
+            // Pluck Random Initial Selected Team
+            const randomLeague = validLeagues[Math.floor(Math.random() * validLeagues.length)];
+            console.log("👛 Random League Selected", randomLeague);
+            dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: randomLeague.leagueAddress });
           }
         } catch (error) {
           console.error('Error fetching leagues:', error);
@@ -299,7 +303,8 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       treasurer: false,
       sleeperTeams: [],
       activeTeams: [],
-      leagueRewards: []
+      leagueRewards: [],
+      yourRewards: []
     };
 
     // Initialize Selected Contract League
@@ -336,20 +341,71 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         ...reward,
         usdcAmount: reward.usdcAmount.toString() // Convert BigInt to string
       }));
+      let formattedRewards: {
+        amount: string; // Convert BigInt to string
+        name: string;
+      }[] = [];
+      if (state.wallet) {
+        const userRewards = await getUserRewards(address, state.wallet as `0x${string}`);
+        formattedRewards = userRewards.map(reward => ({
+          ...reward,
+          amount: reward.amount.toString() // Convert BigInt to string
+        }));
+      }
       initialContractLeague = {
         ...initialContractLeague,
         leagueName: name,
         leagueBalance: balance,
         activeTeams: [...activeTeams],
         commissioner: isCommissioner,
-        leagueRewards: [...formattedLeagueRewards] // Use formatted rewards
+        leagueRewards: [...formattedLeagueRewards], // Use formatted rewards
+        yourRewards: formattedRewards
       };
       console.log("⛓️ Dispatch name & balance", initialContractLeague);
       dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
+
+      // // Fetch and set user rewards
+      // if (state.wallet) {
+      //   await fetchAndSetUserRewards(address, state.wallet);
+      // }
     } catch (error) {
       console.error('⛓️ Error fetching league info:', error);
     }
   };
+
+  const fetchAndSetUserRewards = async (leagueAddress: `0x${string}`, wallet: string) => {
+    console.log("🏆  Fetching Rewards for wallet", wallet);
+    if (!state.selectedContractLeague?.leagueName) {
+      console.warn("🏆  League name is not populated, skipping rewards fetch.");
+      return;
+    }
+    try {
+      const userRewards = await getUserRewards(leagueAddress, wallet as `0x${string}`);
+      console.log("🏆  Rewards (state)", state);
+      console.log("🏆  Rewards (unformatted)", userRewards);
+      const formattedRewards = userRewards.map(reward => ({
+        ...reward,
+        amount: reward.amount.toString() // Convert BigInt to string
+      }));
+      console.log("🏆  Rewards (formatted)", formattedRewards);
+      // Dispatch Your Rewards
+      dispatch({
+        type: 'SET_SELECTED_CONTRACT_LEAGUE',
+        payload: {
+          ...state.selectedContractLeague,
+          yourRewards: formattedRewards
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching user rewards:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (state.selectedContractLeagueAddress && state.wallet) {
+      fetchAndSetUserRewards(state.selectedContractLeagueAddress, state.wallet);
+    }
+  }, [state.selectedContractLeague?.leagueAddress, state.wallet]);
 
   // Don't render anything until state is hydrated
   if (!state.hydrated) {

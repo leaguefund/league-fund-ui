@@ -487,10 +487,10 @@ const AppSidebar: React.FC = () => {
                   <span className="menu-item-text">
                       🏆 Trophies
                       <span className="ml-2 text-xs text-gray-500 inline">
-                      {activeTeams.length > 1 ? (
-                        ` ${activeTeams.length} Rewards`
+                      {state.selectedContractLeague?.leagueRewards?.length === 1 ? (
+                        ` ${state.selectedContractLeague?.leagueRewards?.length} Reward`
                       ) : (
-                        ` ${activeTeams.length} Reward`
+                        ` ${state.selectedContractLeague?.leagueRewards?.length} Rewards`
                       )}
                       </span>
                     </span>
@@ -543,7 +543,15 @@ const AppSidebar: React.FC = () => {
                 </li>
                 <li key="claim">
                   <Link href="/mint-reward" className="menu-item group menu-item-inactive" onClick={handleLinkClick}>
-                  <span className="menu-item-text">✨ Mint Trophy</span>
+                  <span className="menu-item-text">✨ Mint Trophy
+                    {(state.selectedContractLeague?.yourRewards?.length ?? 0) > 0 && (
+                      <div className="inline ml-4 text-md">
+                        <Badge variant="solid" color="success">
+                        {state.selectedContractLeague?.yourRewards?.length} New
+                        </Badge>
+                      </div>
+                    )}
+                  </span>
                   </Link>
                 </li>
               </ul>

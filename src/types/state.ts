@@ -23,6 +23,7 @@ export interface WalletLeague {
     activeTeams: any[];
     sleeperTeams: any[];
     leagueRewards: any[];
+    yourRewards: any[];
 }
 
 export interface TeamInfo {

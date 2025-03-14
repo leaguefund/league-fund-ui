@@ -96,7 +96,8 @@ const CreateLeague: React.FC = () => {
             treasurer: false,
             sleeperTeams: [],
             activeTeams: [], // Add appropriate value for activeTeams
-            leagueRewards: [] // Add appropriate value for leagueRewards
+            leagueRewards: [], // Add appropriate value for leagueRewards
+            yourRewards: [] // Add appropriate value for leagueRewards
           };
           dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: walletLeague });
         }
