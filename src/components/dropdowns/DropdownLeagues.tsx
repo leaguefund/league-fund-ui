@@ -1,9 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-import { getUserLeagues } from '@/utils/onChainReadUtils';
 import { useGlobalState } from '@/context/GlobalStateContext';
 import { WalletLeague } from '@/types/state';
 import SleeperLogo from '@/components/SleeperLogo';
@@ -14,37 +13,6 @@ export default function DropdownLeagues() {
   const { state, dispatch } = useGlobalState();
   const router = useRouter();
   const { toggleSidebar, toggleMobileSidebar } = useSidebar();
-
-  useEffect(() => {
-    const fetchLeagues = async () => {
-      if (state.wallet) {
-        try {
-          const userLeagues = await getUserLeagues(state.wallet);
-          console.log(state.wallet)
-          console.log(userLeagues)
-          // Filter out undefined values and ensure type safety
-          const validLeagues = userLeagues.filter((league): league is WalletLeague => league !== undefined);
-          dispatch({ type: 'SET_WALLET_LEAGUES', payload: validLeagues });
-          // Do this if not already set.
-          console.log("🚨 SET_SELECTED_CONTRACT_LEAGUE_ADDRESS not set with Wallet connection in Sidebar 🚨")
-          // dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: validLeagues[0].leagueAddress }); 
-          // // Initialize with first league if none selected
-          // if (validLeagues.length > 0 && !state.selectedContractLeagueAddress) {
-          //   dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: validLeagues[0].leagueName });
-          //   dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: validLeagues[0].leagueAddress });
-          // }
-        } catch (error) {
-          console.error('Error fetching leagues:', error);
-        }
-      } else {
-        dispatch({ type: 'SET_WALLET_LEAGUES', payload: null });
-        dispatch({ type: 'SET_SELECTED_LEAGUE_NAME', payload: null });
-        dispatch({ type: 'SET_SELECTED_LEAGUE_ADDRESS', payload: null });
-      }
-    };
-    fetchLeagues();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.wallet, state.selectedContractLeagueAddress]);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);

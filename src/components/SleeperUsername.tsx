@@ -24,7 +24,6 @@ const SleeperUsername: React.FC = () => {
 
   useEffect(() => {
     // Clear Leagues
-    dispatch({ type: 'SET_LEAGUES', payload: [] });
     dispatch({ type: 'SET_SLEEPER_LEAGUES', payload: [] }); // Set sleeperLeagues
     dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: {} as League });
     // Prepare SDK
@@ -50,16 +49,31 @@ const SleeperUsername: React.FC = () => {
       dispatch({ type: 'SET_USERNAME', payload: username });
       // Fetch Sleeper API
       const response = await ApiService.getSleeperUser(username);
+      // Check if user is found
+      if (!response || !response.leagues) {
+        showNotification({
+          variant: 'error',
+          title: 'Error',
+          description: 'User not found or no leagues available',
+          hideDuration: 5000
+        });
+        return;
+      }
       // Update leagues if they come back in the response
-      if (response.leagues) {
-        dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
+      if (response.leagues.length > 0) {
         dispatch({ type: 'SET_SLEEPER_LEAGUES', payload: response.leagues }); // Set sleeperLeagues
         // Set the first league as the selected league
-        if (response.leagues.length > 0) {
-          dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: response.leagues[0] });
-        }
+        dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: response.leagues[0] });
+        // Push to confirm league
+        router.push('/confirm-league');
+      } else {
+        showNotification({
+          variant: 'error',
+          title: 'Error',
+          description: 'No leagues found for this user',
+          hideDuration: 5000
+        });
       }
-      router.push('/confirm-league');
     } catch (error: any) {
       console.error('Error finding league:', error);
       showNotification({
@@ -84,9 +98,9 @@ const SleeperUsername: React.FC = () => {
             Import your Sleeper League
           </p>
           {/* Show leagues count if we have them and selectedLeague exists */}
-          {state.leagues && state.sleeperLeagues && state.sleeperLeagues.length > 0 && (
+          {state.sleeperLeagues && state.sleeperLeagues.length > 0 && (
             <p className="text-gray-300">
-              Found {state.leagues.length} leagues for this account
+              Found {state.sleeperLeagues.length} leagues for this account
             </p>
           )}
         </div>
@@ -103,7 +117,6 @@ const SleeperUsername: React.FC = () => {
               className="w-full px-4 py-3 bg-transparent border border-gray-700 rounded-lg text-white focus:border-white focus:outline-none"
               placeholder="Enter your username"
             />
-
           </div>
 
           {/* Find League Button */}

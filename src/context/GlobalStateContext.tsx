@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { GlobalState, Action, initialState } from '@/types/state';
 import { useAccount } from 'wagmi';
 import ApiService from '@/services/backend';
-import { getLeagueName, getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner, getLeagueRewards } from '@/utils/onChainReadUtils';
+import { getLeagueName, getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner, getLeagueRewards, getUserLeagues, getUserRewards } from '@/utils/onChainReadUtils';
 import { WalletLeague } from '@/types/state';
 
 const GlobalStateContext = createContext<{
@@ -37,10 +37,6 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, username: action.payload };
       if (action.payload) sessionStorage.setItem('username', action.payload);
       break;
-    case 'SET_LEAGUES':
-      nextState = { ...state, leagues: action.payload };
-      if (action.payload) sessionStorage.setItem('leagues', JSON.stringify(action.payload));
-      break;
     case 'SET_SLEEPER_LEAGUES':
       nextState = { ...state, sleeperLeagues: action.payload };
       if (action.payload) sessionStorage.setItem('sleeperLeagues', JSON.stringify(action.payload));
@@ -69,6 +65,13 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, selectedContractLeagueAddress: action.payload as `0x${string}` };
       if (action.payload) sessionStorage.setItem('selectedContractLeagueAddress', action.payload as string);
       break;
+    case 'SET_SELECTED_CONTRACT_LEAGUE':
+      nextState = { ...state, selectedContractLeague: action.payload as WalletLeague | null };
+      if (action.payload) {
+        const payload = { ...action.payload, leagueBalance: action.payload.leagueBalance.toString() }; // Convert BigInt to string
+        sessionStorage.setItem('selectedContractLeague', JSON.stringify(payload));
+      }
+      break;
     case 'SET_SELECTED_WALLET_LEAGUE':
       nextState = { ...state, selectedWalletLeague: action.payload };
       if (action.payload) sessionStorage.setItem('selectedWalletLeague', JSON.stringify(action.payload));
@@ -87,10 +90,10 @@ function reducer(state: GlobalState, action: Action): GlobalState {
       nextState = { ...state, leagueAddress: action.payload };
       if (action.payload) sessionStorage.setItem('leagueAddress', action.payload);
       break;
-    case 'SET_SELECTED_WALLET_LEAGUE':
-      nextState = { ...state, selectedWalletLeague: action.payload };
-      if (action.payload) sessionStorage.setItem('selectedWalletLeague', action.payload);
-      break;
+    // case 'SET_SELECTED_WALLET_LEAGUE':
+    //   nextState = { ...state, selectedWalletLeague: action.payload };
+    //   if (action.payload) sessionStorage.setItem('selectedWalletLeague', action.payload);
+    //   break;
     case 'HYDRATE_FROM_STORAGE':
       nextState = { ...state, ...action.payload, hydrated: true };
       
@@ -126,11 +129,8 @@ function reducer(state: GlobalState, action: Action): GlobalState {
 
       // Hydrate complex objects
       try {
-        const leagues = sessionStorage.getItem('leagues');
-        if (leagues) nextState.leagues = JSON.parse(leagues);
-
         const sleeperLeagues = sessionStorage.getItem('sleeperLeagues');
-        if (sleeperLeagues) nextState.leagues = JSON.parse(sleeperLeagues);
+        if (sleeperLeagues) nextState.sleeperLeagues = JSON.parse(sleeperLeagues);
         
         const selectedSleeperLeague = sessionStorage.getItem('selectedSleeperLeague');
         if (selectedSleeperLeague) nextState.selectedSleeperLeague = JSON.parse(selectedSleeperLeague);
@@ -191,7 +191,6 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       
       // Hydrate from individual storage items
       const username = sessionStorage.getItem('username');
-      const leagues = sessionStorage.getItem('leagues');
       const sleeperLeagues = sessionStorage.getItem('sleeperLeagues');
       const email = sessionStorage.getItem('email');
       const phone = sessionStorage.getItem('phone');
@@ -213,17 +212,14 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
         phone: phone || null,
         verified: verified === 'true',
         sessionId: sessionId || null,
-        leagues: [],
         sleeperLeagues: [],
         selectedLeague: null,
         selectedSleeperLeague: null,
-        // selectedWalletLeague: null,
         wallet: address || null,
         selectedWalletLeague: (selectedWalletLeague?.startsWith('0x') ? selectedWalletLeague as `0x${string}` : null),
       };
 
       try {
-        if (leagues) hydratedState.leagues = JSON.parse(leagues);
         if (sleeperLeagues) hydratedState.sleeperLeagues = JSON.parse(sleeperLeagues);
         if (selectedLeague) hydratedState.selectedLeague = JSON.parse(selectedLeague);
         if (selectedSleeperLeague) hydratedState.selectedSleeperLeague = JSON.parse(selectedSleeperLeague);
@@ -244,11 +240,9 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       
       // Save selected League
       if (state.selectedContractLeagueAddress) sessionStorage.setItem('selectedContractLeagueAddress', state.selectedContractLeagueAddress);
-      // if (state.selectedContractLeague) sessionStorage.setItem('selectedContractLeague', JSON.stringify(state.selectedContractLeague));
 
       // Save individual items to storage
       if (state.username) sessionStorage.setItem('username', state.username);
-      if (state.leagues) sessionStorage.setItem('leagues', JSON.stringify(state.leagues));
       if (state.email) sessionStorage.setItem('email', state.email);
       if (state.phone) sessionStorage.setItem('phone', state.phone);
       if (state.verified !== undefined) sessionStorage.setItem('verified', String(state.verified));
@@ -259,6 +253,37 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       if (state.selectedWalletLeague) sessionStorage.setItem('selectedWalletLeague', state.selectedWalletLeague);
     }
   }, [state, address, isConnected]);
+
+  useEffect(() => {
+    const fetchLeagues = async () => {
+      if (state.wallet) {
+        try {
+          console.log("👛 Wallet Updated", state.wallet);
+          const userLeagues = await getUserLeagues(state.wallet);
+          console.log("👛 Wallet API Request", userLeagues);
+          const validLeagues = userLeagues.filter((league): league is WalletLeague => league !== undefined);
+          dispatch({ type: 'SET_WALLET_LEAGUES', payload: validLeagues });
+          // Check if selectedContractLeagueAddress exists in validLeagues
+          const selectedLeague = validLeagues.find(league => league.leagueAddress === state.selectedContractLeagueAddress);
+          // If Selected League already
+          if (selectedLeague) {
+            // Set previously selected league as selected league address
+            console.log("👛 Previously Selected League", selectedLeague);
+            dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: selectedLeague.leagueAddress });
+          } else {
+            // Pluck Random Initial Selected Team
+            const randomLeague = validLeagues[Math.floor(Math.random() * validLeagues.length)];
+            console.log("👛 Random League Selected", randomLeague);
+            dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: randomLeague.leagueAddress });
+          }
+        } catch (error) {
+          console.error('Error fetching leagues:', error);
+        }
+      } 
+    };
+    fetchLeagues();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.wallet]);
 
   useEffect(() => {
     if (state.selectedContractLeagueAddress) {
@@ -278,12 +303,15 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       treasurer: false,
       sleeperTeams: [],
       activeTeams: [],
-      leagueRewards: []
+      leagueRewards: [],
+      yourRewards: []
     };
 
     // Initialize Selected Contract League
     if (address !== state.selectedContractLeague?.leagueAddress) {
       console.log("🌱 address mismatch", state.selectedContractLeague?.leagueAddress);
+      console.log("🌱 address mismatch", state);
+      console.log("🌱 address mismatch", initialContractLeague);
       dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
     }
 
@@ -309,20 +337,75 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       const isCommissioner = state.wallet ? await getCommissioner(address, state.wallet) : false;
       const activeTeams = await getLeagueActiveTeams(address);          
       const leagueRewards = await getLeagueRewards(address);
+      const formattedLeagueRewards = leagueRewards.map(reward => ({
+        ...reward,
+        usdcAmount: reward.usdcAmount.toString() // Convert BigInt to string
+      }));
+      let formattedRewards: {
+        amount: string; // Convert BigInt to string
+        name: string;
+      }[] = [];
+      if (state.wallet) {
+        const userRewards = await getUserRewards(address, state.wallet as `0x${string}`);
+        formattedRewards = userRewards.map(reward => ({
+          ...reward,
+          amount: reward.amount.toString() // Convert BigInt to string
+        }));
+      }
       initialContractLeague = {
         ...initialContractLeague,
         leagueName: name,
-        leagueBalance: balance, // Convert BigInt to string
+        leagueBalance: balance,
         activeTeams: [...activeTeams],
         commissioner: isCommissioner,
-        leagueRewards: [...leagueRewards]
+        leagueRewards: [...formattedLeagueRewards], // Use formatted rewards
+        yourRewards: formattedRewards
       };
       console.log("⛓️ Dispatch name & balance", initialContractLeague);
       dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
+
+      // // Fetch and set user rewards
+      // if (state.wallet) {
+      //   await fetchAndSetUserRewards(address, state.wallet);
+      // }
     } catch (error) {
       console.error('⛓️ Error fetching league info:', error);
     }
   };
+
+  const fetchAndSetUserRewards = async (leagueAddress: `0x${string}`, wallet: string) => {
+    console.log("🏆  Fetching Rewards for wallet", wallet);
+    if (!state.selectedContractLeague?.leagueName) {
+      console.warn("🏆  League name is not populated, skipping rewards fetch.");
+      return;
+    }
+    try {
+      const userRewards = await getUserRewards(leagueAddress, wallet as `0x${string}`);
+      console.log("🏆  Rewards (state)", state);
+      console.log("🏆  Rewards (unformatted)", userRewards);
+      const formattedRewards = userRewards.map(reward => ({
+        ...reward,
+        amount: reward.amount.toString() // Convert BigInt to string
+      }));
+      console.log("🏆  Rewards (formatted)", formattedRewards);
+      // Dispatch Your Rewards
+      dispatch({
+        type: 'SET_SELECTED_CONTRACT_LEAGUE',
+        payload: {
+          ...state.selectedContractLeague,
+          yourRewards: formattedRewards
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching user rewards:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (state.selectedContractLeagueAddress && state.wallet) {
+      fetchAndSetUserRewards(state.selectedContractLeagueAddress, state.wallet);
+    }
+  }, [state.selectedContractLeague?.leagueAddress, state.wallet]);
 
   // Don't render anything until state is hydrated
   if (!state.hydrated) {

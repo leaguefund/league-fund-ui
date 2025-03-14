@@ -23,6 +23,7 @@ export interface WalletLeague {
     activeTeams: any[];
     sleeperTeams: any[];
     leagueRewards: any[];
+    yourRewards: any[];
 }
 
 export interface TeamInfo {
@@ -51,7 +52,6 @@ export interface GlobalState {
     selectedContractLeague: WalletLeague | null;
     sessionId: string | null;
     username: string | null;
-    leagues: League[] | null;
     selectedLeague: League | null;
     selectedSleeperLeague: League | null;    
     email: string | null;
@@ -117,7 +117,6 @@ export type Action =
 export const initialState: GlobalState = {
     sessionId: null,
     username: null,
-    leagues: null,
     selectedLeague: null,
     selectedSleeperLeague: null,
     selectedContractLeague: null,
