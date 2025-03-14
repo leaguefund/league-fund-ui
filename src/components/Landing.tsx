@@ -18,7 +18,9 @@ const Landing: React.FC = () => {
     try {
       const response = await ApiService.readLeague('');
       if (response.leagues) {
-        dispatch({ type: 'SET_LEAGUES', payload: response.leagues });
+        dispatch({ type: 'SET_SLEEPER_LEAGUES', payload: response.leagues }); // Set sleeperLeagues
+        // Set the first league as the selected league
+        dispatch({ type: 'SET_SELECTED_SLEEPER_LEAGUE', payload: response.leagues[0] });
       }
       router.push('/sleeper-username');
     } catch (error) {
@@ -39,9 +41,9 @@ const Landing: React.FC = () => {
           <p className="text-xl md:text-2xl text-gray-300">
             Effortless League Accounting, Trophies, & Historical Data in One Place
           </p>
-          {state.leagues && (
+          {state.sleeperLeagues && (
             <p className="text-lg text-gray-400">
-              {state.leagues.length} Leagues Available
+              {state.sleeperLeagues.length} Leagues Available
             </p>
           )}
         </div>
