@@ -74,7 +74,7 @@ const League: React.FC = () => {
                   <div className="flex items-center space-x-4">
                     <div className="space-y-1 truncate">
                       <div className="text-white text-lg">{team.name}</div>
-                      <div className="text-gray-400 text-sm">{team.wallet}</div>
+                      <div className="text-gray-400 text-sm truncate">{team.wallet}</div>
                     </div>
                   </div>
                   {team.owner && (
