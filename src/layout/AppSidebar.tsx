@@ -2,8 +2,7 @@
 "use client";
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import Link from "next/link";
-// import Image from "next/image";
-import Logo from "@/components/logo/logo";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { TeamInfo } from '@/types/state';
@@ -27,7 +26,7 @@ import {
   // UserCircleIcon,
 } from "../icons/index";
 // import SidebarWidget from "./SidebarWidget";
-import DropdownLeagues from "@/components/example/DropdownExample/DropdownLeagues";
+import DropdownLeagues from "@/components/dropdowns/DropdownLeagues";
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -36,51 +35,6 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  // {
-  //   icon: <GridIcon />,
-  //   name: "Dashboard",
-  //   subItems: [
-  //     { name: "Ecommerce", path: "/", pro: false },
-  //     { name: "Analytics", path: "/analytics", pro: true },
-  //     { name: "Marketing", path: "/marketing", pro: true },
-  //     { name: "CRM", path: "/crm", pro: true },
-  //     { name: "Stocks", path: "/stocks", new: true, pro: true },
-  //   ],
-  // },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
-  // {
-  //   icon: <UserCircleIcon />,
-  //   name: "User Profile",
-  //   path: "/profile",
-  // },
-  // {
-  //   name: "Task",
-  //   icon: <TaskIcon />,
-  //   subItems: [
-  //     { name: "List", path: "/task-list", pro: true },
-  //     { name: "Kanban", path: "/task-kanban", pro: true },
-  //   ],
-  // },
-  // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [
-  //     { name: "Form Elements", path: "/form-elements", pro: false },
-  //     { name: "Form Layout", path: "/form-layout", pro: true },
-  //   ],
-  // },
-  // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   subItems: [
-  //     { name: "Basic Tables", path: "/basic-tables", pro: false },
-  //     { name: "Data Tables", path: "/data-tables", pro: true },
-  //   ],
-  // },
   {
     name: "Pages",
     icon: <PageIcon />,
@@ -236,6 +190,11 @@ const AppSidebar: React.FC = () => {
     } else {
       toggleSidebar();
     }
+  };
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toggleSidebar();
   };
 
   const renderMenuItems = (
@@ -467,32 +426,18 @@ const AppSidebar: React.FC = () => {
         <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
-              {/* <Image
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              /> */}
-              {/* <Image
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              /> */}
-              <div><Logo /></div>
+              <a onClick={handleLogoClick} className="flex items-center gap-2">
+                <Image
+                  src="/images/logo/LeagueFund.png"
+                  alt="LeagueFund Logo"
+                  width={150}
+                  height={150}
+                  priority
+                />
+              </a>
             </>
-                   
           ) : (
             <div></div>
-            
-            // <Image
-            //   src="/images/logo/logo-icon.svg"
-            //   alt="Logo"
-            //   width={32}
-            //   height={32}
-            // />
           )}
         </Link>
       </div>

@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { GlobalState, Action, initialState } from '@/types/state';
 import { useAccount } from 'wagmi';
 import ApiService from '@/services/backend';
-import { getLeagueName, getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner, getLeagueRewards } from '@/utils/onChainReadUtils';
+import { getLeagueName, getLeagueTotalBalance, getLeagueActiveTeams, getCommissioner, getLeagueRewards, getUserLeagues } from '@/utils/onChainReadUtils';
 import { WalletLeague } from '@/types/state';
 
 const GlobalStateContext = createContext<{
@@ -64,6 +64,13 @@ function reducer(state: GlobalState, action: Action): GlobalState {
     case 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS':
       nextState = { ...state, selectedContractLeagueAddress: action.payload as `0x${string}` };
       if (action.payload) sessionStorage.setItem('selectedContractLeagueAddress', action.payload as string);
+      break;
+    case 'SET_SELECTED_CONTRACT_LEAGUE':
+      nextState = { ...state, selectedContractLeague: action.payload as WalletLeague | null };
+      if (action.payload) {
+        const payload = { ...action.payload, leagueBalance: action.payload.leagueBalance.toString() }; // Convert BigInt to string
+        sessionStorage.setItem('selectedContractLeague', JSON.stringify(payload));
+      }
       break;
     case 'SET_SELECTED_WALLET_LEAGUE':
       nextState = { ...state, selectedWalletLeague: action.payload };
@@ -248,6 +255,33 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
   }, [state, address, isConnected]);
 
   useEffect(() => {
+    const fetchLeagues = async () => {
+      if (state.wallet) {
+        try {
+          console.log("👛 Wallet Updated", state.wallet);
+          const userLeagues = await getUserLeagues(state.wallet);
+          console.log("👛 Wallet API Request", userLeagues);
+          const validLeagues = userLeagues.filter((league): league is WalletLeague => league !== undefined);
+          dispatch({ type: 'SET_WALLET_LEAGUES', payload: validLeagues });
+          // Check if selectedContractLeagueAddress exists in validLeagues
+          const selectedLeague = validLeagues.find(league => league.leagueAddress === state.selectedContractLeagueAddress);
+          // Validate if selectedContractLeagueAddress is valid for wallet
+          if (!validLeagues.find(league => league.leagueAddress === state.selectedContractLeagueAddress)) {
+            // Fetch random contract league
+            const randomSelectedContractLeague = validLeagues[Math.floor(Math.random() * validLeagues.length)];
+            console.log("👛 Random League Selected", randomSelectedContractLeague);
+            dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE_ADDRESS', payload: randomSelectedContractLeague.leagueAddress });
+          }
+        } catch (error) {
+          console.error('Error fetching leagues:', error);
+        }
+      } 
+    };
+    fetchLeagues();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.wallet]);
+
+  useEffect(() => {
     if (state.selectedContractLeagueAddress) {
       initializeAndFetchContractLeague(state.selectedContractLeagueAddress);
     }
@@ -271,6 +305,8 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
     // Initialize Selected Contract League
     if (address !== state.selectedContractLeague?.leagueAddress) {
       console.log("🌱 address mismatch", state.selectedContractLeague?.leagueAddress);
+      console.log("🌱 address mismatch", state);
+      console.log("🌱 address mismatch", initialContractLeague);
       dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
     }
 
@@ -296,13 +332,17 @@ export function GlobalStateProvider({ children }: { children: React.ReactNode })
       const isCommissioner = state.wallet ? await getCommissioner(address, state.wallet) : false;
       const activeTeams = await getLeagueActiveTeams(address);          
       const leagueRewards = await getLeagueRewards(address);
+      const formattedLeagueRewards = leagueRewards.map(reward => ({
+        ...reward,
+        usdcAmount: reward.usdcAmount.toString() // Convert BigInt to string
+      }));
       initialContractLeague = {
         ...initialContractLeague,
         leagueName: name,
-        leagueBalance: balance, // Convert BigInt to string
+        leagueBalance: balance,
         activeTeams: [...activeTeams],
         commissioner: isCommissioner,
-        leagueRewards: [...leagueRewards]
+        leagueRewards: [...formattedLeagueRewards] // Use formatted rewards
       };
       console.log("⛓️ Dispatch name & balance", initialContractLeague);
       dispatch({ type: 'SET_SELECTED_CONTRACT_LEAGUE', payload: initialContractLeague });
