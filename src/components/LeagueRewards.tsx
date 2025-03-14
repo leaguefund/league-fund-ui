@@ -2,16 +2,23 @@
 
 import { useGlobalState } from '@/context/GlobalStateContext';
 import NFTCard from "@/components/cards/card-with-image/NFTCard";
+import Button from "@/components/ui/button/Button";
 
 const LeagueRewards: React.FC = () => {
 
   const { state } = useGlobalState();
 
-  if (!((state.selectedContractLeague?.activeTeams?.length ?? 0) > 0)) {
+  if (!((state.selectedContractLeague?.leagueRewards?.length ?? 0) > 0)) {
     return (
       <main className="min-h-screen flex flex-col items-center px-4">
         <div>
-          <h1>No rewards have been minted for this league</h1>
+          <h5>Empty Trophy Wall 😴</h5>
+          <br></br>
+          <a href="/allocate-reward" >
+            <Button size="sm" variant="primary">
+              Distribute First Reward
+            </Button>
+            </a>
         </div>
       </main>
     );
